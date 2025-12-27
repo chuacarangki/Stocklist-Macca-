@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lesehan Macca v11 - Floating Nav</title>
+    <title>Lesehan Macca v12 - Floating Input</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -20,20 +20,22 @@
     </script>
 
     <style>
-        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         .top-bar { background: #0f172a; }
         .admin-bar { background: #4338ca; }
-        .custom-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .custom-shadow { box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1); }
         
-        /* Floating Action Button Styles */
-        .fab-container { position: fixed; bottom: 30px; right: 20px; z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .fab-sub { width: 60px; height: 60px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); transform: scale(0); opacity: 0; pointer-events: none; box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
-        .fab-main { width: 70px; height: 70px; border-radius: 50%; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: transform 0.3s; z-index: 52; }
+        /* Floating Action Button */
+        .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .fab-sub { width: 65px; height: 65px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); transform: scale(0); opacity: 0; pointer-events: none; box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
+        .fab-main { width: 75px; height: 75px; border-radius: 50%; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 15px 25px rgba(0,0,0,0.3); transition: transform 0.3s; z-index: 52; }
         
         .fab-container.active .fab-sub { transform: scale(1); opacity: 1; pointer-events: auto; }
         .fab-container.active .fab-main { transform: rotate(45deg); background: #ef4444; }
 
-        .active-tab-glow { border: 3px solid #3b82f6 !important; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        /* Full Screen Input Modal */
+        #modal-input { backdrop-filter: blur(8px); }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
@@ -41,81 +43,122 @@
 
     <div id="section-login" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center px-8">
         <div class="w-full max-w-sm text-center mb-10">
-            <h1 class="text-4xl font-black text-white italic tracking-tighter uppercase">MACCA<span class="text-blue-500">.V11</span></h1>
-            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Floating Navigation</p>
+            <h1 class="text-4xl font-black text-white italic tracking-tighter uppercase">MACCA<span class="text-blue-500">.V12</span></h1>
+            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Floating Input System</p>
         </div>
-        <div class="w-full max-w-sm space-y-3">
-            <button onclick="openAuth('dapur')" class="w-full bg-slate-900 p-6 rounded-[2rem] border border-slate-800 flex items-center justify-between active:scale-95 transition-all text-white font-bold">Pihak Dapur <i class="fas fa-utensils text-orange-500"></i></button>
-            <button onclick="openAuth('admin')" class="w-full bg-slate-900 p-6 rounded-[2rem] border border-slate-800 flex items-center justify-between active:scale-95 transition-all text-white font-bold">Owner / Admin <i class="fas fa-user-shield text-blue-500"></i></button>
-        </div>
-    </div>
-
-    <div id="modal-auth" class="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md hidden flex items-center justify-center px-6">
-        <div class="bg-white w-full max-w-xs rounded-[2.5rem] p-8 text-center">
-            <h2 id="auth-title" class="text-xl font-black mb-6"></h2>
-            <input type="text" id="input-user" placeholder="Nama Anda" class="w-full p-4 bg-slate-100 rounded-2xl font-bold text-center mb-3 outline-none">
-            <input type="password" id="input-pass" placeholder="PIN Admin" class="hidden w-full p-4 bg-slate-100 rounded-2xl font-bold text-center mb-3 outline-none">
-            <button onclick="processLogin()" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl uppercase text-xs">Login</button>
-            <button onclick="closeAuth()" class="mt-4 text-slate-400 font-bold text-[10px] uppercase">Batal</button>
+        <div class="w-full max-w-sm space-y-4">
+            <button onclick="openAuth('dapur')" class="w-full bg-slate-900 p-7 rounded-[2.5rem] border border-slate-800 flex items-center justify-between active:scale-95 transition-all text-white font-extrabold text-lg">Pihak Dapur <i class="fas fa-utensils text-orange-500"></i></button>
+            <button onclick="openAuth('admin')" class="w-full bg-slate-900 p-7 rounded-[2.5rem] border border-slate-800 flex items-center justify-between active:scale-95 transition-all text-white font-extrabold text-lg">Owner / Admin <i class="fas fa-user-shield text-blue-500"></i></button>
         </div>
     </div>
 
-    <div class="fab-container" id="fab-menu">
-        <div onclick="switchTab('Ayam')" id="fab-ayam" class="fab-sub bg-white border-2 border-slate-100">
-            <span class="text-[8px] font-black text-slate-400 uppercase">Ayam</span>
-            <span id="stat-ayam" class="text-sm font-black text-slate-800">0</span>
+    <div id="modal-auth" class="fixed inset-0 z-[110] bg-black/90 hidden flex items-center justify-center px-6">
+        <div class="bg-white w-full max-w-xs rounded-[3rem] p-10 text-center shadow-2xl">
+            <h2 id="auth-title" class="text-2xl font-black mb-6 text-slate-800"></h2>
+            <input type="text" id="input-user" placeholder="Nama Anda" class="w-full p-5 bg-slate-100 rounded-2xl font-black text-center mb-4 outline-none text-xl">
+            <input type="password" id="input-pass" placeholder="PIN ADMIN" class="hidden w-full p-5 bg-slate-100 rounded-2xl font-black text-center mb-4 outline-none text-xl">
+            <button onclick="processLogin()" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl uppercase text-sm tracking-widest">MASUK</button>
+            <button onclick="closeAuth()" class="mt-6 text-slate-400 font-bold text-xs uppercase">BATAL</button>
         </div>
-        <div onclick="switchTab('Ikan')" id="fab-ikan" class="fab-sub bg-white border-2 border-slate-100">
-            <span class="text-[8px] font-black text-slate-400 uppercase">Ikan</span>
-            <span id="stat-ikan" class="text-sm font-black text-slate-800">0</span>
+    </div>
+
+    <div class="fab-container hidden" id="fab-menu">
+        <div onclick="openInput('Ayam')" class="fab-sub bg-white border-2 border-orange-100">
+            <span class="text-[9px] font-black text-orange-400 uppercase">Ayam</span>
+            <span id="stat-ayam-fab" class="text-base font-black text-slate-800">0</span>
+        </div>
+        <div onclick="openInput('Ikan')" class="fab-sub bg-white border-2 border-blue-100">
+            <span class="text-[9px] font-black text-blue-400 uppercase">Ikan</span>
+            <span id="stat-ikan-fab" class="text-base font-black text-slate-800">0</span>
         </div>
         <button onclick="toggleFab()" class="fab-main">
             <i class="fas fa-plus"></i>
         </button>
     </div>
 
-    <div id="section-app" class="hidden min-h-screen">
-        <nav id="nav-bar" class="top-bar text-white px-6 py-4 flex justify-between items-center sticky top-0 z-40">
-            <div>
-                <h1 class="text-xs font-black tracking-widest uppercase">MACCA STOCK</h1>
-                <p id="label-user" class="text-[9px] text-slate-400 font-bold"></p>
+    <div id="modal-input" class="fixed inset-0 z-[80] bg-slate-950/80 hidden flex items-end justify-center">
+        <div class="bg-white w-full max-w-md rounded-t-[3rem] p-8 pb-12 animate-slide-up">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
+            <h2 class="text-2xl font-black text-center uppercase tracking-tighter mb-2"><span id="input-tab-name">Ayam</span> Stock</h2>
+            <p class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">Pilih Aksi & Masukkan Jumlah</p>
+
+            <div class="flex gap-3 mb-8" id="mode-container">
+                <button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-5 rounded-2xl text-xs font-black uppercase transition-all bg-red-600 text-white shadow-lg">AMBIL (-)</button>
+                <button onclick="setMode('Retur')" id="m-ret" class="flex-1 py-5 rounded-2xl text-xs font-black uppercase transition-all bg-slate-100 text-slate-400">RETUR (+)</button>
             </div>
-            <button onclick="location.reload()" class="text-red-400"><i class="fas fa-power-off"></i></button>
+
+            <div class="text-center mb-10">
+                <input type="number" id="qty" placeholder="0" class="w-full text-center text-8xl font-black text-slate-900 bg-transparent outline-none">
+                <div class="h-1 w-32 bg-blue-600 mx-auto mt-2 rounded-full opacity-20"></div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="closeInput()" class="flex-1 bg-slate-100 text-slate-400 font-black py-5 rounded-2xl text-xs uppercase">BATAL</button>
+                <button onclick="saveData()" class="flex-[2] bg-blue-600 text-white font-black py-5 rounded-2xl text-xs uppercase shadow-xl">SIMPAN DATA</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-app" class="hidden min-h-screen">
+        <nav id="nav-bar" class="top-bar text-white px-6 py-5 flex justify-between items-center sticky top-0 z-40">
+            <div>
+                <h1 class="text-sm font-black tracking-tighter italic">MACCA<span class="text-blue-500">STOCK</span></h1>
+                <p id="label-user" class="text-[9px] text-slate-400 font-bold uppercase"></p>
+            </div>
+            <button onclick="location.reload()" class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-red-400"><i class="fas fa-power-off"></i></button>
         </nav>
 
-        <main class="max-w-md mx-auto p-5 pt-4 space-y-6">
-            <div id="panel-rekap" class="hidden bg-white p-5 rounded-[2rem] custom-shadow">
-                <div class="flex gap-1 mb-4">
-                    <button onclick="runRekap('hari')" class="flex-1 py-2 bg-slate-50 rounded-lg text-[7px] font-black uppercase">Hari</button>
-                    <button onclick="runRekap('minggu')" class="flex-1 py-2 bg-slate-50 rounded-lg text-[7px] font-black uppercase">Minggu</button>
-                    <button onclick="runRekap('bulan')" class="flex-1 py-2 bg-slate-50 rounded-lg text-[7px] font-black uppercase">Bulan</button>
-                    <button onclick="runRekap('tahun')" class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-[7px] font-black uppercase">Tahun</button>
+        <main class="max-w-md mx-auto p-6 space-y-8">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white p-6 rounded-[2.5rem] custom-shadow border-b-4 border-orange-500">
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Ayam</p>
+                    <p id="stat-ayam-main" class="text-4xl font-black text-slate-800 tracking-tighter">0</p>
+                    <span class="text-[9px] font-bold text-slate-300">EKOR</span>
                 </div>
-                <div id="rekap-display" class="hidden text-[10px] space-y-2 bg-slate-50 p-3 rounded-xl font-bold">
-                    <div class="flex justify-between border-b pb-1">
-                        <span id="rekap-title" class="text-blue-600"></span>
-                        <span>M/R | KELUAR</span>
+                <div class="bg-white p-6 rounded-[2.5rem] custom-shadow border-b-4 border-blue-500">
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Ikan</p>
+                    <p id="stat-ikan-main" class="text-4xl font-black text-slate-800 tracking-tighter">0</p>
+                    <span class="text-[9px] font-bold text-slate-300">KILOGRAM</span>
+                </div>
+            </div>
+
+            <div id="panel-rekap" class="hidden bg-slate-900 p-6 rounded-[2.5rem] text-white">
+                <h3 class="text-xs font-black uppercase tracking-widest mb-6 flex items-center justify-between">
+                    <span>Laporan Ringkas</span>
+                    <i class="fas fa-layer-group text-blue-500"></i>
+                </h3>
+                <div class="grid grid-cols-4 gap-2 mb-6">
+                    <button onclick="runRekap('hari')" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase hover:bg-white hover:text-black">Hari</button>
+                    <button onclick="runRekap('minggu')" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase hover:bg-white hover:text-black">Minggu</button>
+                    <button onclick="runRekap('bulan')" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase hover:bg-white hover:text-black">Bulan</button>
+                    <button onclick="runRekap('tahun')" class="py-3 bg-blue-600 rounded-xl text-[8px] font-black uppercase">Tahun</button>
+                </div>
+                <div id="rekap-display" class="hidden space-y-4 bg-white/5 p-5 rounded-2xl border border-white/10">
+                    <p id="rekap-title" class="text-center font-black text-blue-400 text-[10px] uppercase"></p>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-bold mb-1 uppercase">Stok Masuk</p>
+                            <p class="text-sm font-black">Ayam: <span id="r-ayam-in">0</span></p>
+                            <p class="text-sm font-black">Ikan: <span id="r-ikan-in">0</span></p>
+                        </div>
+                        <div class="border-l border-white/10">
+                            <p class="text-[8px] text-slate-500 font-bold mb-1 uppercase text-red-400">Stok Keluar</p>
+                            <p class="text-sm font-black">Ayam: <span id="r-ayam-out">0</span></p>
+                            <p class="text-sm font-black">Ikan: <span id="r-ikan-out">0</span></p>
+                        </div>
                     </div>
-                    <div class="flex justify-between"><span>AYAM</span><span><span id="r-ayam-in" class="text-blue-600">0</span> | <span id="r-ayam-out" class="text-red-600">0</span></span></div>
-                    <div class="flex justify-between"><span>IKAN</span><span><span id="r-ikan-in" class="text-blue-600">0</span> | <span id="r-ikan-out" class="text-red-600">0</span></span></div>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-[2.5rem] custom-shadow border border-slate-50">
-                <div class="flex gap-2 mb-6" id="mode-container">
-                    <button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase transition-all bg-red-600 text-white">PAKAI (-)</button>
-                    <button onclick="setMode('Retur')" id="m-ret" class="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase transition-all bg-green-100 text-green-600">RETUR (+)</button>
+            <div class="space-y-4 pb-28">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-tighter">Riwayat Terakhir</h3>
+                    <div class="flex gap-2">
+                        <button onclick="setTab('Ayam')" id="btn-tab-ayam" class="text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-900 text-white">AYAM</button>
+                        <button onclick="setTab('Ikan')" id="btn-tab-ikan" class="text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-200 text-slate-500">IKAN</button>
+                    </div>
                 </div>
-                <div class="text-center mb-6">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Input <span id="mode-text" class="text-blue-600">Keluar</span> (<span id="current-tab-label">Ayam</span>)</p>
-                    <input type="number" id="qty" placeholder="0" class="w-full text-center text-7xl font-black text-slate-900 bg-transparent outline-none">
-                </div>
-                <button onclick="saveData()" id="btn-save" class="w-full bg-blue-600 text-white font-black py-5 rounded-[1.5rem] shadow-lg active:scale-95 transition-all text-xs uppercase tracking-widest">Simpan Data</button>
-            </div>
-
-            <div class="space-y-4 pb-24">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Riwayat <span id="log-name">Ayam</span></h3>
-                <div id="log-list" class="space-y-3"></div>
+                <div id="log-list" class="space-y-4"></div>
             </div>
         </main>
     </div>
@@ -124,7 +167,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // MENGGUNAKAN VERSI 9 AGAR DATA LAMA KEMBALI TERBACA
         const firebaseConfig = {
             apiKey: "AIzaSyCCmKgOnBFpluEKuycYjrBRm4zbxrHI1P8",
             authDomain: "stocklistmacca.firebaseapp.com",
@@ -139,26 +181,30 @@
         const db = getDatabase(app);
         const dbRef = ref(db, 'stok_macca_v9');
 
-        let userRole = ''; let userName = ''; let tab = 'Ayam'; let mode = 'Keluar'; let dataRaw = [];
+        let userRole = ''; let userName = ''; let currentTab = 'Ayam'; let currentMode = 'Keluar'; let dataRaw = [];
 
+        // UI FUNCTIONS
         window.toggleFab = () => document.getElementById('fab-menu').classList.toggle('active');
-
         window.openAuth = (r) => {
             userRole = r;
             document.getElementById('modal-auth').classList.remove('hidden');
-            document.getElementById('auth-title').innerText = r === 'admin' ? 'Owner Access' : 'Nama Petugas';
-            r === 'admin' ? (document.getElementById('input-pass').classList.remove('hidden'), document.getElementById('input-user').classList.add('hidden')) : (document.getElementById('input-user').classList.remove('hidden'), document.getElementById('input-pass').classList.add('hidden'));
+            document.getElementById('auth-title').innerText = r === 'admin' ? 'Owner Login' : 'Absensi Nama';
+            if(r === 'admin') {
+                document.getElementById('input-pass').classList.remove('hidden');
+                document.getElementById('input-user').classList.add('hidden');
+            } else {
+                document.getElementById('input-user').classList.remove('hidden');
+                document.getElementById('input-pass').classList.add('hidden');
+            }
         };
-
         window.closeAuth = () => document.getElementById('modal-auth').classList.add('hidden');
-
         window.processLogin = () => {
             if(userRole === 'admin') {
                 if(document.getElementById('input-pass').value === 'macca123') { userName = 'Owner Admin'; initApp(); }
-                else alert('Password Salah!');
+                else alert('PIN Salah!');
             } else {
                 let n = document.getElementById('input-user').value;
-                if(n) { userName = n; initApp(); } else alert('Isi Nama!');
+                if(n) { userName = n; initApp(); } else alert('Ketik Nama!');
             }
         };
 
@@ -166,42 +212,55 @@
             document.getElementById('section-login').classList.add('hidden');
             document.getElementById('modal-auth').classList.add('hidden');
             document.getElementById('section-app').classList.remove('hidden');
-            document.getElementById('label-user').innerText = userName.toUpperCase();
+            document.getElementById('fab-menu').classList.remove('hidden');
+            document.getElementById('label-user').innerText = userName;
             if(userRole === 'admin') {
                 document.getElementById('nav-bar').classList.add('admin-bar');
                 document.getElementById('panel-rekap').classList.remove('hidden');
-                document.getElementById('mode-container').innerHTML += `<button onclick="setMode('Masuk')" id="m-in" class="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase transition-all bg-blue-100 text-blue-600">ISI (+)</button>`;
+                document.getElementById('mode-container').innerHTML += `<button onclick="setMode('Masuk')" id="m-in" class="flex-1 py-5 rounded-2xl text-xs font-black uppercase transition-all bg-slate-100 text-slate-400">ISI (+)</button>`;
             }
-            switchTab('Ayam');
+            render();
         }
 
-        window.switchTab = (t) => {
-            tab = t;
-            document.getElementById('current-tab-label').innerText = t;
-            document.getElementById('log-name').innerText = t;
-            document.getElementById('fab-ayam').classList.toggle('active-tab-glow', t === 'Ayam');
-            document.getElementById('fab-ikan').classList.toggle('active-tab-glow', t === 'Ikan');
-            document.getElementById('fab-menu').classList.remove('active');
+        window.setTab = (t) => {
+            currentTab = t;
+            document.getElementById('btn-tab-ayam').className = t === 'Ayam' ? 'text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-900 text-white' : 'text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-200 text-slate-500';
+            document.getElementById('btn-tab-ikan').className = t === 'Ikan' ? 'text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-900 text-white' : 'text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-200 text-slate-500';
             render();
         };
 
+        // INPUT MODAL FUNCTIONS
+        window.openInput = (t) => {
+            currentTab = t;
+            currentMode = 'Keluar';
+            document.getElementById('input-tab-name').innerText = t;
+            document.getElementById('modal-input').classList.remove('hidden');
+            document.getElementById('fab-menu').classList.remove('active');
+            setMode('Keluar');
+        };
+        window.closeInput = () => {
+            document.getElementById('modal-input').classList.add('hidden');
+            document.getElementById('qty').value = '';
+        };
         window.setMode = (m) => {
-            mode = m;
-            document.getElementById('mode-text').innerText = m;
+            currentMode = m;
+            const colors = { 'Keluar': 'bg-red-600', 'Retur': 'bg-green-600', 'Masuk': 'bg-blue-600' };
             ['m-out', 'm-ret', 'm-in'].forEach(id => {
-                const el = document.getElementById(id);
-                if(!el) return;
-                const match = (id==='m-out'&&m==='Keluar') || (id==='m-ret'&&m==='Retur') || (id==='m-in'&&m==='Masuk');
-                el.className = match ? `flex-1 py-4 rounded-2xl text-[10px] font-black uppercase text-white shadow-md ${m==='Keluar'?'bg-red-600':(m==='Retur'?'bg-green-600':'bg-blue-600')}` : `flex-1 py-4 rounded-2xl text-[10px] font-black uppercase bg-slate-100 text-slate-400`;
+                const el = document.getElementById(id); if(!el) return;
+                const mKey = id==='m-out'?'Keluar':(id==='m-ret'?'Retur':'Masuk');
+                if(m === mKey) {
+                    el.className = `flex-1 py-5 rounded-2xl text-xs font-black uppercase text-white shadow-lg ${colors[m]}`;
+                } else {
+                    el.className = `flex-1 py-5 rounded-2xl text-xs font-black uppercase bg-slate-100 text-slate-400`;
+                }
             });
         };
 
         window.saveData = () => {
             const v = parseInt(document.getElementById('qty').value);
             if(!v) return;
-            push(dbRef, { user: userName, type: tab, qty: v, status: mode, time: serverTimestamp() }).then(() => {
-                document.getElementById('qty').value = '';
-                setMode('Keluar');
+            push(dbRef, { user: userName, type: currentTab, qty: v, status: currentMode, time: serverTimestamp() }).then(() => {
+                closeInput();
             });
         };
 
@@ -213,26 +272,43 @@
         function render() {
             let sA = 0; let sI = 0;
             const list = document.getElementById('log-list'); list.innerHTML = '';
+            
             dataRaw.forEach(i => {
                 const add = (i.status === 'Masuk' || i.status === 'Retur') ? i.qty : -i.qty;
                 i.type === 'Ayam' ? sA += add : sI += add;
             });
-            document.getElementById('stat-ayam').innerText = sA;
-            document.getElementById('stat-ikan').innerText = sI;
 
-            dataRaw.slice().reverse().filter(i => i.type === tab).slice(0, 20).forEach(i => {
+            document.getElementById('stat-ayam-main').innerText = sA;
+            document.getElementById('stat-ikan-main').innerText = sI;
+            document.getElementById('stat-ayam-fab').innerText = sA;
+            document.getElementById('stat-ikan-fab').innerText = sI;
+
+            dataRaw.slice().reverse().filter(i => i.type === currentTab).slice(0, 20).forEach(i => {
                 const dt = new Date(i.time);
-                const day = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"][dt.getDay()];
-                const timeStr = `${day}, ${dt.getDate()}/${dt.getMonth()+1} • ${dt.getHours()}:${dt.getMinutes().toString().padStart(2,'0')}`;
+                const day = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][dt.getDay()];
+                const timeStr = `${day}, ${dt.getHours()}:${dt.getMinutes().toString().padStart(2,'0')}`;
                 let color = i.status === 'Masuk' ? 'text-blue-600 bg-blue-50' : (i.status === 'Retur' ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50');
 
-                list.innerHTML += `<div class="bg-white p-4 rounded-3xl custom-shadow flex justify-between items-center border border-slate-50"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl flex items-center justify-center font-black ${color}">${i.status==='Keluar'?'-':'+'}</div><div><h4 class="font-black text-xs uppercase text-slate-800">${i.user}</h4><p class="text-[8px] font-bold text-slate-400 uppercase">${timeStr}</p></div></div><div class="text-right"><span class="text-[8px] font-black uppercase text-slate-300 block leading-none mb-1">${i.status}</span><span class="text-lg font-black text-slate-800">${i.qty}</span></div></div>`;
+                list.innerHTML += `
+                    <div class="bg-white p-6 rounded-[2rem] custom-shadow flex justify-between items-center border border-slate-50">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl ${color}">${i.status==='Keluar'?'-':'+'}</div>
+                            <div>
+                                <h4 class="font-black text-sm uppercase text-slate-800">${i.user}</h4>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">${timeStr}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[9px] font-black uppercase text-slate-300 block mb-1">${i.status}</span>
+                            <span class="text-2xl font-black text-slate-800">${i.qty}</span>
+                        </div>
+                    </div>
+                `;
             });
         }
 
         window.runRekap = (type) => {
-            const now = new Date();
-            let start = 0;
+            const now = new Date(); let start = 0;
             if(type === 'hari') start = new Date().setHours(0,0,0,0);
             if(type === 'minggu') start = now.getTime() - (7 * 24 * 60 * 60 * 1000);
             if(type === 'bulan') start = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
@@ -244,7 +320,7 @@
                 else i.status === 'Keluar' ? r.IkanOut += i.qty : r.IkanIn += i.qty;
             });
             document.getElementById('rekap-display').classList.remove('hidden');
-            document.getElementById('rekap-title').innerText = `LAPORAN ${type.toUpperCase()}`;
+            document.getElementById('rekap-title').innerText = `PERIODE ${type.toUpperCase()}`;
             document.getElementById('r-ayam-in').innerText = r.AyamIn; document.getElementById('r-ayam-out').innerText = r.AyamOut;
             document.getElementById('r-ikan-in').innerText = r.IkanIn; document.getElementById('r-ikan-out').innerText = r.IkanOut;
         };
