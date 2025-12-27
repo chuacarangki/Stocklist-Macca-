@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lesehan Macca v12 - Floating Input</title>
+    <title>Macca Stock v13 - Dark Edition</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -13,6 +13,12 @@
         tailwind.config = {
             theme: {
                 extend: {
+                    colors: {
+                        'macca-dark': '#0a0a0c',
+                        'macca-card': '#16161a',
+                        'macca-yellow': '#fbbf24',
+                        'macca-green': '#22c55e',
+                    },
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                 }
             }
@@ -20,142 +26,163 @@
     </script>
 
     <style>
-        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-        .top-bar { background: #0f172a; }
-        .admin-bar { background: #4338ca; }
-        .custom-shadow { box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1); }
+        body { background-color: #0a0a0c; color: white; -webkit-tap-highlight-color: transparent; }
+        .custom-shadow { box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         
         /* Floating Action Button */
         .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .fab-sub { width: 65px; height: 65px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); transform: scale(0); opacity: 0; pointer-events: none; box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
-        .fab-main { width: 75px; height: 75px; border-radius: 50%; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 15px 25px rgba(0,0,0,0.3); transition: transform 0.3s; z-index: 52; }
+        .fab-sub { width: 70px; height: 70px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0); opacity: 0; pointer-events: none; }
+        .fab-main { width: 80px; height: 80px; border-radius: 50%; background: #fbbf24; color: #000; display: flex; align-items: center; justify-content: center; font-size: 35px; box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4); transition: 0.3s; z-index: 52; }
         
         .fab-container.active .fab-sub { transform: scale(1); opacity: 1; pointer-events: auto; }
-        .fab-container.active .fab-main { transform: rotate(45deg); background: #ef4444; }
+        .fab-container.active .fab-main { transform: rotate(45deg); background: #ef4444; color: white; }
 
-        /* Full Screen Input Modal */
-        #modal-input { backdrop-filter: blur(8px); }
+        /* Modal Slide Up */
+        .modal-up { animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body class="antialiased text-slate-900">
+<body class="antialiased">
 
-    <div id="section-login" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center px-8">
-        <div class="w-full max-w-sm text-center mb-10">
-            <h1 class="text-4xl font-black text-white italic tracking-tighter uppercase">MACCA<span class="text-blue-500">.V12</span></h1>
-            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Floating Input System</p>
-        </div>
+    <div id="section-login" class="fixed inset-0 z-[100] bg-macca-dark flex flex-col items-center justify-center px-8">
+        <h1 class="text-5xl font-black text-macca-yellow italic tracking-tighter mb-2 uppercase">MACCA<span class="text-white">.V13</span></h1>
+        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.5em] mb-12">Inventory Management</p>
         <div class="w-full max-w-sm space-y-4">
-            <button onclick="openAuth('dapur')" class="w-full bg-slate-900 p-7 rounded-[2.5rem] border border-slate-800 flex items-center justify-between active:scale-95 transition-all text-white font-extrabold text-lg">Pihak Dapur <i class="fas fa-utensils text-orange-500"></i></button>
-            <button onclick="openAuth('admin')" class="w-full bg-slate-900 p-7 rounded-[2.5rem] border border-slate-800 flex items-center justify-between active:scale-95 transition-all text-white font-extrabold text-lg">Owner / Admin <i class="fas fa-user-shield text-blue-500"></i></button>
+            <button onclick="openAuth('dapur')" class="w-full bg-macca-card p-8 rounded-[2.5rem] border border-white/5 flex items-center justify-between active:scale-95 transition-all">
+                <span class="text-white font-black text-xl">DAPUR</span>
+                <i class="fas fa-utensils text-macca-yellow text-2xl"></i>
+            </button>
+            <button onclick="openAuth('admin')" class="w-full bg-macca-card p-8 rounded-[2.5rem] border border-white/5 flex items-center justify-between active:scale-95 transition-all">
+                <span class="text-white font-black text-xl">OWNER</span>
+                <i class="fas fa-user-shield text-blue-500 text-2xl"></i>
+            </button>
         </div>
     </div>
 
-    <div id="modal-auth" class="fixed inset-0 z-[110] bg-black/90 hidden flex items-center justify-center px-6">
-        <div class="bg-white w-full max-w-xs rounded-[3rem] p-10 text-center shadow-2xl">
-            <h2 id="auth-title" class="text-2xl font-black mb-6 text-slate-800"></h2>
-            <input type="text" id="input-user" placeholder="Nama Anda" class="w-full p-5 bg-slate-100 rounded-2xl font-black text-center mb-4 outline-none text-xl">
-            <input type="password" id="input-pass" placeholder="PIN ADMIN" class="hidden w-full p-5 bg-slate-100 rounded-2xl font-black text-center mb-4 outline-none text-xl">
-            <button onclick="processLogin()" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl uppercase text-sm tracking-widest">MASUK</button>
-            <button onclick="closeAuth()" class="mt-6 text-slate-400 font-bold text-xs uppercase">BATAL</button>
+    <div id="modal-auth" class="fixed inset-0 z-[110] bg-black/95 hidden flex items-center justify-center px-6">
+        <div class="bg-macca-card w-full max-w-xs rounded-[3rem] p-10 text-center border border-white/10 shadow-2xl">
+            <h2 id="auth-title" class="text-2xl font-black mb-6 text-white uppercase italic"></h2>
+            <input type="text" id="input-user" placeholder="Nama Anda" class="w-full p-5 bg-black rounded-2xl font-black text-center mb-4 outline-none text-xl text-macca-yellow">
+            <input type="password" id="input-pass" placeholder="PIN ADMIN" class="hidden w-full p-5 bg-black rounded-2xl font-black text-center mb-4 outline-none text-xl text-macca-yellow">
+            <button onclick="processLogin()" class="w-full bg-macca-yellow text-black font-black py-5 rounded-2xl uppercase text-sm tracking-widest">LOGIN</button>
+            <button onclick="closeAuth()" class="mt-6 text-slate-500 font-bold text-xs uppercase">BATAL</button>
         </div>
     </div>
 
     <div class="fab-container hidden" id="fab-menu">
-        <div onclick="openInput('Ayam')" class="fab-sub bg-white border-2 border-orange-100">
-            <span class="text-[9px] font-black text-orange-400 uppercase">Ayam</span>
-            <span id="stat-ayam-fab" class="text-base font-black text-slate-800">0</span>
+        <div onclick="openInput('Ayam')" class="fab-sub bg-macca-card border-2 border-macca-yellow">
+            <span class="text-[9px] font-black text-macca-yellow uppercase">AYAM</span>
+            <span id="stat-ayam-fab" class="text-sm font-black text-white">0</span>
         </div>
-        <div onclick="openInput('Ikan')" class="fab-sub bg-white border-2 border-blue-100">
-            <span class="text-[9px] font-black text-blue-400 uppercase">Ikan</span>
-            <span id="stat-ikan-fab" class="text-base font-black text-slate-800">0</span>
+        <div onclick="openInput('Ikan')" class="fab-sub bg-macca-card border-2 border-macca-green">
+            <span class="text-[9px] font-black text-macca-green uppercase">IKAN</span>
+            <span id="stat-ikan-fab" class="text-sm font-black text-white">0</span>
         </div>
-        <button onclick="toggleFab()" class="fab-main">
-            <i class="fas fa-plus"></i>
-        </button>
+        <button onclick="toggleFab()" class="fab-main"><i class="fas fa-plus"></i></button>
     </div>
 
-    <div id="modal-input" class="fixed inset-0 z-[80] bg-slate-950/80 hidden flex items-end justify-center">
-        <div class="bg-white w-full max-w-md rounded-t-[3rem] p-8 pb-12 animate-slide-up">
-            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
-            <h2 class="text-2xl font-black text-center uppercase tracking-tighter mb-2"><span id="input-tab-name">Ayam</span> Stock</h2>
-            <p class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">Pilih Aksi & Masukkan Jumlah</p>
+    <div id="modal-input" class="fixed inset-0 z-[80] bg-black/90 hidden flex items-end justify-center">
+        <div class="bg-macca-card w-full max-w-md rounded-t-[3.5rem] p-8 pb-12 modal-up border-t border-white/10 shadow-2xl">
+            <div class="w-16 h-1.5 bg-white/10 rounded-full mx-auto mb-8"></div>
+            
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-black uppercase italic text-macca-yellow" id="input-tab-name">Ayam</h2>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Update Stock Baru</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase">Sisa Saat Ini</p>
+                    <p id="stat-current-modal" class="text-3xl font-black text-macca-green">0</p>
+                </div>
+            </div>
 
-            <div class="flex gap-3 mb-8" id="mode-container">
-                <button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-5 rounded-2xl text-xs font-black uppercase transition-all bg-red-600 text-white shadow-lg">AMBIL (-)</button>
-                <button onclick="setMode('Retur')" id="m-ret" class="flex-1 py-5 rounded-2xl text-xs font-black uppercase transition-all bg-slate-100 text-slate-400">RETUR (+)</button>
+            <div class="flex gap-2 mb-8" id="mode-container">
+                <button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase transition-all bg-red-600 text-white shadow-lg">PAKAI (-)</button>
+                <button onclick="setMode('Retur')" id="m-ret" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase transition-all bg-white/5 text-slate-500">RETUR (+)</button>
             </div>
 
             <div class="text-center mb-10">
-                <input type="number" id="qty" placeholder="0" class="w-full text-center text-8xl font-black text-slate-900 bg-transparent outline-none">
-                <div class="h-1 w-32 bg-blue-600 mx-auto mt-2 rounded-full opacity-20"></div>
+                <input type="number" id="qty" placeholder="0" class="w-full text-center text-8xl font-black text-macca-yellow bg-transparent outline-none">
+                <p class="text-[10px] font-bold text-slate-600 uppercase mt-2">Masukkan Angka</p>
             </div>
 
             <div class="flex gap-4">
-                <button onclick="closeInput()" class="flex-1 bg-slate-100 text-slate-400 font-black py-5 rounded-2xl text-xs uppercase">BATAL</button>
-                <button onclick="saveData()" class="flex-[2] bg-blue-600 text-white font-black py-5 rounded-2xl text-xs uppercase shadow-xl">SIMPAN DATA</button>
+                <button onclick="closeInput()" class="flex-1 bg-white/5 text-slate-400 font-black py-6 rounded-3xl text-xs uppercase">BATAL</button>
+                <button onclick="saveData()" class="flex-[2] bg-macca-green text-black font-black py-6 rounded-3xl text-xs uppercase shadow-xl tracking-widest">KONFIRMASI</button>
             </div>
         </div>
     </div>
 
     <div id="section-app" class="hidden min-h-screen">
-        <nav id="nav-bar" class="top-bar text-white px-6 py-5 flex justify-between items-center sticky top-0 z-40">
+        <nav id="nav-bar" class="bg-macca-dark/80 backdrop-blur-md text-white px-6 py-6 flex justify-between items-center sticky top-0 z-40 border-b border-white/5">
             <div>
-                <h1 class="text-sm font-black tracking-tighter italic">MACCA<span class="text-blue-500">STOCK</span></h1>
-                <p id="label-user" class="text-[9px] text-slate-400 font-bold uppercase"></p>
+                <h1 class="text-xl font-black tracking-tighter italic text-macca-yellow">MACCA<span class="text-white">STOCK</span></h1>
+                <p id="label-user" class="text-[10px] text-macca-green font-bold uppercase"></p>
             </div>
-            <button onclick="location.reload()" class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-red-400"><i class="fas fa-power-off"></i></button>
+            <button onclick="location.reload()" class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-red-500 border border-white/10"><i class="fas fa-power-off text-lg"></i></button>
         </nav>
 
         <main class="max-w-md mx-auto p-6 space-y-8">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-6 rounded-[2.5rem] custom-shadow border-b-4 border-orange-500">
-                    <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Ayam</p>
-                    <p id="stat-ayam-main" class="text-4xl font-black text-slate-800 tracking-tighter">0</p>
-                    <span class="text-[9px] font-bold text-slate-300">EKOR</span>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-macca-card p-8 rounded-[2.5rem] border border-white/5 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">STOK AYAM</p>
+                        <h2 id="stat-ayam-main" class="text-5xl font-black text-macca-yellow tracking-tighter">0</h2>
+                        <p class="text-[10px] font-black text-slate-600">EKOR</p>
+                    </div>
+                    <div class="w-16 h-16 rounded-3xl bg-macca-yellow/10 flex items-center justify-center text-macca-yellow text-3xl">
+                        <i class="fas fa-drumstick-bite"></i>
+                    </div>
                 </div>
-                <div class="bg-white p-6 rounded-[2.5rem] custom-shadow border-b-4 border-blue-500">
-                    <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Ikan</p>
-                    <p id="stat-ikan-main" class="text-4xl font-black text-slate-800 tracking-tighter">0</p>
-                    <span class="text-[9px] font-bold text-slate-300">KILOGRAM</span>
+                <div class="bg-macca-card p-8 rounded-[2.5rem] border border-white/5 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">STOK IKAN</p>
+                        <h2 id="stat-ikan-main" class="text-5xl font-black text-macca-green tracking-tighter">0</h2>
+                        <p class="text-[10px] font-black text-slate-600">KILOGRAM</p>
+                    </div>
+                    <div class="w-16 h-16 rounded-3xl bg-macca-green/10 flex items-center justify-center text-macca-green text-3xl">
+                        <i class="fas fa-fish"></i>
+                    </div>
                 </div>
             </div>
 
-            <div id="panel-rekap" class="hidden bg-slate-900 p-6 rounded-[2.5rem] text-white">
-                <h3 class="text-xs font-black uppercase tracking-widest mb-6 flex items-center justify-between">
-                    <span>Laporan Ringkas</span>
-                    <i class="fas fa-layer-group text-blue-500"></i>
-                </h3>
-                <div class="grid grid-cols-4 gap-2 mb-6">
-                    <button onclick="runRekap('hari')" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase hover:bg-white hover:text-black">Hari</button>
-                    <button onclick="runRekap('minggu')" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase hover:bg-white hover:text-black">Minggu</button>
-                    <button onclick="runRekap('bulan')" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase hover:bg-white hover:text-black">Bulan</button>
-                    <button onclick="runRekap('tahun')" class="py-3 bg-blue-600 rounded-xl text-[8px] font-black uppercase">Tahun</button>
+            <div id="panel-rekap" class="hidden bg-macca-card p-7 rounded-[3rem] border border-white/10">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-sm font-black uppercase text-white italic">REKAPITULASI</h3>
+                    <div class="px-3 py-1 bg-macca-yellow/10 rounded-full text-[9px] font-black text-macca-yellow">OWNER ONLY</div>
                 </div>
-                <div id="rekap-display" class="hidden space-y-4 bg-white/5 p-5 rounded-2xl border border-white/10">
-                    <p id="rekap-title" class="text-center font-black text-blue-400 text-[10px] uppercase"></p>
-                    <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="grid grid-cols-4 gap-2 mb-6">
+                    <button onclick="runRekap('hari')" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase active:bg-macca-yellow">Hari</button>
+                    <button onclick="runRekap('minggu')" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase active:bg-macca-yellow">Minggu</button>
+                    <button onclick="runRekap('bulan')" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase active:bg-macca-yellow">Bulan</button>
+                    <button onclick="runRekap('tahun')" class="py-3 bg-macca-yellow text-black rounded-xl text-[8px] font-black uppercase">Tahun</button>
+                </div>
+                <div id="rekap-display" class="hidden space-y-4 bg-black/50 p-6 rounded-3xl border border-white/5">
+                    <p id="rekap-title" class="text-center font-black text-macca-yellow text-xs uppercase italic"></p>
+                    <div class="grid grid-cols-2 gap-6 text-center">
                         <div>
-                            <p class="text-[8px] text-slate-500 font-bold mb-1 uppercase">Stok Masuk</p>
-                            <p class="text-sm font-black">Ayam: <span id="r-ayam-in">0</span></p>
-                            <p class="text-sm font-black">Ikan: <span id="r-ikan-in">0</span></p>
+                            <p class="text-[9px] text-slate-500 font-bold mb-2 uppercase">MASUK/RETUR</p>
+                            <p class="text-lg font-black text-white">A: <span id="r-ayam-in" class="text-macca-green">0</span></p>
+                            <p class="text-lg font-black text-white">I: <span id="r-ikan-in" class="text-macca-green">0</span></p>
                         </div>
                         <div class="border-l border-white/10">
-                            <p class="text-[8px] text-slate-500 font-bold mb-1 uppercase text-red-400">Stok Keluar</p>
-                            <p class="text-sm font-black">Ayam: <span id="r-ayam-out">0</span></p>
-                            <p class="text-sm font-black">Ikan: <span id="r-ikan-out">0</span></p>
+                            <p class="text-[9px] text-slate-500 font-bold mb-2 uppercase text-red-400">KELUAR</p>
+                            <p class="text-lg font-black text-white">A: <span id="r-ayam-out" class="text-red-500">0</span></p>
+                            <p class="text-lg font-black text-white">I: <span id="r-ikan-out" class="text-red-500">0</span></p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="space-y-4 pb-28">
+            <div class="space-y-4 pb-32">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-tighter">Riwayat Terakhir</h3>
-                    <div class="flex gap-2">
-                        <button onclick="setTab('Ayam')" id="btn-tab-ayam" class="text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-900 text-white">AYAM</button>
-                        <button onclick="setTab('Ikan')" id="btn-tab-ikan" class="text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-200 text-slate-500">IKAN</button>
+                    <h3 class="text-sm font-black text-white uppercase italic tracking-widest">LOG AKTIVITAS</h3>
+                    <div class="flex bg-macca-card p-1 rounded-full border border-white/10">
+                        <button onclick="setTab('Ayam')" id="btn-tab-ayam" class="text-[9px] font-black px-5 py-2 rounded-full bg-macca-yellow text-black transition-all">AYAM</button>
+                        <button onclick="setTab('Ikan')" id="btn-tab-ikan" class="text-[9px] font-black px-5 py-2 rounded-full text-slate-500 transition-all">IKAN</button>
                     </div>
                 </div>
                 <div id="log-list" class="space-y-4"></div>
@@ -182,29 +209,23 @@
         const dbRef = ref(db, 'stok_macca_v9');
 
         let userRole = ''; let userName = ''; let currentTab = 'Ayam'; let currentMode = 'Keluar'; let dataRaw = [];
+        let stockNow = { Ayam: 0, Ikan: 0 };
 
-        // UI FUNCTIONS
         window.toggleFab = () => document.getElementById('fab-menu').classList.toggle('active');
         window.openAuth = (r) => {
             userRole = r;
             document.getElementById('modal-auth').classList.remove('hidden');
-            document.getElementById('auth-title').innerText = r === 'admin' ? 'Owner Login' : 'Absensi Nama';
-            if(r === 'admin') {
-                document.getElementById('input-pass').classList.remove('hidden');
-                document.getElementById('input-user').classList.add('hidden');
-            } else {
-                document.getElementById('input-user').classList.remove('hidden');
-                document.getElementById('input-pass').classList.add('hidden');
-            }
+            document.getElementById('auth-title').innerText = r === 'admin' ? 'Akses Owner' : 'Dapur';
+            r === 'admin' ? (document.getElementById('input-pass').classList.remove('hidden'), document.getElementById('input-user').classList.add('hidden')) : (document.getElementById('input-user').classList.remove('hidden'), document.getElementById('input-pass').classList.add('hidden'));
         };
         window.closeAuth = () => document.getElementById('modal-auth').classList.add('hidden');
         window.processLogin = () => {
             if(userRole === 'admin') {
                 if(document.getElementById('input-pass').value === 'macca123') { userName = 'Owner Admin'; initApp(); }
-                else alert('PIN Salah!');
+                else alert('PIN SALAH!');
             } else {
                 let n = document.getElementById('input-user').value;
-                if(n) { userName = n; initApp(); } else alert('Ketik Nama!');
+                if(n) { userName = n; initApp(); } else alert('ISI NAMA!');
             }
         };
 
@@ -213,27 +234,18 @@
             document.getElementById('modal-auth').classList.add('hidden');
             document.getElementById('section-app').classList.remove('hidden');
             document.getElementById('fab-menu').classList.remove('hidden');
-            document.getElementById('label-user').innerText = userName;
+            document.getElementById('label-user').innerText = 'AKTIF: ' + userName;
             if(userRole === 'admin') {
-                document.getElementById('nav-bar').classList.add('admin-bar');
                 document.getElementById('panel-rekap').classList.remove('hidden');
-                document.getElementById('mode-container').innerHTML += `<button onclick="setMode('Masuk')" id="m-in" class="flex-1 py-5 rounded-2xl text-xs font-black uppercase transition-all bg-slate-100 text-slate-400">ISI (+)</button>`;
+                document.getElementById('mode-container').innerHTML += `<button onclick="setMode('Masuk')" id="m-in" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase transition-all bg-white/5 text-slate-500">ISI (+)</button>`;
             }
             render();
         }
 
-        window.setTab = (t) => {
-            currentTab = t;
-            document.getElementById('btn-tab-ayam').className = t === 'Ayam' ? 'text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-900 text-white' : 'text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-200 text-slate-500';
-            document.getElementById('btn-tab-ikan').className = t === 'Ikan' ? 'text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-900 text-white' : 'text-[9px] font-black px-4 py-1.5 rounded-full bg-slate-200 text-slate-500';
-            render();
-        };
-
-        // INPUT MODAL FUNCTIONS
         window.openInput = (t) => {
-            currentTab = t;
-            currentMode = 'Keluar';
+            currentTab = t; currentMode = 'Keluar';
             document.getElementById('input-tab-name').innerText = t;
+            document.getElementById('stat-current-modal').innerText = stockNow[t];
             document.getElementById('modal-input').classList.remove('hidden');
             document.getElementById('fab-menu').classList.remove('active');
             setMode('Keluar');
@@ -242,17 +254,14 @@
             document.getElementById('modal-input').classList.add('hidden');
             document.getElementById('qty').value = '';
         };
+
         window.setMode = (m) => {
             currentMode = m;
-            const colors = { 'Keluar': 'bg-red-600', 'Retur': 'bg-green-600', 'Masuk': 'bg-blue-600' };
+            const colors = { 'Keluar': 'bg-red-600', 'Retur': 'bg-macca-green', 'Masuk': 'bg-blue-600' };
             ['m-out', 'm-ret', 'm-in'].forEach(id => {
                 const el = document.getElementById(id); if(!el) return;
                 const mKey = id==='m-out'?'Keluar':(id==='m-ret'?'Retur':'Masuk');
-                if(m === mKey) {
-                    el.className = `flex-1 py-5 rounded-2xl text-xs font-black uppercase text-white shadow-lg ${colors[m]}`;
-                } else {
-                    el.className = `flex-1 py-5 rounded-2xl text-xs font-black uppercase bg-slate-100 text-slate-400`;
-                }
+                el.className = m === mKey ? `flex-1 py-5 rounded-2xl text-[10px] font-black uppercase text-white shadow-lg ${colors[m]}` : `flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-white/5 text-slate-500`;
             });
         };
 
@@ -264,6 +273,13 @@
             });
         };
 
+        window.setTab = (t) => {
+            currentTab = t;
+            document.getElementById('btn-tab-ayam').className = t === 'Ayam' ? 'text-[9px] font-black px-5 py-2 rounded-full bg-macca-yellow text-black' : 'text-[9px] font-black px-5 py-2 rounded-full text-slate-500';
+            document.getElementById('btn-tab-ikan').className = t === 'Ikan' ? 'text-[9px] font-black px-5 py-2 rounded-full bg-macca-yellow text-black' : 'text-[9px] font-black px-5 py-2 rounded-full text-slate-500';
+            render();
+        };
+
         onValue(dbRef, (s) => {
             dataRaw = s.val() ? Object.values(s.val()) : [];
             render();
@@ -271,39 +287,38 @@
 
         function render() {
             let sA = 0; let sI = 0;
-            const list = document.getElementById('log-list'); list.innerHTML = '';
-            
             dataRaw.forEach(i => {
                 const add = (i.status === 'Masuk' || i.status === 'Retur') ? i.qty : -i.qty;
                 i.type === 'Ayam' ? sA += add : sI += add;
             });
-
+            stockNow.Ayam = sA; stockNow.Ikan = sI;
             document.getElementById('stat-ayam-main').innerText = sA;
             document.getElementById('stat-ikan-main').innerText = sI;
             document.getElementById('stat-ayam-fab').innerText = sA;
             document.getElementById('stat-ikan-fab').innerText = sI;
 
+            const list = document.getElementById('log-list'); list.innerHTML = '';
             dataRaw.slice().reverse().filter(i => i.type === currentTab).slice(0, 20).forEach(i => {
                 const dt = new Date(i.time);
                 const day = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][dt.getDay()];
-                const timeStr = `${day}, ${dt.getHours()}:${dt.getMinutes().toString().padStart(2,'0')}`;
-                let color = i.status === 'Masuk' ? 'text-blue-600 bg-blue-50' : (i.status === 'Retur' ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50');
+                const fullDate = `${day}, ${dt.getDate()}/${dt.getMonth()+1}/${dt.getFullYear()} • ${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
+                
+                let textColor = i.status === 'Keluar' ? 'text-red-500 bg-red-500/10' : 'text-macca-green bg-macca-green/10';
 
                 list.innerHTML += `
-                    <div class="bg-white p-6 rounded-[2rem] custom-shadow flex justify-between items-center border border-slate-50">
+                    <div class="bg-macca-card p-6 rounded-[2rem] border border-white/5 flex justify-between items-center">
                         <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl ${color}">${i.status==='Keluar'?'-':'+'}</div>
+                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl ${textColor}">${i.status==='Keluar'?'-':'+'}</div>
                             <div>
-                                <h4 class="font-black text-sm uppercase text-slate-800">${i.user}</h4>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">${timeStr}</p>
+                                <h4 class="font-black text-sm uppercase text-white">${i.user}</h4>
+                                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-tight">${fullDate}</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-[9px] font-black uppercase text-slate-300 block mb-1">${i.status}</span>
-                            <span class="text-2xl font-black text-slate-800">${i.qty}</span>
+                            <span class="text-[9px] font-black uppercase text-slate-600 block mb-1">${i.status}</span>
+                            <span class="text-2xl font-black ${i.status==='Keluar'?'text-white':'text-macca-green'}">${i.qty}</span>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
@@ -319,8 +334,12 @@
                 if(i.type === 'Ayam') i.status === 'Keluar' ? r.AyamOut += i.qty : r.AyamIn += i.qty;
                 else i.status === 'Keluar' ? r.IkanOut += i.qty : r.IkanIn += i.qty;
             });
+
+            const dtNow = new Date();
+            const timeLabel = `${dtNow.getDate()}/${dtNow.getMonth()+1}/${dtNow.getFullYear()}`;
+
             document.getElementById('rekap-display').classList.remove('hidden');
-            document.getElementById('rekap-title').innerText = `PERIODE ${type.toUpperCase()}`;
+            document.getElementById('rekap-title').innerText = `LAPORAN ${type.toUpperCase()} (${timeLabel})`;
             document.getElementById('r-ayam-in').innerText = r.AyamIn; document.getElementById('r-ayam-out').innerText = r.AyamOut;
             document.getElementById('r-ikan-in').innerText = r.IkanIn; document.getElementById('r-ikan-out').innerText = r.IkanOut;
         };
