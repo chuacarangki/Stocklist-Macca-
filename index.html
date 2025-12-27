@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lesehan Macca v5</title>
+    <title>Lesehan Macca v6 - Secured</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -25,11 +25,8 @@
         .admin-bar { background: #4338ca; }
         .card-active { border-color: #2563eb !important; background-color: #eff6ff !important; }
         .custom-shadow { box-shadow: 0 4px 20px -1px rgba(0, 0, 0, 0.05); }
-        
-        /* Animasi Transisi */
         .fade-in { animation: fadeIn 0.3s ease-in; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
@@ -44,10 +41,10 @@
         <div class="w-full max-w-sm space-y-3">
             <button onclick="openAuth('dapur')" class="w-full bg-slate-800 p-6 rounded-3xl border border-slate-700 flex items-center justify-between active:scale-95 transition-all group">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center text-orange-500"><i class="fas fa-utensils"></i></div>
+                    <div class="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center text-orange-600"><i class="fas fa-utensils"></i></div>
                     <div class="text-left">
                         <span class="block font-bold text-white">Bagian Dapur</span>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase">Ambil & Retur</span>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase">Lapor Pakai & Retur</span>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right text-slate-600 group-hover:text-white"></i>
@@ -58,7 +55,7 @@
                     <div class="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-500"><i class="fas fa-user-shield"></i></div>
                     <div class="text-left">
                         <span class="block font-bold text-white">Owner / Admin</span>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase">Data Master</span>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase">Input Stok Baru</span>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right text-slate-600 group-hover:text-white"></i>
@@ -67,14 +64,14 @@
     </div>
 
     <div id="modal-auth" class="fixed inset-0 z-[60] bg-slate-950/90 backdrop-blur-sm hidden flex items-center justify-center px-6">
-        <div class="bg-white w-full max-w-xs rounded-[32px] p-8 shadow-2xl scale-in text-center">
+        <div class="bg-white w-full max-w-xs rounded-[32px] p-8 shadow-2xl text-center">
             <h2 id="auth-title" class="text-xl font-black mb-1"></h2>
             <p id="auth-desc" class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-6"></p>
             
             <input type="text" id="input-user" placeholder="Nama Anda" class="w-full p-4 bg-slate-100 rounded-2xl font-bold text-center mb-3 outline-none focus:ring-2 focus:ring-blue-500">
-            <input type="password" id="input-pass" placeholder="Password" class="hidden w-full p-4 bg-slate-100 rounded-2xl font-bold text-center mb-3 outline-none tracking-widest">
+            <input type="password" id="input-pass" placeholder="Password Admin" class="hidden w-full p-4 bg-slate-100 rounded-2xl font-bold text-center mb-3 outline-none tracking-widest">
             
-            <button onclick="processLogin()" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all uppercase text-xs">Masuk</button>
+            <button onclick="processLogin()" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all uppercase text-xs">Konfirmasi</button>
             <button onclick="closeAuth()" class="mt-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest">Batal</button>
         </div>
     </div>
@@ -110,14 +107,13 @@
             </div>
 
             <div class="bg-white p-6 rounded-[32px] custom-shadow border border-slate-100">
-                <div class="flex gap-2 mb-6">
-                    <button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-900 text-white">AMBIL (-)</button>
+                <div class="flex gap-2 mb-6" id="mode-container">
+                    <button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-900 text-white">PAKAI (-)</button>
                     <button onclick="setMode('Retur')" id="m-ret" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-100 text-slate-400">RETUR (+)</button>
-                    <button onclick="setMode('Masuk')" id="m-in" class="hidden flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-100 text-slate-400">ISI (+)</button>
-                </div>
+                    </div>
 
                 <div class="text-center mb-6">
-                    <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-2">Jumlah <span id="mode-text">Ambil</span></p>
+                    <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-2">Jumlah <span id="mode-text">Pakai</span></p>
                     <input type="number" id="qty" placeholder="0" class="w-full text-center text-6xl font-black text-slate-900 bg-transparent outline-none">
                 </div>
 
@@ -127,7 +123,7 @@
             </div>
 
             <div class="space-y-3">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Log Terakhir: <span id="log-name" class="text-slate-900">Ayam</span></h3>
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Log <span id="log-name">Ayam</span></h3>
                 <div id="log-list" class="space-y-2"></div>
             </div>
         </main>
@@ -149,15 +145,15 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const dbRef = ref(db, 'stok_macca_v5');
+        const dbRef = ref(db, 'stok_macca_v6');
 
-        let role = ''; let user = ''; let tab = 'Ayam'; let mode = 'Keluar'; let dataRaw = [];
+        let userRole = ''; let userName = ''; let tab = 'Ayam'; let mode = 'Keluar'; let dataRaw = [];
 
         window.openAuth = (r) => {
-            role = r;
+            userRole = r;
             document.getElementById('modal-auth').classList.remove('hidden');
             document.getElementById('auth-title').innerText = r === 'admin' ? 'Akses Admin' : 'Nama Petugas';
-            document.getElementById('auth-desc').innerText = r === 'admin' ? 'Verifikasi Password' : 'Siapa yang bertugas?';
+            document.getElementById('auth-desc').innerText = r === 'admin' ? 'Masukkan Password' : 'Siapa nama Anda?';
             
             if(r === 'admin') {
                 document.getElementById('input-pass').classList.remove('hidden');
@@ -168,15 +164,20 @@
             }
         };
 
-        window.closeAuth = () => document.getElementById('modal-auth').classList.add('hidden');
+        window.closeAuth = () => {
+            document.getElementById('modal-auth').classList.add('hidden');
+            document.getElementById('input-user').value = '';
+            document.getElementById('input-pass').value = '';
+        };
 
         window.processLogin = () => {
-            if(role === 'admin') {
-                if(document.getElementById('input-pass').value === 'macca123') { user = 'Admin'; initApp(); }
-                else alert('Password Salah!');
+            if(userRole === 'admin') {
+                if(document.getElementById('input-pass').value === 'macca123') { 
+                    userName = 'Admin'; initApp(); 
+                } else alert('Password Salah!');
             } else {
                 let n = document.getElementById('input-user').value;
-                if(n) { user = n; initApp(); } else alert('Isi Nama!');
+                if(n.length > 1) { userName = n; initApp(); } else alert('Isi Nama Anda!');
             }
         };
 
@@ -184,11 +185,13 @@
             document.getElementById('modal-auth').classList.add('hidden');
             document.getElementById('section-login').classList.add('hidden');
             document.getElementById('section-app').classList.remove('hidden');
-            document.getElementById('label-user').innerText = 'PETUGAS: ' + user.toUpperCase();
+            document.getElementById('label-user').innerText = 'USER: ' + userName.toUpperCase();
             
-            if(role === 'admin') {
-                document.getElementById('m-in').classList.remove('hidden');
+            const container = document.getElementById('mode-container');
+            if(userRole === 'admin') {
                 document.getElementById('nav-bar').classList.add('admin-bar');
+                // Tambahkan tombol ISI (+) hanya untuk admin
+                container.innerHTML += `<button onclick="setMode('Masuk')" id="m-in" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-100 text-slate-400">ISI (+)</button>`;
             }
             switchTab('Ayam');
         }
@@ -204,26 +207,37 @@
         window.setMode = (m) => {
             mode = m;
             document.getElementById('mode-text').innerText = m;
-            ['m-out', 'm-ret', 'm-in'].forEach(id => {
+            const btnIds = ['m-out', 'm-ret', 'm-in'];
+            btnIds.forEach(id => {
                 const el = document.getElementById(id);
+                if(!el) return;
                 if(id.includes(m.toLowerCase().substring(0,2))) {
-                    el.className = "flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-900 text-white";
+                    el.className = "flex-1 py-3 rounded-xl text-[10px] font-black uppercase bg-slate-900 text-white shadow-md";
                 } else {
-                    el.className = "flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-100 text-slate-400";
+                    el.className = "flex-1 py-3 rounded-xl text-[10px] font-black uppercase bg-slate-100 text-slate-400";
                 }
             });
         };
 
         window.saveData = () => {
             const v = parseInt(document.getElementById('qty').value);
-            if(!v) return;
+            if(!v || v <= 0) return alert('Masukkan jumlah yang benar!');
+            
             const btn = document.getElementById('btn-save');
-            btn.disabled = true; btn.innerHTML = 'Menyimpan...';
+            btn.disabled = true; btn.innerHTML = 'Proses...';
 
-            push(dbRef, { user, type: tab, qty: v, status: mode, time: serverTimestamp() })
+            push(dbRef, { 
+                user: userName, 
+                role: userRole, 
+                type: tab, 
+                qty: v, 
+                status: mode, 
+                time: serverTimestamp() 
+            })
             .then(() => {
                 document.getElementById('qty').value = '';
                 btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Simpan Data';
+                setMode('Keluar'); // Reset ke mode default
             });
         };
 
@@ -247,13 +261,13 @@
             dataRaw.filter(i => i.type === tab).reverse().slice(0, 10).forEach(i => {
                 const isOut = i.status === 'Keluar';
                 list.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl flex justify-between items-center custom-shadow fade-in">
+                    <div class="bg-white p-4 rounded-2xl flex justify-between items-center custom-shadow fade-in border border-slate-50">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs ${isOut ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}">
-                                <i class="fas ${isOut ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+                                <i class="fas ${isOut ? 'fa-minus' : 'fa-plus'}"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-xs">${i.user}</h4>
+                                <h4 class="font-bold text-xs line-clamp-1">${i.user}</h4>
                                 <p class="text-[8px] font-bold text-slate-400 uppercase">${i.status}</p>
                             </div>
                         </div>
