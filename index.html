@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesehan Macca - Stock Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    </style>
+</head>
+<body class="pb-10">
+
+    <div class="gradient-bg text-white p-6 pb-20 rounded-b-[30px] shadow-lg">
+        <div class="flex justify-between items-center max-w-md mx-auto">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">LESEHAN MACCA</h1>
+                <p class="text-slate-400 text-sm">Sistem Manajemen Stok Ayam & Ikan</p>
+            </div>
+            <div class="bg-blue-500/20 p-3 rounded-2xl">
+                <i class="fas fa-box-open text-blue-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-md mx-auto -mt-12 px-4 grid grid-cols-2 gap-4">
+        <div class="glass-card p-4 rounded-2xl shadow-sm">
+            <p class="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wider">Stok Ayam</p>
+            <div class="flex items-end gap-1">
+                <h2 id="totalAyam" class="text-2xl font-bold text-slate-800">0</h2>
+                <span class="text-slate-400 text-xs mb-1">Ekor</span>
+            </div>
+        </div>
+        <div class="glass-card p-4 rounded-2xl shadow-sm">
+            <p class="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wider">Stok Ikan</p>
+            <div class="flex items-end gap-1">
+                <h2 id="totalIkan" class="text-2xl font-bold text-slate-800">0</h2>
+                <span class="text-slate-400 text-xs mb-1">Kg/Ekor</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-md mx-auto mt-6 px-4">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-plus-circle text-blue-600"></i> Update Pergerakan Stok
+            </h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">JENIS BAHAN</label>
+                    <select id="itemType" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                        <option value="Ayam">Ayam</option>
+                        <option value="Ikan">Ikan</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">JUMLAH</label>
+                        <input type="number" id="itemQty" placeholder="0" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">STATUS</label>
+                        <select id="itemStatus" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="Masuk">Masuk (+)</option>
+                            <option value="Keluar">Keluar (-)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="saveStock()" id="btnSave" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md shadow-blue-200 transition-all flex justify-center items-center gap-2">
+                    <i class="fas fa-save"></i> Simpan Laporan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-md mx-auto mt-8 px-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest">Riwayat Real-time</h3>
+            <span class="text-[10px] bg-green-100 text-green-600 px-2 py-1 rounded-full font-bold">LIVE</span>
+        </div>
+        
+        <div id="historyContainer" class="space-y-3">
+            <div class="text-center py-10 text-slate-400 italic text-sm">Memuat data...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // KONFIGURASI FIREBASE ANDA
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const stockRef = ref(db, 'logs');
+
+        // Fungsi Simpan Data
+        window.saveStock = function() {
+            const type = document.getElementById('itemType').value;
+            const qty = parseInt(document.getElementById('itemQty').value);
+            const status = document.getElementById('itemStatus').value;
+            const btn = document.getElementById('btnSave');
+
+            if(!qty || qty <= 0) return alert("Masukkan jumlah yang valid!");
+
+            btn.disabled = true;
+            btn.innerHTML = "Menyimpan...";
+
+            push(stockRef, {
+                type: type,
+                qty: qty,
+                status: status,
+                timestamp: serverTimestamp()
+            }).then(() => {
+                document.getElementById('itemQty').value = "";
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Simpan Laporan';
+            });
+        }
+
+        // Realtime Listener
+        onValue(stockRef, (snapshot) => {
+            const data = snapshot.val();
+            const container = document.getElementById('historyContainer');
+            container.innerHTML = "";
+            
+            let totalAyam = 0;
+            let totalIkan = 0;
+
+            if (data) {
+                const logs = Object.values(data).reverse();
+                logs.forEach(log => {
+                    // Update Perhitungan Stok
+                    if(log.type === "Ayam") {
+                        totalAyam += (log.status === "Masuk" ? log.qty : -log.qty);
+                    } else {
+                        totalIkan += (log.status === "Masuk" ? log.qty : -log.qty);
+                    }
+
+                    // Format Waktu
+                    const date = new Date(log.timestamp);
+                    const timeString = date.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+                    const dateString = date.toLocaleDateString('id-ID', {day: 'numeric', month: 'short'});
+
+                    // Render UI List
+                    const statusColor = log.status === "Masuk" ? "text-green-500" : "text-red-500";
+                    const statusIcon = log.status === "Masuk" ? "fa-arrow-down" : "fa-arrow-up";
+                    
+                    container.innerHTML += `
+                        <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full ${log.status === 'Masuk' ? 'bg-green-50' : 'bg-red-50'} flex items-center justify-center">
+                                    <i class="fas ${statusIcon} ${statusColor} text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm">${log.type}</h4>
+                                    <p class="text-[10px] text-slate-400 font-semibold uppercase">${dateString} • ${timeString}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-bold ${statusColor}">${log.status === 'Masuk' ? '+' : '-'}${log.qty}</span>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase">${log.status}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                container.innerHTML = `<div class="text-center py-10 text-slate-400 italic text-sm">Belum ada aktivitas stok.</div>`;
+            }
+
+            // Update Header Totals
+            document.getElementById('totalAyam').innerText = totalAyam;
+            document.getElementById('totalIkan').innerText = totalIkan;
+        });
+    </script>
+</body>
+</html>
