@@ -1,158 +1,136 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lesehan Macca - Stock Control</title>
+    <title>Lesehan Macca - Manajemen Stok</title>
     
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                 }
             }
         }
     </script>
 
     <style>
-        body { 
-            background-color: #f8fafc; 
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-        
-        /* Animasi masuk untuk list */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-in { animation: slideUp 0.5s ease out forwards; }
-
-        .gradient-header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        }
-        
-        .custom-shadow {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Menghilangkan scrollbar tapi tetap bisa scroll */
+        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        .tab-active { background-color: #1e293b; color: white; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .glass-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .admin-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .custom-shadow { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
+        .hidden-section { display: none; }
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-10">
 
-    <header class="gradient-header text-white pt-12 pb-24 px-6 rounded-b-[45px] shadow-2xl relative">
-        <div class="max-w-md mx-auto relative z-10">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h1 class="text-2xl font-extrabold tracking-tight">LESEHAN MACCA</h1>
-                    <p class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-1">Kitchen Stock Control</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-lg p-3 rounded-2xl border border-white/20">
-                    <i class="fas fa-box text-white text-xl"></i>
-                </div>
+    <div id="loginPage" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center px-6">
+        <div class="w-full max-w-md space-y-8 text-center">
+            <div>
+                <h1 class="text-3xl font-black text-white italic">LESEHAN MACCA</h1>
+                <p class="text-slate-400 text-sm mt-2">Pilih Akses Pengguna</p>
             </div>
-        </div>
-    </header>
-
-    <main class="max-w-md mx-auto -mt-14 px-4 space-y-6">
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white p-5 rounded-[30px] custom-shadow border border-white">
-                <div class="flex justify-between items-start mb-2">
-                    <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-drumstick-bite text-orange-500 text-xs"></i>
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="showRole('dapur')" class="bg-white p-6 rounded-[30px] flex items-center gap-4 hover:scale-105 transition-transform">
+                    <div class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600">
+                        <i class="fas fa-utensils text-xl"></i>
                     </div>
-                    <span class="text-[10px] font-bold text-slate-300 uppercase">Ayam</span>
-                </div>
-                <div class="flex items-baseline gap-1">
-                    <h2 id="totalAyam" class="text-3xl font-bold text-slate-800 tracking-tight">0</h2>
-                    <span class="text-slate-400 text-xs font-semibold">Ekor</span>
-                </div>
-            </div>
-            <div class="bg-white p-5 rounded-[30px] custom-shadow border border-white">
-                <div class="flex justify-between items-start mb-2">
-                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-fish text-blue-500 text-xs"></i>
+                    <div class="text-left">
+                        <p class="font-bold text-slate-800 text-lg">Bagian Dapur</p>
+                        <p class="text-xs text-slate-400">Ambil & Pakai Stok</p>
                     </div>
-                    <span class="text-[10px] font-bold text-slate-300 uppercase">Ikan</span>
-                </div>
-                <div class="flex items-baseline gap-1">
-                    <h2 id="totalIkan" class="text-3xl font-bold text-slate-800 tracking-tight">0</h2>
-                    <span class="text-slate-400 text-xs font-semibold">Ekor</span>
-                </div>
-            </div>
-        </div>
-
-        <section class="bg-white p-6 rounded-[35px] custom-shadow border border-white">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="h-8 w-1 bg-blue-600 rounded-full"></div>
-                <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Update Stok Hari Ini</h3>
-            </div>
-            
-            <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Kategori</label>
-                        <select id="itemType" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="Ayam">🍗 Ayam</option>
-                            <option value="Ikan">🐟 Ikan</option>
-                        </select>
+                </button>
+                <button onclick="showRole('admin')" class="bg-slate-800 p-6 rounded-[30px] border border-slate-700 flex items-center gap-4 hover:scale-105 transition-transform text-white">
+                    <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-user-shield text-xl"></i>
                     </div>
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Status</label>
-                        <select id="itemStatus" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="Masuk">MASUK (+)</option>
-                            <option value="Keluar">KELUAR (-)</option>
-                        </select>
+                    <div class="text-left">
+                        <p class="font-bold text-lg text-white">Owner / Admin</p>
+                        <p class="text-xs text-slate-400">Input Stok & Laporan</p>
                     </div>
-                </div>
-
-                <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Jumlah (Qty)</label>
-                    <input type="number" id="itemQty" placeholder="0" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-lg font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-
-                <button onclick="saveStock()" id="btnSave" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-100 transition-all active:scale-95 flex justify-center items-center gap-2 mt-2">
-                    <i class="fas fa-check-circle"></i> Simpan Ke Cloud
                 </button>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <section>
-            <div class="flex justify-between items-center px-2 mb-4">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Riwayat Transaksi</h3>
-                <span class="flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-            </div>
-            
-            <div id="historyContainer" class="space-y-3">
-                <div class="text-center py-10">
-                    <div class="animate-spin inline-block w-6 h-6 border-[3px] border-blue-600 border-t-transparent rounded-full"></div>
+    <div id="mainApp" class="hidden-section">
+        <header id="appHeader" class="glass-header text-white pt-10 pb-24 px-6 rounded-b-[45px] shadow-2xl relative">
+            <div class="max-w-md mx-auto relative z-10">
+                <div class="flex justify-between items-center">
+                    <button onclick="logout()" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="text-center">
+                        <h1 class="text-xl font-black italic tracking-tight" id="headerTitle">DAPUR MACCA</h1>
+                        <p id="userDisplay" class="text-[10px] font-bold text-blue-400 uppercase tracking-widest"></p>
+                    </div>
+                    <div class="w-6"></div>
                 </div>
             </div>
-        </section>
-    </main>
+        </header>
+
+        <main class="max-w-md mx-auto -mt-14 px-4 space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div onclick="switchTab('Ayam')" id="cardAyam" class="bg-white p-5 rounded-[30px] custom-shadow border-2 border-transparent transition-all cursor-pointer">
+                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Ayam</p>
+                    <div class="flex items-baseline gap-1">
+                        <span id="totalAyam" class="text-3xl font-black text-slate-800 tracking-tighter">0</span>
+                        <span class="text-slate-400 text-xs font-bold uppercase">Ekor</span>
+                    </div>
+                </div>
+                <div onclick="switchTab('Ikan')" id="cardIkan" class="bg-white p-5 rounded-[30px] custom-shadow border-2 border-transparent transition-all cursor-pointer">
+                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Ikan</p>
+                    <div class="flex items-baseline gap-1">
+                        <span id="totalIkan" class="text-3xl font-black text-slate-800 tracking-tighter">0</span>
+                        <span class="text-slate-400 text-xs font-bold uppercase">Ekor</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-[35px] custom-shadow border border-white">
+                <h3 class="text-xs font-black text-slate-800 mb-6 flex items-center gap-2 uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse"></span>
+                    Catat Penggunaan
+                </h3>
+                
+                <div class="space-y-4">
+                    <div id="adminControls" class="hidden-section">
+                        <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Status Update</label>
+                        <select id="adminStatus" class="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold border-none outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="Masuk">TAMBAH STOK (+)</option>
+                            <option value="Keluar">KURANGI STOK (-)</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Jumlah Unit</label>
+                        <input type="number" id="qtyInput" placeholder="Masukkan jumlah..." class="w-full p-5 bg-slate-100 rounded-2xl text-2xl font-black text-slate-800 outline-none focus:ring-2 focus:ring-blue-600">
+                    </div>
+
+                    <button onclick="submitData()" id="btnSubmit" class="w-full bg-slate-900 text-white font-extrabold py-5 rounded-2xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-2">
+                        <i class="fas fa-check-double"></i> KONFIRMASI
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-4 pb-10">
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Riwayat <span id="historyLabel">Ayam</span></h3>
+                <div id="historyContainer" class="space-y-3"></div>
+            </div>
+        </main>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // CONFIG ANDA SUDAH TERPASANG
         const firebaseConfig = {
             apiKey: "AIzaSyCCmKgOnBFpluEKuycYjrBRm4zbxrHI1P8",
             authDomain: "stocklistmacca.firebaseapp.com",
@@ -165,236 +143,118 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const stockRef = ref(db, 'stok_lesehan');
+        const dbRef = ref(db, 'stok_lesehan_pro');
 
-        window.saveStock = function() {
-            const type = document.getElementById('itemType').value;
-            const qty = parseInt(document.getElementById('itemQty').value);
-            const status = document.getElementById('itemStatus').value;
-            const btn = document.getElementById('btnSave');
+        let userRole = ''; // 'admin' or 'dapur'
+        let userName = '';
+        let currentTab = 'Ayam';
+        let fullData = [];
 
-            if(!qty || qty <= 0) return alert("Masukkan jumlah!");
+        // Global functions
+        window.showRole = function(role) {
+            if(role === 'admin') {
+                const pass = prompt("Masukkan Password Admin:");
+                if(pass !== "macca123") return alert("Password Salah!"); // Ganti password di sini
+                userRole = 'admin';
+                userName = 'Owner';
+                document.getElementById('adminControls').style.display = 'block';
+                document.getElementById('appHeader').className = 'admin-gradient text-white pt-10 pb-24 px-6 rounded-b-[45px] shadow-2xl relative';
+                document.getElementById('headerTitle').innerText = 'ADMIN MACCA';
+            } else {
+                const name = prompt("Masukkan Nama Anda (Dapur):");
+                if(!name) return;
+                userRole = 'dapur';
+                userName = name;
+                document.getElementById('adminControls').style.display = 'none';
+                document.getElementById('appHeader').className = 'glass-header text-white pt-10 pb-24 px-6 rounded-b-[45px] shadow-2xl relative';
+                document.getElementById('headerTitle').innerText = 'DAPUR MACCA';
+            }
 
+            document.getElementById('loginPage').classList.add('hidden-section');
+            document.getElementById('mainApp').classList.remove('hidden-section');
+            document.getElementById('userDisplay').innerText = `Petugas: ${userName}`;
+            switchTab('Ayam');
+        }
+
+        window.logout = function() {
+            document.getElementById('loginPage').classList.remove('hidden-section');
+            document.getElementById('mainApp').classList.add('hidden-section');
+        }
+
+        window.switchTab = function(type) {
+            currentTab = type;
+            document.getElementById('cardAyam').style.borderColor = type === 'Ayam' ? '#3b82f6' : 'transparent';
+            document.getElementById('cardIkan').style.borderColor = type === 'Ikan' ? '#3b82f6' : 'transparent';
+            document.getElementById('historyLabel').innerText = type;
+            renderAll();
+        }
+
+        window.submitData = function() {
+            const qty = parseInt(document.getElementById('qtyInput').value);
+            const status = userRole === 'admin' ? document.getElementById('adminStatus').value : 'Keluar';
+            
+            if(!qty || qty <= 0) return alert("Jumlah tidak valid!");
+
+            const btn = document.getElementById('btnSubmit');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Menyimpan...';
+            btn.innerHTML = "MENYIMPAN...";
 
-            push(stockRef, {
-                type: type,
+            push(dbRef, {
+                type: currentTab,
                 qty: qty,
                 status: status,
+                user: userName,
                 timestamp: serverTimestamp()
             }).then(() => {
-                document.getElementById('itemQty').value = "";
+                document.getElementById('qtyInput').value = "";
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-check-circle"></i> Simpan Ke Cloud';
+                btn.innerHTML = '<i class="fas fa-check-double"></i> KONFIRMASI';
             });
         }
 
-        onValue(stockRef, (snapshot) => {
+        onValue(dbRef, (snapshot) => {
             const data = snapshot.val();
+            fullData = data ? Object.values(data) : [];
+            renderAll();
+        });
+
+        function renderAll() {
+            let ayam = 0; let ikan = 0;
             const container = document.getElementById('historyContainer');
             container.innerHTML = "";
-            
-            let totalAyam = 0;
-            let totalIkan = 0;
 
-            if (data) {
-                const logs = Object.entries(data).reverse();
-                logs.forEach(([key, log]) => {
-                    const isAyam = log.type === "Ayam";
-                    const isMasuk = log.status === "Masuk";
+            fullData.forEach(log => {
+                if(log.type === 'Ayam') ayam += (log.status === 'Masuk' ? log.qty : -log.qty);
+                if(log.type === 'Ikan') ikan += (log.status === 'Masuk' ? log.qty : -log.qty);
+            });
 
-                    if(isAyam) totalAyam += (isMasuk ? log.qty : -log.qty);
-                    else totalIkan += (isMasuk ? log.qty : -log.qty);
+            document.getElementById('totalAyam').innerText = ayam;
+            document.getElementById('totalIkan').innerText = ikan;
 
-                    const date = new Date(log.timestamp);
-                    const time = date.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
-                    
-                    container.innerHTML += `
-                        <div class="bg-white p-4 rounded-3xl flex items-center justify-between border border-white custom-shadow">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-2xl ${isMasuk ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'} flex items-center justify-center">
-                                    <i class="fas ${isMasuk ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 text-sm">${log.type}</h4>
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase">${time} • ${log.status}</p>
-                                </div>
+            const logs = fullData.filter(l => l.type === currentTab).reverse().slice(0, 15);
+            logs.forEach(log => {
+                const isMasuk = log.status === 'Masuk';
+                const date = new Date(log.timestamp);
+                const time = date.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+                
+                container.innerHTML += `
+                    <div class="bg-white p-4 rounded-3xl flex items-center justify-between custom-shadow border border-slate-50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl ${isMasuk ? 'bg-indigo-50 text-indigo-600' : 'bg-orange-50 text-orange-600'} flex items-center justify-center">
+                                <i class="fas ${isMasuk ? 'fa-plus' : 'fa-minus'} text-xs"></i>
                             </div>
-                            <div class="text-right">
-                                <span class="text-lg font-black ${isMasuk ? 'text-green-500' : 'text-red-500'}">
-                                    ${isMasuk ? '+' : '-'}${log.qty}
-                                </span>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm italic">${log.user}</h4>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-tight">${time} • ${log.status}</p>
                             </div>
                         </div>
-                    `;
-                });
-            } else {
-                container.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs">Belum ada aktivitas hari ini.</div>`;
-            }
-
-            document.getElementById('totalAyam').innerText = totalAyam;
-            document.getElementById('totalIkan').innerText = totalIkan;
-        });
-    </script>
-</body>
-</html>
-         </div>
-        </div>
-        <div class="glass-card p-4 rounded-2xl shadow-sm">
-            <p class="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wider">Stok Ikan</p>
-            <div class="flex items-end gap-1">
-                <h2 id="totalIkan" class="text-2xl font-bold text-slate-800">0</h2>
-                <span class="text-slate-400 text-xs mb-1">Kg/Ekor</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="max-w-md mx-auto mt-6 px-4">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fas fa-plus-circle text-blue-600"></i> Update Pergerakan Stok
-            </h3>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">JENIS BAHAN</label>
-                    <select id="itemType" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-                        <option value="Ayam">Ayam</option>
-                        <option value="Ikan">Ikan</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">JUMLAH</label>
-                        <input type="number" id="itemQty" placeholder="0" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                        <div class="text-lg font-black ${isMasuk ? 'text-indigo-500' : 'text-orange-500'}">
+                            ${isMasuk ? '+' : '-'}${log.qty}
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">STATUS</label>
-                        <select id="itemStatus" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="Masuk">Masuk (+)</option>
-                            <option value="Keluar">Keluar (-)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button onclick="saveStock()" id="btnSave" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md shadow-blue-200 transition-all flex justify-center items-center gap-2">
-                    <i class="fas fa-save"></i> Simpan Laporan
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div class="max-w-md mx-auto mt-8 px-4">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest">Riwayat Real-time</h3>
-            <span class="text-[10px] bg-green-100 text-green-600 px-2 py-1 rounded-full font-bold">LIVE</span>
-        </div>
-        
-        <div id="historyContainer" class="space-y-3">
-            <div class="text-center py-10 text-slate-400 italic text-sm">Memuat data...</div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        // KONFIGURASI FIREBASE ANDA
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            databaseURL: "YOUR_DATABASE_URL",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const stockRef = ref(db, 'logs');
-
-        // Fungsi Simpan Data
-        window.saveStock = function() {
-            const type = document.getElementById('itemType').value;
-            const qty = parseInt(document.getElementById('itemQty').value);
-            const status = document.getElementById('itemStatus').value;
-            const btn = document.getElementById('btnSave');
-
-            if(!qty || qty <= 0) return alert("Masukkan jumlah yang valid!");
-
-            btn.disabled = true;
-            btn.innerHTML = "Menyimpan...";
-
-            push(stockRef, {
-                type: type,
-                qty: qty,
-                status: status,
-                timestamp: serverTimestamp()
-            }).then(() => {
-                document.getElementById('itemQty').value = "";
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-save"></i> Simpan Laporan';
+                `;
             });
         }
-
-        // Realtime Listener
-        onValue(stockRef, (snapshot) => {
-            const data = snapshot.val();
-            const container = document.getElementById('historyContainer');
-            container.innerHTML = "";
-            
-            let totalAyam = 0;
-            let totalIkan = 0;
-
-            if (data) {
-                const logs = Object.values(data).reverse();
-                logs.forEach(log => {
-                    // Update Perhitungan Stok
-                    if(log.type === "Ayam") {
-                        totalAyam += (log.status === "Masuk" ? log.qty : -log.qty);
-                    } else {
-                        totalIkan += (log.status === "Masuk" ? log.qty : -log.qty);
-                    }
-
-                    // Format Waktu
-                    const date = new Date(log.timestamp);
-                    const timeString = date.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
-                    const dateString = date.toLocaleDateString('id-ID', {day: 'numeric', month: 'short'});
-
-                    // Render UI List
-                    const statusColor = log.status === "Masuk" ? "text-green-500" : "text-red-500";
-                    const statusIcon = log.status === "Masuk" ? "fa-arrow-down" : "fa-arrow-up";
-                    
-                    container.innerHTML += `
-                        <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full ${log.status === 'Masuk' ? 'bg-green-50' : 'bg-red-50'} flex items-center justify-center">
-                                    <i class="fas ${statusIcon} ${statusColor} text-xs"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 text-sm">${log.type}</h4>
-                                    <p class="text-[10px] text-slate-400 font-semibold uppercase">${dateString} • ${timeString}</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <span class="font-bold ${statusColor}">${log.status === 'Masuk' ? '+' : '-'}${log.qty}</span>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase">${log.status}</p>
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                container.innerHTML = `<div class="text-center py-10 text-slate-400 italic text-sm">Belum ada aktivitas stok.</div>`;
-            }
-
-            // Update Header Totals
-            document.getElementById('totalAyam').innerText = totalAyam;
-            document.getElementById('totalIkan').innerText = totalIkan;
-        });
     </script>
 </body>
 </html>
