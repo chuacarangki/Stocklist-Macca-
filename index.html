@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lesehan Macca - Stock System</title>
+    <title>Lesehan Macca v5</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -20,131 +20,114 @@
     </script>
 
     <style>
-        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
-        .glass-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
-        .admin-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
-        .custom-shadow { box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05); }
+        body { background-color: #f1f5f9; -webkit-tap-highlight-color: transparent; }
+        .top-bar { background: #0f172a; }
+        .admin-bar { background: #4338ca; }
+        .card-active { border-color: #2563eb !important; background-color: #eff6ff !important; }
+        .custom-shadow { box-shadow: 0 4px 20px -1px rgba(0, 0, 0, 0.05); }
         
-        @keyframes modalShow {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .modal-anim { animation: modalShow 0.2s ease-out; }
+        /* Animasi Transisi */
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .pulse-online { animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-        }
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased text-slate-900">
 
-    <div id="section-login" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center px-8">
+    <div id="section-login" class="fixed inset-0 z-50 bg-slate-900 flex flex-col items-center justify-center px-8">
         <div class="w-full max-w-sm text-center mb-10">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-blue-500/20">
-                <i class="fas fa-box text-white text-2xl"></i>
-            </div>
-            <h1 class="text-2xl font-black text-white italic tracking-tighter">MACCA STOCK</h1>
-            <p class="text-slate-500 text-xs mt-1 font-bold uppercase tracking-widest">Digital Inventory</p>
+            <h1 class="text-3xl font-black text-white italic tracking-tighter">MACCA<span class="text-blue-500">STOCK</span></h1>
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-[0.3em] mt-2">Inventory System</p>
         </div>
 
-        <div class="w-full max-w-sm space-y-4">
-            <button onclick="handleRoleSelection('dapur')" class="w-full bg-slate-900 p-5 rounded-3xl border border-slate-800 flex items-center gap-4 active:scale-95 transition-all">
-                <div class="w-12 h-12 bg-orange-500/10 rounded-xl flex items-center justify-center text-orange-500">
-                    <i class="fas fa-utensils"></i>
+        <div class="w-full max-w-sm space-y-3">
+            <button onclick="openAuth('dapur')" class="w-full bg-slate-800 p-6 rounded-3xl border border-slate-700 flex items-center justify-between active:scale-95 transition-all group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center text-orange-500"><i class="fas fa-utensils"></i></div>
+                    <div class="text-left">
+                        <span class="block font-bold text-white">Bagian Dapur</span>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase">Ambil & Retur</span>
+                    </div>
                 </div>
-                <div class="text-left">
-                    <span class="block font-bold text-white text-md">Pihak Dapur</span>
-                    <span class="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Input & Retur</span>
-                </div>
+                <i class="fas fa-chevron-right text-slate-600 group-hover:text-white"></i>
             </button>
 
-            <button onclick="handleRoleSelection('admin')" class="w-full bg-slate-900 p-5 rounded-3xl border border-slate-800 flex items-center gap-4 active:scale-95 transition-all">
-                <div class="w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500">
-                    <i class="fas fa-user-shield"></i>
+            <button onclick="openAuth('admin')" class="w-full bg-slate-800 p-6 rounded-3xl border border-slate-700 flex items-center justify-between active:scale-95 transition-all group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-500"><i class="fas fa-user-shield"></i></div>
+                    <div class="text-left">
+                        <span class="block font-bold text-white">Owner / Admin</span>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase">Data Master</span>
+                    </div>
                 </div>
-                <div class="text-left">
-                    <span class="block font-bold text-white text-md">Owner / Admin</span>
-                    <span class="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Database Master</span>
-                </div>
+                <i class="fas fa-chevron-right text-slate-600 group-hover:text-white"></i>
             </button>
         </div>
     </div>
 
-    <div id="modal-overlay" class="fixed inset-0 z-[60] bg-black/90 backdrop-blur-md hidden flex items-center justify-center px-6">
-        <div class="bg-white w-full max-w-xs rounded-[40px] p-8 modal-anim text-center shadow-2xl">
-            <h2 id="modal-title" class="text-xl font-black text-slate-800 mb-1"></h2>
-            <p id="modal-subtitle" class="text-slate-400 text-[10px] font-bold uppercase mb-6 tracking-widest"></p>
+    <div id="modal-auth" class="fixed inset-0 z-[60] bg-slate-950/90 backdrop-blur-sm hidden flex items-center justify-center px-6">
+        <div class="bg-white w-full max-w-xs rounded-[32px] p-8 shadow-2xl scale-in text-center">
+            <h2 id="auth-title" class="text-xl font-black mb-1"></h2>
+            <p id="auth-desc" class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-6"></p>
             
-            <div class="space-y-3">
-                <input type="text" id="input-username" placeholder="Nama Anda" class="hidden w-full p-4 bg-slate-100 rounded-2xl font-bold text-slate-800 outline-none text-center">
-                <input type="password" id="input-password" placeholder="Password Admin" class="hidden w-full p-4 bg-slate-100 rounded-2xl font-bold text-slate-800 outline-none text-center tracking-widest">
-                
-                <button onclick="submitLogin()" class="w-full bg-slate-950 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all mt-2 uppercase text-xs">Konfirmasi</button>
-                <button onclick="closeModal()" class="w-full text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-2">Batal</button>
-            </div>
+            <input type="text" id="input-user" placeholder="Nama Anda" class="w-full p-4 bg-slate-100 rounded-2xl font-bold text-center mb-3 outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="password" id="input-pass" placeholder="Password" class="hidden w-full p-4 bg-slate-100 rounded-2xl font-bold text-center mb-3 outline-none tracking-widest">
+            
+            <button onclick="processLogin()" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all uppercase text-xs">Masuk</button>
+            <button onclick="closeAuth()" class="mt-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest">Batal</button>
         </div>
     </div>
 
-    <div id="section-app" class="hidden min-h-screen">
-        <header id="app-header" class="glass-header text-white pt-8 pb-16 px-6 rounded-b-[40px] shadow-xl relative overflow-hidden">
-            <div class="max-w-md mx-auto relative z-10 flex justify-between items-center">
-                <button onclick="goBackToLogin()" class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md">
-                    <i class="fas fa-power-off text-xs"></i>
-                </button>
-                <div class="text-center">
-                    <h1 class="text-lg font-black italic tracking-tighter uppercase">MACCA STOCK</h1>
-                    <div class="flex items-center justify-center gap-1.5 mt-0.5">
-                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full pulse-online"></span>
-                        <p id="display-username" class="text-[9px] font-bold text-slate-300 uppercase tracking-widest"></p>
-                    </div>
+    <div id="section-app" class="hidden min-h-screen pb-10">
+        <nav id="nav-bar" class="top-bar text-white px-6 py-4 flex justify-between items-center shadow-lg">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <div>
+                    <h1 class="text-xs font-black tracking-widest uppercase">MACCA STOCK</h1>
+                    <p id="label-user" class="text-[10px] text-slate-400 font-bold"></p>
                 </div>
-                <div class="w-10"></div>
             </div>
-        </header>
+            <button onclick="location.reload()" class="text-slate-400 hover:text-white"><i class="fas fa-power-off text-sm"></i></button>
+        </nav>
 
-        <main class="max-w-md mx-auto -mt-8 px-5 space-y-5">
+        <main class="max-w-md mx-auto p-5 space-y-5">
             <div class="grid grid-cols-2 gap-3">
-                <div onclick="setTab('Ayam')" id="btn-tab-ayam" class="bg-white p-5 rounded-[30px] custom-shadow border-4 transition-all cursor-pointer">
-                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Ayam</p>
+                <div onclick="switchTab('Ayam')" id="tab-ayam" class="bg-white p-5 rounded-3xl border-2 border-transparent custom-shadow transition-all card-active">
+                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Stok Ayam</p>
                     <div class="flex items-baseline gap-1">
-                        <span id="val-ayam" class="text-2xl font-black text-slate-800 tracking-tighter">0</span>
-                        <span class="text-slate-400 text-[9px] font-bold uppercase">Ekor</span>
+                        <span id="stat-ayam" class="text-3xl font-black text-slate-800 tracking-tighter">0</span>
+                        <span class="text-slate-400 text-[10px] font-bold uppercase">Ekor</span>
                     </div>
                 </div>
-                <div onclick="setTab('Ikan')" id="btn-tab-ikan" class="bg-white p-5 rounded-[30px] custom-shadow border-4 transition-all cursor-pointer">
-                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Ikan</p>
+                <div onclick="switchTab('Ikan')" id="tab-ikan" class="bg-white p-5 rounded-3xl border-2 border-transparent custom-shadow transition-all">
+                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Stok Ikan</p>
                     <div class="flex items-baseline gap-1">
-                        <span id="val-ikan" class="text-2xl font-black text-slate-800 tracking-tighter">0</span>
-                        <span class="text-slate-400 text-[9px] font-bold uppercase">Ekor/Kg</span>
+                        <span id="stat-ikan" class="text-3xl font-black text-slate-800 tracking-tighter">0</span>
+                        <span class="text-slate-400 text-[10px] font-bold uppercase">Kg</span>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-[35px] custom-shadow border border-white">
-                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block text-center">Status Transaksi</label>
-                
-                <div class="flex bg-slate-100 p-1 rounded-2xl mb-6">
-                    <button onclick="setMode('Masuk')" id="mode-in" class="hidden flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all">Masuk (+)</button>
-                    <button onclick="setMode('Keluar')" id="mode-out" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all">Keluar (-)</button>
-                    <button onclick="setMode('Retur')" id="mode-ret" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all">Retur (+)</button>
+            <div class="bg-white p-6 rounded-[32px] custom-shadow border border-slate-100">
+                <div class="flex gap-2 mb-6">
+                    <button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-900 text-white">AMBIL (-)</button>
+                    <button onclick="setMode('Retur')" id="m-ret" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-100 text-slate-400">RETUR (+)</button>
+                    <button onclick="setMode('Masuk')" id="m-in" class="hidden flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-100 text-slate-400">ISI (+)</button>
                 </div>
 
-                <div class="space-y-1 mb-6 text-center">
-                    <h3 id="input-label" class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Jumlah Unit</h3>
-                    <input type="number" id="main-qty" placeholder="0" class="w-full text-center text-5xl font-black text-slate-900 bg-transparent outline-none">
+                <div class="text-center mb-6">
+                    <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-2">Jumlah <span id="mode-text">Ambil</span></p>
+                    <input type="number" id="qty" placeholder="0" class="w-full text-center text-6xl font-black text-slate-900 bg-transparent outline-none">
                 </div>
 
-                <button onclick="pushData()" id="btn-save" class="w-full bg-slate-950 text-white font-black py-5 rounded-2xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-2 text-sm uppercase">
-                    <i class="fas fa-check-circle"></i> Simpan Laporan
+                <button onclick="saveData()" id="btn-save" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl shadow-xl active:scale-95 transition-all text-sm uppercase flex justify-center items-center gap-2">
+                    <i class="fas fa-save"></i> Simpan Data
                 </button>
             </div>
 
-            <div class="space-y-3 pb-10">
-                <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 italic">Histori <span id="log-target">Ayam</span></h3>
+            <div class="space-y-3">
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Log Terakhir: <span id="log-name" class="text-slate-900">Ayam</span></h3>
                 <div id="log-list" class="space-y-2"></div>
             </div>
         </main>
@@ -166,135 +149,119 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const dbRef = ref(db, 'stok_lesehan_v4');
+        const dbRef = ref(db, 'stok_macca_v5');
 
-        let currentRole = '';
-        let currentUser = '';
-        let currentTab = 'Ayam';
-        let currentMode = 'Keluar';
-        let fullData = [];
+        let role = ''; let user = ''; let tab = 'Ayam'; let mode = 'Keluar'; let dataRaw = [];
 
-        window.handleRoleSelection = (role) => {
-            currentRole = role;
-            document.getElementById('modal-overlay').classList.remove('hidden');
-            document.getElementById('modal-title').innerText = role === 'admin' ? "Login Admin" : "Absensi Dapur";
-            document.getElementById('modal-subtitle').innerText = role === 'admin' ? "Input Password" : "Ketik Nama Anda";
+        window.openAuth = (r) => {
+            role = r;
+            document.getElementById('modal-auth').classList.remove('hidden');
+            document.getElementById('auth-title').innerText = r === 'admin' ? 'Akses Admin' : 'Nama Petugas';
+            document.getElementById('auth-desc').innerText = r === 'admin' ? 'Verifikasi Password' : 'Siapa yang bertugas?';
             
+            if(r === 'admin') {
+                document.getElementById('input-pass').classList.remove('hidden');
+                document.getElementById('input-user').classList.add('hidden');
+            } else {
+                document.getElementById('input-user').classList.remove('hidden');
+                document.getElementById('input-pass').classList.add('hidden');
+            }
+        };
+
+        window.closeAuth = () => document.getElementById('modal-auth').classList.add('hidden');
+
+        window.processLogin = () => {
             if(role === 'admin') {
-                document.getElementById('input-password').classList.remove('hidden');
-                document.getElementById('input-username').classList.add('hidden');
+                if(document.getElementById('input-pass').value === 'macca123') { user = 'Admin'; initApp(); }
+                else alert('Password Salah!');
             } else {
-                document.getElementById('input-username').classList.remove('hidden');
-                document.getElementById('input-password').classList.add('hidden');
+                let n = document.getElementById('input-user').value;
+                if(n) { user = n; initApp(); } else alert('Isi Nama!');
             }
         };
 
-        window.closeModal = () => document.getElementById('modal-overlay').classList.add('hidden');
-
-        window.submitLogin = () => {
-            if(currentRole === 'admin') {
-                if(document.getElementById('input-password').value === "macca123") {
-                    currentUser = "Admin Owner"; startApp();
-                } else alert("Password Salah!");
-            } else {
-                let name = document.getElementById('input-username').value;
-                if(name) { currentUser = name; startApp(); } else alert("Isi Nama!");
-            }
-        };
-
-        function startApp() {
-            document.getElementById('modal-overlay').classList.add('hidden');
+        function initApp() {
+            document.getElementById('modal-auth').classList.add('hidden');
             document.getElementById('section-login').classList.add('hidden');
             document.getElementById('section-app').classList.remove('hidden');
-            document.getElementById('display-username').innerText = currentUser;
+            document.getElementById('label-user').innerText = 'PETUGAS: ' + user.toUpperCase();
             
-            if(currentRole === 'admin') {
-                document.getElementById('mode-in').classList.remove('hidden');
-                document.getElementById('app-header').classList.replace('glass-header', 'admin-gradient');
+            if(role === 'admin') {
+                document.getElementById('m-in').classList.remove('hidden');
+                document.getElementById('nav-bar').classList.add('admin-bar');
             }
-            setTab('Ayam');
-            setMode('Keluar');
+            switchTab('Ayam');
         }
 
-        window.setTab = (type) => {
-            currentTab = type;
-            document.getElementById('btn-tab-ayam').style.borderColor = type === 'Ayam' ? '#3b82f6' : 'transparent';
-            document.getElementById('btn-tab-ikan').style.borderColor = type === 'Ikan' ? '#3b82f6' : 'transparent';
-            document.getElementById('log-target').innerText = type;
-            renderAll();
+        window.switchTab = (t) => {
+            tab = t;
+            document.getElementById('tab-ayam').classList.toggle('card-active', t === 'Ayam');
+            document.getElementById('tab-ikan').classList.toggle('card-active', t === 'Ikan');
+            document.getElementById('log-name').innerText = t;
+            render();
         };
 
-        window.setMode = (mode) => {
-            currentMode = mode;
-            const modes = ['mode-in', 'mode-out', 'mode-ret'];
-            modes.forEach(m => {
-                const el = document.getElementById(m);
-                if(m.includes(mode.toLowerCase().substring(0,2))) {
-                    el.className = "flex-1 py-3 rounded-xl text-[10px] font-black uppercase bg-white shadow-sm text-slate-900";
+        window.setMode = (m) => {
+            mode = m;
+            document.getElementById('mode-text').innerText = m;
+            ['m-out', 'm-ret', 'm-in'].forEach(id => {
+                const el = document.getElementById(id);
+                if(id.includes(m.toLowerCase().substring(0,2))) {
+                    el.className = "flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-900 text-white";
                 } else {
-                    el.className = "flex-1 py-3 rounded-xl text-[10px] font-black uppercase text-slate-400";
+                    el.className = "flex-1 py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-slate-100 text-slate-400";
                 }
             });
         };
 
-        window.pushData = () => {
-            const qty = parseInt(document.getElementById('main-qty').value);
-            if(!qty) return alert("Isi angka!");
-            
+        window.saveData = () => {
+            const v = parseInt(document.getElementById('qty').value);
+            if(!v) return;
             const btn = document.getElementById('btn-save');
-            btn.disabled = true; btn.innerHTML = "Memproses...";
+            btn.disabled = true; btn.innerHTML = 'Menyimpan...';
 
-            push(dbRef, {
-                user: currentUser,
-                type: currentTab,
-                qty: qty,
-                status: currentMode,
-                timestamp: serverTimestamp()
-            }).then(() => {
-                document.getElementById('main-qty').value = "";
-                btn.disabled = false; btn.innerHTML = '<i class="fas fa-check-circle"></i> Simpan Laporan';
+            push(dbRef, { user, type: tab, qty: v, status: mode, time: serverTimestamp() })
+            .then(() => {
+                document.getElementById('qty').value = '';
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Simpan Data';
             });
         };
 
-        onValue(dbRef, (snapshot) => {
-            fullData = snapshot.val() ? Object.values(snapshot.val()) : [];
-            renderAll();
+        onValue(dbRef, (s) => {
+            dataRaw = s.val() ? Object.values(s.val()) : [];
+            render();
         });
 
-        function renderAll() {
-            let ayam = 0; let ikan = 0;
-            const list = document.getElementById('log-list'); list.innerHTML = "";
+        function render() {
+            let sA = 0; let sI = 0;
+            const list = document.getElementById('log-list'); list.innerHTML = '';
 
-            fullData.forEach(log => {
-                // Masuk & Retur sama-sama menambah stok
-                const val = (log.status === 'Masuk' || log.status === 'Retur') ? log.qty : -log.qty;
-                if(log.type === 'Ayam') ayam += val; else ikan += val;
+            dataRaw.forEach(i => {
+                const add = (i.status === 'Masuk' || i.status === 'Retur') ? i.qty : -i.qty;
+                if(i.type === 'Ayam') sA += add; else sI += add;
             });
 
-            document.getElementById('val-ayam').innerText = ayam;
-            document.getElementById('val-ikan').innerText = ikan;
+            document.getElementById('stat-ayam').innerText = sA;
+            document.getElementById('stat-ikan').innerText = sI;
 
-            fullData.filter(l => l.type === currentTab).reverse().slice(0, 10).forEach(log => {
-                const color = log.status === 'Keluar' ? 'text-orange-500' : 'text-blue-500';
-                const date = new Date(log.timestamp).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+            dataRaw.filter(i => i.type === tab).reverse().slice(0, 10).forEach(i => {
+                const isOut = i.status === 'Keluar';
                 list.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border border-slate-50">
+                    <div class="bg-white p-4 rounded-2xl flex justify-between items-center custom-shadow fade-in">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-[10px] ${color}">
-                                <i class="fas ${log.status === 'Keluar' ? 'fa-minus' : 'fa-plus'}"></i>
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs ${isOut ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}">
+                                <i class="fas ${isOut ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-800 text-xs">${log.user}</h4>
-                                <p class="text-[8px] text-slate-400 font-bold uppercase">${date} • ${log.status}</p>
+                                <h4 class="font-bold text-xs">${i.user}</h4>
+                                <p class="text-[8px] font-bold text-slate-400 uppercase">${i.status}</p>
                             </div>
                         </div>
-                        <span class="font-black ${color}">${log.status === 'Keluar' ? '-' : '+'}${log.qty}</span>
+                        <span class="font-black ${isOut ? 'text-orange-500' : 'text-blue-500'}">${isOut ? '-' : '+'}${i.qty}</span>
                     </div>
                 `;
             });
         }
-
-        window.goBackToLogin = () => location.reload();
     </script>
 </body>
 </html>
