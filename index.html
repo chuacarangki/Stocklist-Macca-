@@ -20,108 +20,137 @@
     </script>
 
     <style>
-        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
-        .tab-active { background-color: #1e293b; color: white; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         .glass-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
         .admin-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
         .custom-shadow { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
         .hidden-section { display: none; }
+        
+        /* Animasi Modal */
+        .modal-enter { animation: modalIn 0.3s ease-out forwards; }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
 <body class="pb-10">
 
-    <div id="loginPage" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center px-6">
-        <div class="w-full max-w-md space-y-8 text-center">
-            <div>
-                <h1 class="text-3xl font-black text-white italic">LESEHAN MACCA</h1>
-                <p class="text-slate-400 text-sm mt-2">Pilih Akses Pengguna</p>
+    <div id="loginPage" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center px-6">
+        <div class="w-full max-w-md space-y-8">
+            <div class="text-center">
+                <div class="inline-block p-4 bg-blue-600/10 rounded-3xl mb-4">
+                    <i class="fas fa-box-open text-blue-500 text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-black text-white italic tracking-tighter">LESEHAN MACCA</h1>
+                <p class="text-slate-500 text-sm mt-1">Sistem Pengelolaan Stok Digital</p>
             </div>
+
             <div class="grid grid-cols-1 gap-4">
-                <button onclick="showRole('dapur')" class="bg-white p-6 rounded-[30px] flex items-center gap-4 hover:scale-105 transition-transform">
-                    <div class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600">
-                        <i class="fas fa-utensils text-xl"></i>
+                <button onclick="openModal('dapur')" class="group bg-slate-900 p-6 rounded-[32px] border border-slate-800 flex items-center gap-5 hover:border-blue-500/50 transition-all text-left">
+                    <div class="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-fire-alt text-2xl"></i>
                     </div>
-                    <div class="text-left">
-                        <p class="font-bold text-slate-800 text-lg">Bagian Dapur</p>
-                        <p class="text-xs text-slate-400">Ambil & Pakai Stok</p>
+                    <div>
+                        <p class="font-bold text-white text-lg">Pihak Dapur</p>
+                        <p class="text-xs text-slate-500 italic">Klik untuk lapor stok keluar</p>
                     </div>
                 </button>
-                <button onclick="showRole('admin')" class="bg-slate-800 p-6 rounded-[30px] border border-slate-700 flex items-center gap-4 hover:scale-105 transition-transform text-white">
-                    <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-user-shield text-xl"></i>
+
+                <button onclick="openModal('admin')" class="group bg-slate-900 p-6 rounded-[32px] border border-slate-800 flex items-center gap-5 hover:border-indigo-500/50 transition-all text-left">
+                    <div class="w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-500 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-user-shield text-2xl"></i>
                     </div>
-                    <div class="text-left">
-                        <p class="font-bold text-lg text-white">Owner / Admin</p>
-                        <p class="text-xs text-slate-400">Input Stok & Laporan</p>
+                    <div>
+                        <p class="font-bold text-white text-lg">Owner / Admin</p>
+                        <p class="text-xs text-slate-500 italic">Update belanja & cek laporan</p>
                     </div>
                 </button>
             </div>
         </div>
     </div>
 
+    <div id="inputModal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center px-6">
+        <div class="bg-white w-full max-w-sm rounded-[40px] p-8 modal-enter">
+            <div id="modalIcon" class="w-16 h-16 rounded-3xl flex items-center justify-center text-2xl mb-6 mx-auto"></div>
+            <h2 id="modalTitle" class="text-2xl font-black text-slate-800 text-center mb-2"></h2>
+            <p id="modalDesc" class="text-center text-slate-400 text-sm mb-6"></p>
+            
+            <div class="space-y-4">
+                <input type="text" id="modalInputName" placeholder="Masukkan Nama Anda" class="w-full p-4 bg-slate-100 rounded-2xl font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="modalInputPass" placeholder="Masukkan Password" class="hidden w-full p-4 bg-slate-100 rounded-2xl font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500">
+                
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 bg-slate-100 text-slate-500 font-bold py-4 rounded-2xl">Batal</button>
+                    <button onclick="validateLogin()" class="flex-[2] bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-xl">Masuk</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="mainApp" class="hidden-section">
         <header id="appHeader" class="glass-header text-white pt-10 pb-24 px-6 rounded-b-[45px] shadow-2xl relative">
-            <div class="max-w-md mx-auto relative z-10">
-                <div class="flex justify-between items-center">
-                    <button onclick="logout()" class="text-slate-400 hover:text-white transition-colors">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="text-center">
-                        <h1 class="text-xl font-black italic tracking-tight" id="headerTitle">DAPUR MACCA</h1>
-                        <p id="userDisplay" class="text-[10px] font-bold text-blue-400 uppercase tracking-widest"></p>
-                    </div>
-                    <div class="w-6"></div>
+            <div class="max-w-md mx-auto flex justify-between items-center relative z-10">
+                <button onclick="logout()" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center"><i class="fas fa-sign-out-alt"></i></button>
+                <div class="text-center">
+                    <h1 class="text-xl font-black italic tracking-tight" id="headerTitle">DAPUR MACCA</h1>
+                    <p id="userDisplay" class="text-[10px] font-bold text-blue-400 uppercase tracking-widest"></p>
                 </div>
+                <div class="w-10"></div>
             </div>
         </header>
 
         <main class="max-w-md mx-auto -mt-14 px-4 space-y-6">
             <div class="grid grid-cols-2 gap-4">
-                <div onclick="switchTab('Ayam')" id="cardAyam" class="bg-white p-5 rounded-[30px] custom-shadow border-2 border-transparent transition-all cursor-pointer">
-                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Ayam</p>
+                <div onclick="switchTab('Ayam')" id="cardAyam" class="bg-white p-6 rounded-[35px] custom-shadow border-2 transition-all cursor-pointer">
+                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Stok Ayam</p>
                     <div class="flex items-baseline gap-1">
                         <span id="totalAyam" class="text-3xl font-black text-slate-800 tracking-tighter">0</span>
-                        <span class="text-slate-400 text-xs font-bold uppercase">Ekor</span>
+                        <span class="text-slate-400 text-[10px] font-bold uppercase">Ekor</span>
                     </div>
                 </div>
-                <div onclick="switchTab('Ikan')" id="cardIkan" class="bg-white p-5 rounded-[30px] custom-shadow border-2 border-transparent transition-all cursor-pointer">
-                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Ikan</p>
+                <div onclick="switchTab('Ikan')" id="cardIkan" class="bg-white p-6 rounded-[35px] custom-shadow border-2 transition-all cursor-pointer">
+                    <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Stok Ikan</p>
                     <div class="flex items-baseline gap-1">
                         <span id="totalIkan" class="text-3xl font-black text-slate-800 tracking-tighter">0</span>
-                        <span class="text-slate-400 text-xs font-bold uppercase">Ekor</span>
+                        <span class="text-slate-400 text-[10px] font-bold uppercase">Ekor</span>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-[35px] custom-shadow border border-white">
-                <h3 class="text-xs font-black text-slate-800 mb-6 flex items-center gap-2 uppercase tracking-widest">
-                    <span class="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse"></span>
-                    Catat Penggunaan
-                </h3>
+            <div class="bg-white p-7 rounded-[40px] custom-shadow border border-white">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-1.5 h-6 bg-blue-600 rounded-full"></div>
+                    <h3 id="formTitle" class="text-sm font-black text-slate-800 uppercase tracking-wider">PAKAI STOK</h3>
+                </div>
                 
                 <div class="space-y-4">
                     <div id="adminControls" class="hidden-section">
-                        <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Status Update</label>
+                        <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Aksi Database</label>
                         <select id="adminStatus" class="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold border-none outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="Masuk">TAMBAH STOK (+)</option>
-                            <option value="Keluar">KURANGI STOK (-)</option>
+                            <option value="Masuk">BELANJA / TAMBAH (+)</option>
+                            <option value="Keluar">AMBIL / PAKAI (-)</option>
                         </select>
                     </div>
 
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Jumlah Unit</label>
-                        <input type="number" id="qtyInput" placeholder="Masukkan jumlah..." class="w-full p-5 bg-slate-100 rounded-2xl text-2xl font-black text-slate-800 outline-none focus:ring-2 focus:ring-blue-600">
+                        <input type="number" id="qtyInput" placeholder="0" class="w-full p-5 bg-slate-100 rounded-2xl text-3xl font-black text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 placeholder:text-slate-300">
                     </div>
 
-                    <button onclick="submitData()" id="btnSubmit" class="w-full bg-slate-900 text-white font-extrabold py-5 rounded-2xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-2">
-                        <i class="fas fa-check-double"></i> KONFIRMASI
+                    <button onclick="submitData()" id="btnSubmit" class="w-full bg-slate-900 text-white font-black py-5 rounded-2xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-3">
+                        <i class="fas fa-check-circle"></i> KIRIM LAPORAN
                     </button>
                 </div>
             </div>
 
             <div class="space-y-4 pb-10">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Riwayat <span id="historyLabel">Ayam</span></h3>
+                <div class="flex justify-between items-center px-2">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Log <span id="historyLabel">Ayam</span></h3>
+                    <div class="h-1 w-12 bg-slate-200 rounded-full"></div>
+                </div>
                 <div id="historyContainer" class="space-y-3"></div>
             </div>
         </main>
@@ -143,36 +172,85 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const dbRef = ref(db, 'stok_lesehan_pro');
+        const dbRef = ref(db, 'stok_lesehan_pro_final');
 
-        let userRole = ''; // 'admin' or 'dapur'
+        let userRole = ''; 
         let userName = '';
         let currentTab = 'Ayam';
         let fullData = [];
 
-        // Global functions
-        window.showRole = function(role) {
-            if(role === 'admin') {
-                const pass = prompt("Masukkan Password Admin:");
-                if(pass !== "macca123") return alert("Password Salah!"); // Ganti password di sini
-                userRole = 'admin';
-                userName = 'Owner';
-                document.getElementById('adminControls').style.display = 'block';
-                document.getElementById('appHeader').className = 'admin-gradient text-white pt-10 pb-24 px-6 rounded-b-[45px] shadow-2xl relative';
-                document.getElementById('headerTitle').innerText = 'ADMIN MACCA';
-            } else {
-                const name = prompt("Masukkan Nama Anda (Dapur):");
-                if(!name) return;
-                userRole = 'dapur';
-                userName = name;
-                document.getElementById('adminControls').style.display = 'none';
-                document.getElementById('appHeader').className = 'glass-header text-white pt-10 pb-24 px-6 rounded-b-[45px] shadow-2xl relative';
-                document.getElementById('headerTitle').innerText = 'DAPUR MACCA';
-            }
+        // MODAL LOGIC
+        window.openModal = function(role) {
+            userRole = role;
+            const modal = document.getElementById('inputModal');
+            const title = document.getElementById('modalTitle');
+            const desc = document.getElementById('modalDesc');
+            const icon = document.getElementById('modalIcon');
+            const passInput = document.getElementById('modalInputPass');
+            const nameInput = document.getElementById('modalInputName');
 
+            modal.classList.remove('hidden');
+            nameInput.value = "";
+            passInput.value = "";
+
+            if(role === 'admin') {
+                title.innerText = "Akses Admin";
+                desc.innerText = "Masukkan password untuk mengelola stok";
+                icon.className = "w-16 h-16 rounded-3xl flex items-center justify-center text-2xl mb-6 mx-auto bg-indigo-100 text-indigo-600";
+                icon.innerHTML = '<i class="fas fa-lock"></i>';
+                passInput.classList.remove('hidden');
+                nameInput.classList.add('hidden');
+            } else {
+                title.innerText = "Halo Dapur!";
+                desc.innerText = "Siapa nama Anda hari ini?";
+                icon.className = "w-16 h-16 rounded-3xl flex items-center justify-center text-2xl mb-6 mx-auto bg-orange-100 text-orange-600";
+                icon.innerHTML = '<i class="fas fa-user-tag"></i>';
+                passInput.classList.add('hidden');
+                nameInput.classList.remove('hidden');
+            }
+        }
+
+        window.closeModal = function() {
+            document.getElementById('inputModal').classList.add('hidden');
+        }
+
+        window.validateLogin = function() {
+            if(userRole === 'admin') {
+                const pass = document.getElementById('modalInputPass').value;
+                if(pass === "macca123") { // PASSWORD ADMIN DI SINI
+                    userName = "Owner";
+                    enterApp();
+                } else {
+                    alert("Password Salah!");
+                }
+            } else {
+                const name = document.getElementById('modalInputName').value;
+                if(name.length > 1) {
+                    userName = name;
+                    enterApp();
+                } else {
+                    alert("Masukkan nama yang valid!");
+                }
+            }
+        }
+
+        function enterApp() {
+            closeModal();
             document.getElementById('loginPage').classList.add('hidden-section');
             document.getElementById('mainApp').classList.remove('hidden-section');
             document.getElementById('userDisplay').innerText = `Petugas: ${userName}`;
+            
+            if(userRole === 'admin') {
+                document.getElementById('adminControls').classList.remove('hidden-section');
+                document.getElementById('appHeader').classList.replace('glass-header', 'admin-gradient');
+                document.getElementById('headerTitle').innerText = 'ADMIN PANEL';
+                document.getElementById('formTitle').innerText = 'UPDATE STOK';
+            } else {
+                document.getElementById('adminControls').classList.add('hidden-section');
+                document.getElementById('appHeader').classList.replace('admin-gradient', 'glass-header');
+                document.getElementById('headerTitle').innerText = 'DAPUR MACCA';
+                document.getElementById('formTitle').innerText = 'LAPOR PAKAI STOK';
+            }
             switchTab('Ayam');
         }
 
@@ -197,7 +275,7 @@
 
             const btn = document.getElementById('btnSubmit');
             btn.disabled = true;
-            btn.innerHTML = "MENYIMPAN...";
+            btn.innerHTML = '<i class="fas fa-circle-notch animate-spin"></i> MENGIRIM...';
 
             push(dbRef, {
                 type: currentTab,
@@ -208,7 +286,7 @@
             }).then(() => {
                 document.getElementById('qtyInput').value = "";
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-check-double"></i> KONFIRMASI';
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> KIRIM LAPORAN';
             });
         }
 
@@ -238,22 +316,28 @@
                 const time = date.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
                 
                 container.innerHTML += `
-                    <div class="bg-white p-4 rounded-3xl flex items-center justify-between custom-shadow border border-slate-50">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-2xl ${isMasuk ? 'bg-indigo-50 text-indigo-600' : 'bg-orange-50 text-orange-600'} flex items-center justify-center">
-                                <i class="fas ${isMasuk ? 'fa-plus' : 'fa-minus'} text-xs"></i>
+                    <div class="bg-white p-5 rounded-[30px] flex items-center justify-between custom-shadow border border-slate-50 animate-in">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl ${isMasuk ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'} flex items-center justify-center">
+                                <i class="fas ${isMasuk ? 'fa-plus' : 'fa-minus'}"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-800 text-sm italic">${log.user}</h4>
-                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-tight">${time} • ${log.status}</p>
+                                <h4 class="font-bold text-slate-800 text-sm italic line-clamp-1">${log.user}</h4>
+                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest">${time} • ${log.status}</p>
                             </div>
                         </div>
-                        <div class="text-lg font-black ${isMasuk ? 'text-indigo-500' : 'text-orange-500'}">
-                            ${isMasuk ? '+' : '-'}${log.qty}
+                        <div class="text-right">
+                            <span class="text-xl font-black ${isMasuk ? 'text-blue-500' : 'text-orange-500'}">
+                                ${isMasuk ? '+' : '-'}${log.qty}
+                            </span>
                         </div>
                     </div>
                 `;
             });
+
+            if(logs.length === 0) {
+                container.innerHTML = '<div class="text-center py-10 text-slate-300 text-xs font-bold uppercase tracking-widest">Belum ada riwayat</div>';
+            }
         }
     </script>
 </body>
