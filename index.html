@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Macca Stock v13.3 - Role Focused</title>
+    <title>Macca Stock v13.4 - Calendar Ready</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -27,8 +27,7 @@
     </script>
 
     <style>
-        body { background-color: #0a0a0c; color: white; -webkit-tap-highlight-color: transparent; }
-        .custom-shadow { box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        body { background-color: #0a0a0c; color: white; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
         .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .fab-sub { width: 70px; height: 70px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0); opacity: 0; pointer-events: none; }
         .fab-main { width: 80px; height: 80px; border-radius: 50%; background: #fbbf24; color: #000; display: flex; align-items: center; justify-content: center; font-size: 35px; box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4); z-index: 52; }
@@ -36,7 +35,7 @@
         .fab-container.active .fab-main { transform: rotate(45deg); background: #ef4444; color: white; }
         .modal-up { animation: slideUp 0.4s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
@@ -56,7 +55,7 @@
             <h2 id="auth-title" class="text-2xl font-black mb-6 text-white uppercase italic"></h2>
             <input type="text" id="input-user" placeholder="Nama Anda" class="w-full p-5 bg-black rounded-2xl font-black text-center mb-4 outline-none text-xl text-macca-yellow">
             <input type="password" id="input-pass" placeholder="PIN ADMIN" class="hidden w-full p-5 bg-black rounded-2xl font-black text-center mb-4 outline-none text-xl text-macca-yellow">
-            <button onclick="processLogin()" class="w-full bg-macca-yellow text-black font-black py-5 rounded-2xl uppercase text-sm tracking-widest active:scale-95 transition-all">MASUK</button>
+            <button onclick="processLogin()" class="w-full bg-macca-yellow text-black font-black py-5 rounded-2xl uppercase text-sm tracking-widest">MASUK</button>
             <button onclick="closeAuth()" class="mt-6 text-slate-500 font-bold text-xs uppercase">BATAL</button>
         </div>
     </div>
@@ -76,7 +75,6 @@
     <div id="modal-input" class="fixed inset-0 z-[80] bg-black/90 hidden flex items-end justify-center">
         <div class="bg-macca-card w-full max-w-md rounded-t-[3.5rem] p-8 pb-12 modal-up border-t border-white/10 shadow-2xl">
             <div class="w-16 h-1.5 bg-white/10 rounded-full mx-auto mb-8"></div>
-            
             <div class="flex justify-between items-center mb-8">
                 <div>
                     <h2 class="text-3xl font-black uppercase italic text-macca-yellow" id="input-tab-name">Ayam</h2>
@@ -87,17 +85,13 @@
                     <p id="stat-current-modal" class="text-3xl font-black text-macca-green">0</p>
                 </div>
             </div>
-
-            <div class="flex gap-2 mb-8" id="mode-container">
-                </div>
-
+            <div class="flex gap-2 mb-8" id="mode-container"></div>
             <div class="text-center mb-10">
                 <input type="number" id="qty" placeholder="0" class="w-full text-center text-8xl font-black text-macca-yellow bg-transparent outline-none">
             </div>
-
             <div class="flex gap-4">
                 <button onclick="closeInput()" class="flex-1 bg-white/5 text-slate-400 font-black py-6 rounded-3xl text-xs uppercase">BATAL</button>
-                <button onclick="saveData()" class="flex-[2] bg-macca-green text-black font-black py-6 rounded-3xl text-xs uppercase shadow-xl tracking-widest active:scale-95 transition-all">KONFIRMASI</button>
+                <button onclick="saveData()" class="flex-[2] bg-macca-green text-black font-black py-6 rounded-3xl text-xs uppercase shadow-xl tracking-widest">KONFIRMASI</button>
             </div>
         </div>
     </div>
@@ -114,43 +108,42 @@
         <main class="max-w-md mx-auto p-6 space-y-8">
             <div class="grid grid-cols-1 gap-4">
                 <div class="bg-macca-card p-8 rounded-[2.5rem] border border-white/5 flex justify-between items-center">
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">TOTAL AYAM</p>
-                        <h2 id="stat-ayam-main" class="text-5xl font-black text-macca-yellow tracking-tighter">0</h2>
-                        <p class="text-[10px] font-black text-slate-600 uppercase">Ekor</p>
-                    </div>
+                    <div><p class="text-[10px] font-bold text-slate-500 mb-1 tracking-widest">TOTAL AYAM</p><h2 id="stat-ayam-main" class="text-5xl font-black text-macca-yellow tracking-tighter">0</h2><p class="text-[10px] text-slate-600 uppercase">Ekor</p></div>
                     <i class="fas fa-drumstick-bite text-macca-yellow/10 text-6xl"></i>
                 </div>
                 <div class="bg-macca-card p-8 rounded-[2.5rem] border border-white/5 flex justify-between items-center">
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">TOTAL IKAN</p>
-                        <h2 id="stat-ikan-main" class="text-5xl font-black text-macca-green tracking-tighter">0</h2>
-                        <p class="text-[10px] font-black text-slate-600 uppercase">Kilogram</p>
-                    </div>
+                    <div><p class="text-[10px] font-bold text-slate-500 mb-1 tracking-widest">TOTAL IKAN</p><h2 id="stat-ikan-main" class="text-5xl font-black text-macca-green tracking-tighter">0</h2><p class="text-[10px] text-slate-600 uppercase">Kilogram</p></div>
                     <i class="fas fa-fish text-macca-green/10 text-6xl"></i>
                 </div>
             </div>
 
-            <div id="panel-rekap" class="hidden bg-macca-card p-7 rounded-[3rem] border border-white/10">
+            <div id="panel-rekap" class="hidden bg-macca-card p-7 rounded-[3rem] border border-white/10 relative overflow-hidden">
                 <h3 class="text-sm font-black uppercase text-white italic mb-6">REKAPITULASI DATA</h3>
-                <div class="grid grid-cols-4 gap-2 mb-6">
-                    <button onclick="runRekap('hari')" id="btn-hari" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase">Hari</button>
-                    <button onclick="runRekap('minggu')" id="btn-minggu" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase">Minggu</button>
-                    <button onclick="runRekap('bulan')" id="btn-bulan" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase">Bulan</button>
-                    <button onclick="runRekap('tahun')" id="btn-tahun" class="py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase">Tahun</button>
+                <div class="grid grid-cols-3 gap-2 mb-6">
+                    <button onclick="togglePicker('hari')" id="btn-hari" class="py-4 bg-white/5 rounded-2xl text-[10px] font-black uppercase">Hari</button>
+                    <button onclick="togglePicker('bulan')" id="btn-bulan" class="py-4 bg-white/5 rounded-2xl text-[10px] font-black uppercase">Bulan</button>
+                    <button onclick="togglePicker('tahun')" id="btn-tahun" class="py-4 bg-white/5 rounded-2xl text-[10px] font-black uppercase">Tahun</button>
                 </div>
+
+                <div id="date-picker-ui" class="hidden absolute inset-0 bg-macca-card z-20 p-6 flex flex-col justify-center">
+                    <div class="flex justify-between items-center mb-4">
+                        <span id="picker-title" class="text-xs font-black text-macca-yellow uppercase italic">PILIH TANGGAL</span>
+                        <button onclick="hidePicker()" class="text-red-500 text-lg"><i class="fas fa-times-circle"></i></button>
+                    </div>
+                    <div id="picker-content" class="space-y-4">
+                        </div>
+                </div>
+
                 <div id="rekap-display" class="hidden space-y-4 bg-black/50 p-6 rounded-3xl border border-white/5">
-                    <p id="rekap-title" class="text-center font-black text-macca-yellow text-xs uppercase border-b border-white/10 pb-3"></p>
+                    <p id="rekap-title" class="text-center font-black text-macca-yellow text-xs uppercase border-b border-white/10 pb-3 italic"></p>
                     <div class="grid grid-cols-2 gap-4 text-center">
                         <div class="bg-white/5 p-4 rounded-2xl">
-                            <p class="text-[8px] text-macca-green font-bold mb-2 uppercase">MASUK/RETUR</p>
-                            <p class="text-xs font-bold text-slate-400">Ayam: <span class="text-white" id="r-ayam-in">0</span></p>
-                            <p class="text-xs font-bold text-slate-400">Ikan: <span class="text-white" id="r-ikan-in">0</span></p>
+                            <p class="text-[8px] text-macca-green font-bold mb-2">MASUK/RETUR</p>
+                            <p class="text-xs font-black">A: <span id="r-ayam-in">0</span> | I: <span id="r-ikan-in">0</span></p>
                         </div>
                         <div class="bg-white/5 p-4 rounded-2xl">
-                            <p class="text-[8px] text-red-500 font-bold mb-2 uppercase">KELUAR</p>
-                            <p class="text-xs font-bold text-slate-400">Ayam: <span class="text-white" id="r-ayam-out">0</span></p>
-                            <p class="text-xs font-bold text-slate-400">Ikan: <span class="text-white" id="r-ikan-out">0</span></p>
+                            <p class="text-[8px] text-red-500 font-bold mb-2">KELUAR</p>
+                            <p class="text-xs font-black">A: <span id="r-ayam-out">0</span> | I: <span id="r-ikan-out">0</span></p>
                         </div>
                     </div>
                 </div>
@@ -158,7 +151,7 @@
 
             <div class="space-y-4 pb-32">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-black text-white uppercase italic tracking-widest">AKTIVITAS TERAKHIR</h3>
+                    <h3 class="text-sm font-black text-white uppercase italic tracking-widest">AKTIVITAS</h3>
                     <div class="flex bg-macca-card p-1 rounded-full border border-white/10">
                         <button onclick="setTab('Ayam')" id="btn-tab-ayam" class="text-[9px] font-black px-6 py-2 rounded-full bg-macca-yellow text-black transition-all">AYAM</button>
                         <button onclick="setTab('Ikan')" id="btn-tab-ikan" class="text-[9px] font-black px-6 py-2 rounded-full text-slate-500 transition-all">IKAN</button>
@@ -194,7 +187,7 @@
         window.openAuth = (r) => {
             userRole = r;
             document.getElementById('modal-auth').classList.remove('hidden');
-            document.getElementById('auth-title').innerText = r === 'admin' ? 'Akses Owner' : 'Absensi Dapur';
+            document.getElementById('auth-title').innerText = r === 'admin' ? 'Akses Owner' : 'Dapur';
             r === 'admin' ? (document.getElementById('input-pass').classList.remove('hidden'), document.getElementById('input-user').classList.add('hidden')) : (document.getElementById('input-user').classList.remove('hidden'), document.getElementById('input-pass').classList.add('hidden'));
         };
         window.closeAuth = () => document.getElementById('modal-auth').classList.add('hidden');
@@ -214,17 +207,14 @@
             document.getElementById('section-app').classList.remove('hidden');
             document.getElementById('fab-menu').classList.remove('hidden');
             document.getElementById('label-user').innerText = 'AKTIF: ' + userName;
-            
-            const modeContainer = document.getElementById('mode-container');
+            const mc = document.getElementById('mode-container');
             if(userRole === 'admin') {
                 document.getElementById('panel-rekap').classList.remove('hidden');
-                modeContainer.innerHTML = `<button onclick="setMode('Masuk')" id="m-in" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-macca-blue text-white shadow-lg">ISI STOK (+)</button>`;
+                mc.innerHTML = `<button onclick="setMode('Masuk')" id="m-in" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-macca-blue text-white shadow-lg">ISI STOK (+)</button>`;
                 currentMode = 'Masuk';
-                document.getElementById('input-subtitle').innerText = 'Penambahan Stok Baru';
+                document.getElementById('input-subtitle').innerText = 'Update Stok Baru';
             } else {
-                modeContainer.innerHTML = `
-                    <button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-red-600 text-white shadow-lg">AMBIL (-)</button>
-                    <button onclick="setMode('Retur')" id="m-ret" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-white/5 text-slate-500">RETUR (+)</button>`;
+                mc.innerHTML = `<button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-red-600 text-white shadow-lg">AMBIL (-)</button><button onclick="setMode('Retur')" id="m-ret" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-white/5 text-slate-500">RETUR (+)</button>`;
                 currentMode = 'Keluar';
                 document.getElementById('input-subtitle').innerText = 'Pemakaian Dapur';
             }
@@ -232,14 +222,11 @@
         }
 
         window.openInput = (t) => {
-            currentTab = t;
-            document.getElementById('input-tab-name').innerText = t;
+            currentTab = t; document.getElementById('input-tab-name').innerText = t;
             document.getElementById('stat-current-modal').innerText = stockNow[t];
             document.getElementById('modal-input').classList.remove('hidden');
             document.getElementById('fab-menu').classList.remove('active');
-            userRole === 'admin' ? setMode('Masuk') : setMode('Keluar');
         };
-
         window.closeInput = () => { document.getElementById('modal-input').classList.add('hidden'); document.getElementById('qty').value = ''; };
 
         window.setMode = (m) => {
@@ -253,9 +240,8 @@
         };
 
         window.saveData = () => {
-            const v = parseInt(document.getElementById('qty').value);
-            if(!v) return;
-            push(dbRef, { user: userName, type: currentTab, qty: v, status: currentMode, time: serverTimestamp() }).then(() => { closeInput(); });
+            const v = parseInt(document.getElementById('qty').value); if(!v) return;
+            push(dbRef, { user: userName, type: currentTab, qty: v, status: currentMode, time: serverTimestamp() }).then(() => closeInput());
         };
 
         window.setTab = (t) => {
@@ -265,10 +251,7 @@
             render();
         };
 
-        onValue(dbRef, (s) => {
-            dataRaw = s.val() ? Object.values(s.val()) : [];
-            render();
-        });
+        onValue(dbRef, (s) => { dataRaw = s.val() ? Object.values(s.val()) : []; render(); });
 
         function render() {
             let sA = 0; let sI = 0;
@@ -277,40 +260,74 @@
                 i.type === 'Ayam' ? sA += add : sI += add;
             });
             stockNow.Ayam = sA; stockNow.Ikan = sI;
-            document.getElementById('stat-ayam-main').innerText = sA;
-            document.getElementById('stat-ikan-main').innerText = sI;
-            document.getElementById('stat-ayam-fab').innerText = sA;
-            document.getElementById('stat-ikan-fab').innerText = sI;
-
+            document.getElementById('stat-ayam-main').innerText = sA; document.getElementById('stat-ikan-main').innerText = sI;
+            document.getElementById('stat-ayam-fab').innerText = sA; document.getElementById('stat-ikan-fab').innerText = sI;
             const list = document.getElementById('log-list'); list.innerHTML = '';
-            dataRaw.slice().reverse().filter(i => i.type === currentTab).slice(0, 25).forEach(i => {
+            dataRaw.slice().reverse().filter(i => i.type === currentTab).slice(0, 20).forEach(i => {
                 const dt = new Date(i.time);
-                const day = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][dt.getDay()];
-                const fullDate = `${day}, ${dt.getDate()}/${dt.getMonth()+1}/${dt.getFullYear()} • ${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
+                const day = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"][dt.getDay()];
+                const fullDate = `${day}, ${dt.getDate()}/${dt.getMonth()+1}/${dt.getFullYear().toString().substr(-2)} • ${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
                 let color = i.status === 'Keluar' ? 'text-red-500 bg-red-500/10' : (i.status === 'Masuk' ? 'text-macca-blue bg-macca-blue/10' : 'text-macca-green bg-macca-green/10');
-                list.innerHTML += `<div class="bg-macca-card p-6 rounded-[2rem] border border-white/5 flex justify-between items-center"><div class="flex items-center gap-4"><div class="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl ${color}">${i.status==='Keluar'?'-':'+'}</div><div><h4 class="font-black text-sm uppercase text-white">${i.user}</h4><p class="text-[9px] font-bold text-slate-500 uppercase">${fullDate}</p></div></div><div class="text-right"><span class="text-[9px] font-black uppercase text-slate-600 block mb-1">${i.status}</span><span class="text-2xl font-black ${i.status==='Keluar'?'text-white':'text-macca-green'}">${i.qty}</span></div></div>`;
+                list.innerHTML += `<div class="bg-macca-card p-6 rounded-[2rem] border border-white/5 flex justify-between items-center"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg ${color}">${i.status==='Keluar'?'-':'+'}</div><div><h4 class="font-black text-sm text-white uppercase">${i.user}</h4><p class="text-[9px] text-slate-500 uppercase">${fullDate}</p></div></div><div class="text-right"><span class="text-[8px] text-slate-600 block uppercase font-black">${i.status}</span><span class="text-xl font-black ${i.status==='Keluar'?'text-white':'text-macca-green'}">${i.qty}</span></div></div>`;
             });
         }
 
-        window.runRekap = (type) => {
-            const now = new Date(); let start = 0;
-            if(type === 'hari') start = new Date().setHours(0,0,0,0);
-            if(type === 'minggu') start = now.getTime() - (7 * 24 * 60 * 60 * 1000);
-            if(type === 'bulan') start = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-            if(type === 'tahun') start = new Date(now.getFullYear(), 0, 1).getTime();
+        // --- CALENDAR & REKAP LOGIC ---
+        window.togglePicker = (type) => {
+            const ui = document.getElementById('date-picker-ui');
+            const content = document.getElementById('picker-content');
+            ui.classList.remove('hidden');
+            content.innerHTML = '';
+            
+            if(type === 'hari') {
+                document.getElementById('picker-title').innerText = 'PILIH TANGGAL';
+                content.innerHTML = `<input type="date" id="cal-input" class="w-full p-6 bg-black rounded-3xl text-macca-yellow font-black text-center outline-none border border-white/10"><button onclick="applyDate('hari')" class="w-full py-5 bg-macca-yellow text-black font-black rounded-2xl">LIHAT LAPORAN</button>`;
+            } else if(type === 'bulan') {
+                document.getElementById('picker-title').innerText = 'PILIH BULAN';
+                const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+                let html = `<div class="grid grid-cols-3 gap-2">`;
+                months.forEach((m, idx) => html += `<button onclick="applyDate('bulan', ${idx})" class="py-4 bg-white/5 rounded-xl text-[9px] font-black uppercase hover:bg-macca-blue">${m.substr(0,3)}</button>`);
+                content.innerHTML = html + `</div>`;
+            } else if(type === 'tahun') {
+                document.getElementById('picker-title').innerText = 'PILIH TAHUN';
+                let html = `<div class="grid grid-cols-2 gap-2">`;
+                [2024, 2025, 2026].forEach(y => html += `<button onclick="applyDate('tahun', ${y})" class="py-6 bg-white/5 rounded-2xl font-black text-macca-yellow">${y}</button>`);
+                content.innerHTML = html + `</div>`;
+            }
+        };
 
-            const r = { AyamIn: 0, AyamOut: 0, IkanIn: 0, IkanOut: 0 };
-            dataRaw.filter(i => i.time >= start).forEach(i => {
-                if(i.type === 'Ayam') i.status === 'Keluar' ? r.AyamOut += i.qty : r.AyamIn += i.qty;
-                else i.status === 'Keluar' ? r.IkanOut += i.qty : r.IkanIn += i.qty;
+        window.hidePicker = () => document.getElementById('date-picker-ui').classList.add('hidden');
+
+        window.applyDate = (type, val) => {
+            let start, end, label;
+            const now = new Date();
+            if(type === 'hari') {
+                const raw = document.getElementById('cal-input').value;
+                if(!raw) return;
+                start = new Date(raw).setHours(0,0,0,0);
+                end = new Date(raw).setHours(23,59,59,999);
+                label = raw;
+            } else if(type === 'bulan') {
+                start = new Date(now.getFullYear(), val, 1).getTime();
+                end = new Date(now.getFullYear(), val + 1, 0, 23, 59, 59, 999).getTime();
+                label = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'][val] + ' ' + now.getFullYear();
+            } else if(type === 'tahun') {
+                start = new Date(val, 0, 1).getTime();
+                end = new Date(val, 11, 31, 23, 59, 59, 999).getTime();
+                label = 'TAHUN ' + val;
+            }
+
+            const r = { aIn:0, aOut:0, iIn:0, iOut:0 };
+            dataRaw.filter(i => i.time >= start && i.time <= end).forEach(i => {
+                if(i.type === 'Ayam') i.status === 'Keluar' ? r.aOut += i.qty : r.aIn += i.qty;
+                else i.status === 'Keluar' ? r.iOut += i.qty : r.iIn += i.qty;
             });
+
+            hidePicker();
             document.getElementById('rekap-display').classList.remove('hidden');
-            document.getElementById('rekap-title').innerText = `LAPORAN ${type.toUpperCase()}`;
-            document.getElementById('r-ayam-in').innerText = r.AyamIn; document.getElementById('r-ayam-out').innerText = r.AyamOut;
-            document.getElementById('r-ikan-in').innerText = r.IkanIn; document.getElementById('r-ikan-out').innerText = r.IkanOut;
-            ['hari','minggu','bulan','tahun'].forEach(b => {
-                document.getElementById('btn-'+b).className = b === type ? 'py-3 bg-macca-yellow text-black rounded-xl text-[8px] font-black uppercase active:scale-95' : 'py-3 bg-white/5 rounded-xl text-[8px] font-black uppercase active:scale-95';
-            });
+            document.getElementById('rekap-title').innerText = label;
+            document.getElementById('r-ayam-in').innerText = r.aIn; document.getElementById('r-ayam-out').innerText = r.aOut;
+            document.getElementById('r-ikan-in').innerText = r.iIn; document.getElementById('r-ikan-out').innerText = r.iOut;
         };
     </script>
 </body>
