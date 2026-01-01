@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Macca Stock v14.3 - High Visibility</title>
+    <title>Macca Stock v19.6</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -20,8 +20,7 @@
                         'macca-green': '#22c55e',
                         'macca-blue': '#3b82f6',
                         'macca-red': '#ef4444',
-                    },
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    }
                 }
             }
         }
@@ -29,134 +28,161 @@
 
     <style>
         body { background-color: #0a0a0c; color: white; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .fab-sub { width: 70px; height: 70px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0); opacity: 0; pointer-events: none; }
-        .fab-main { width: 80px; height: 80px; border-radius: 50%; background: #fbbf24; color: #000; display: flex; align-items: center; justify-content: center; font-size: 35px; box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4); z-index: 52; }
-        .fab-container.active .fab-sub { transform: scale(1); opacity: 1; pointer-events: auto; }
-        .fab-container.active .fab-main { transform: rotate(45deg); background: #ef4444; color: white; }
-        .modal-up { animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .nav-item.active { color: #fbbf24; }
+        .nav-item.active i { transform: translateY(-3px); color: #fbbf24; }
+        
+        .fab-right { position: fixed; bottom: 100px; right: 20px; z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .fab-sub { width: 60px; height: 60px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0); opacity: 0; pointer-events: none; }
+        .fab-main { width: 70px; height: 70px; border-radius: 50%; background: #fbbf24; color: #000; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3); z-index: 52; }
+        .fab-quick { width: 70px; height: 70px; border-radius: 50%; background: #ef4444; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3); border: 3px solid #0a0a0c; }
+        .fab-right.active .fab-sub { transform: scale(1); opacity: 1; pointer-events: auto; }
+        
+        #qty { font-size: 80px !important; line-height: 1; height: 100px; }
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased pb-24">
 
-    <div id="section-login" class="fixed inset-0 z-[100] bg-macca-dark flex flex-col items-center justify-center px-8">
-        <h1 class="text-5xl font-black text-macca-yellow italic tracking-tighter mb-2 uppercase">MACCA<span class="text-white">.V14</span></h1>
-        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.5em] mb-12">Inventory System</p>
-        <div class="w-full max-w-sm space-y-4">
-            <button onclick="openAuth('dapur')" class="w-full bg-macca-card p-8 rounded-[2.5rem] border border-white/5 flex items-center justify-between text-white font-black text-xl active:scale-95 transition-all">STAFF <i class="fas fa-utensils text-macca-yellow"></i></button>
-            <button onclick="openAuth('admin')" class="w-full bg-macca-card p-8 rounded-[2.5rem] border border-white/5 flex items-center justify-between text-white font-black text-xl active:scale-95 transition-all">KEPALA DAPUR <i class="fas fa-user-shield text-macca-blue"></i></button>
+    <div id="section-login" class="fixed inset-0 z-[100] bg-macca-dark flex flex-col items-center justify-center px-8 text-center">
+        <h1 class="text-5xl font-black text-macca-yellow italic mb-1 uppercase">MACCA<span class="text-white">.v19</span></h1>
+        <p class="text-slate-500 text-[10px] font-bold uppercase mb-10 tracking-widest">Management System</p>
+        <div class="w-full max-w-xs space-y-5">
+            <input type="password" id="login-code" inputmode="numeric" placeholder="KODE" class="w-full p-5 bg-macca-card rounded-3xl text-center text-4xl font-black text-macca-yellow outline-none border border-white/10">
+            <button onclick="handleLogin()" class="w-full bg-macca-yellow text-black font-black py-6 rounded-3xl uppercase tracking-widest active:scale-95 transition-transform">MASUK</button>
         </div>
     </div>
 
-    <div id="modal-auth" class="fixed inset-0 z-[110] bg-black/95 hidden flex items-center justify-center px-6">
-        <div class="bg-macca-card w-full max-w-xs rounded-[3rem] p-10 text-center border border-white/10 shadow-2xl">
-            <h2 id="auth-title" class="text-2xl font-black mb-6 text-white uppercase italic"></h2>
-            <input type="text" id="input-user" placeholder="Nama Anda" class="w-full p-5 bg-black rounded-2xl font-black text-center mb-4 outline-none text-xl text-macca-yellow">
-            <input type="password" id="input-pass" placeholder="PIN" class="hidden w-full p-5 bg-black rounded-2xl font-black text-center mb-4 outline-none text-xl text-macca-yellow">
-            <button onclick="processLogin()" class="w-full bg-macca-yellow text-black font-black py-5 rounded-2xl uppercase text-sm tracking-widest">MASUK</button>
-            <button onclick="closeAuth()" class="mt-6 text-slate-500 font-bold text-xs uppercase">BATAL</button>
-        </div>
-    </div>
-
-    <div class="fab-container hidden" id="fab-menu">
-        <div onclick="openInput('Ungkep')" id="fab-ungkep" class="fab-sub bg-macca-card border-2 border-macca-yellow">
-            <span class="text-[9px] font-black text-macca-yellow uppercase">Ungkep</span>
-            <span id="stat-ungkep-fab" class="text-sm font-black text-white">0</span>
-        </div>
-        <div onclick="openInput('Ikan')" class="fab-sub bg-macca-card border-2 border-macca-green">
-            <span class="text-[9px] font-black text-macca-green uppercase">Ikan</span>
-            <span id="stat-ikan-fab" class="text-sm font-black text-white">0</span>
-        </div>
-        <div onclick="openInput('Mentah')" id="fab-mentah" class="fab-sub bg-macca-card border-2 border-macca-blue hidden">
-            <span class="text-[9px] font-black text-macca-blue uppercase">Mentah</span>
-            <span id="stat-mentah-fab" class="text-sm font-black text-white">0</span>
-        </div>
-        <button onclick="toggleFab()" class="fab-main"><i class="fas fa-plus"></i></button>
-    </div>
-
-    <div id="modal-input" class="fixed inset-0 z-[80] bg-black/90 hidden flex items-end justify-center">
-        <div class="bg-macca-card w-full max-w-md rounded-t-[3.5rem] p-8 pb-12 modal-up border-t border-white/10 shadow-2xl">
-            <div class="w-16 h-1.5 bg-white/10 rounded-full mx-auto mb-8"></div>
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-3xl font-black uppercase italic text-macca-yellow" id="input-tab-name">Ayam</h2>
-                    <p id="input-subtitle" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"></p>
-                </div>
-                <div class="text-right">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase">Tersedia</p>
-                    <p id="stat-current-modal" class="text-3xl font-black text-macca-green">0</p>
-                </div>
-            </div>
-            
-            <div class="flex gap-2 mb-6" id="mode-container"></div>
-            
-            <input type="number" id="qty" placeholder="0" class="w-full text-center text-6xl font-black text-macca-yellow bg-transparent outline-none mb-4">
-            <input type="text" id="note" placeholder="Keterangan / Peruntukan..." class="w-full p-6 bg-black rounded-2xl font-bold text-center mb-8 outline-none text-white border border-white/10 text-lg">
-
-            <div class="flex gap-4">
-                <button onclick="closeInput()" class="flex-1 bg-white/5 text-slate-400 font-black py-6 rounded-3xl text-xs uppercase">BATAL</button>
-                <button id="btn-save-confirm" onclick="saveData()" class="flex-[2] bg-macca-green text-black font-black py-6 rounded-3xl text-xs uppercase shadow-xl tracking-widest">SIMPAN DATA</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="section-app" class="hidden min-h-screen">
-        <nav class="bg-macca-dark/80 backdrop-blur-md text-white px-6 py-6 flex justify-between items-center sticky top-0 z-40 border-b border-white/5">
+    <div id="section-app" class="hidden">
+        <nav class="px-6 py-5 flex justify-between items-center bg-macca-dark sticky top-0 z-40 border-b border-white/5">
             <div>
-                <h1 class="text-xl font-black tracking-tighter italic text-macca-yellow">MACCA<span class="text-white">STOCK</span></h1>
-                <p id="label-user" class="text-[10px] text-macca-green font-bold uppercase"></p>
+                <h1 class="text-xl font-black italic text-macca-yellow uppercase">Macca Stock</h1>
+                <p id="display-user-name" class="text-[10px] text-macca-green font-bold uppercase"></p>
             </div>
-            <button onclick="location.reload()" class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-red-500 border border-white/10"><i class="fas fa-power-off"></i></button>
+            <button onclick="location.reload()" class="w-10 h-10 bg-macca-card rounded-xl flex items-center justify-center text-macca-red border border-white/10"><i class="fas fa-power-off"></i></button>
         </nav>
 
-        <main class="max-w-md mx-auto p-6 space-y-6">
-            <div class="grid grid-cols-1 gap-4">
-                <div class="bg-macca-card p-6 rounded-[2.5rem] border border-white/5 flex justify-between items-center">
-                    <div><p class="text-[10px] font-bold text-slate-500 mb-1 tracking-widest uppercase">Ayam Mentah</p><h2 id="stat-mentah-main" class="text-4xl font-black text-macca-blue">0</h2></div>
-                    <i class="fas fa-box text-macca-blue/10 text-5xl"></i>
-                </div>
-                <div class="bg-macca-card p-6 rounded-[2.5rem] border border-white/5 flex justify-between items-center">
-                    <div><p class="text-[10px] font-bold text-slate-500 mb-1 tracking-widest uppercase">Ayam Ungkep</p><h2 id="stat-ungkep-main" class="text-4xl font-black text-macca-yellow">0</h2></div>
-                    <i class="fas fa-drumstick-bite text-macca-yellow/10 text-5xl"></i>
-                </div>
-                <div class="bg-macca-card p-6 rounded-[2.5rem] border border-white/5 flex justify-between items-center">
-                    <div><p class="text-[10px] font-bold text-slate-500 mb-1 tracking-widest uppercase">Ikan</p><h2 id="stat-ikan-main" class="text-4xl font-black text-macca-green">0</h2></div>
-                    <i class="fas fa-fish text-macca-green/10 text-5xl"></i>
-                </div>
-            </div>
+        <main class="max-w-md mx-auto p-4">
+            
+            <div id="tab-home" class="tab-content active space-y-6">
+                <section class="bg-macca-card rounded-[2.5rem] p-6 border border-white/5 shadow-xl text-center">
+                    <p class="text-[10px] font-bold text-macca-green uppercase tracking-widest mb-1">Omzet Hari Ini</p>
+                    <h2 id="total-omzet" class="text-4xl font-black text-white mb-5">Rp 0</h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-black/30 p-4 rounded-2xl border border-white/5">
+                            <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Ayam</p>
+                            <h2 id="count-ayam-sales" class="text-xl font-black text-macca-yellow">0</h2>
+                            <p id="omzet-ayam" class="text-[9px] text-slate-400">Rp 0</p>
+                        </div>
+                        <div class="bg-black/30 p-4 rounded-2xl border border-white/5">
+                            <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Ikan</p>
+                            <h2 id="count-ikan-sales" class="text-xl font-black text-macca-blue">0</h2>
+                            <p id="omzet-ikan" class="text-[9px] text-slate-400">Rp 0</p>
+                        </div>
+                    </div>
+                </section>
 
-            <div id="panel-rekap" class="hidden bg-macca-card p-7 rounded-[3rem] border border-white/10 relative overflow-hidden">
-                <h3 class="text-sm font-black uppercase text-white italic mb-6">LAPORAN REKAP</h3>
                 <div class="grid grid-cols-3 gap-2">
-                    <button onclick="togglePicker('hari')" class="py-4 bg-white/5 rounded-2xl text-[10px] font-black uppercase">Hari</button>
-                    <button onclick="togglePicker('bulan')" class="py-4 bg-white/5 rounded-2xl text-[10px] font-black uppercase">Bulan</button>
-                    <button onclick="togglePicker('tahun')" class="py-4 bg-white/5 rounded-2xl text-[10px] font-black uppercase">Tahun</button>
-                </div>
-                <div id="date-picker-ui" class="hidden absolute inset-0 bg-macca-card z-20 p-6 flex flex-col justify-center">
-                    <div class="flex justify-between items-center mb-4"><span id="picker-title" class="text-xs font-black text-macca-yellow uppercase"></span><button onclick="hidePicker()"><i class="fas fa-times-circle"></i></button></div>
-                    <div id="picker-content" class="space-y-4"></div>
-                </div>
-                <div id="rekap-display" class="hidden mt-6 space-y-4 bg-black/50 p-6 rounded-3xl border border-white/5">
-                    <p id="rekap-title" class="text-center font-black text-macca-yellow text-xs uppercase border-b border-white/10 pb-3 italic"></p>
-                    <div id="rekap-stats-body" class="text-[10px] space-y-2"></div>
-                </div>
-            </div>
-
-            <div class="space-y-4 pb-32">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-black text-white uppercase italic tracking-widest">AKTIVITAS TERBARU</h3>
-                    <div class="flex bg-macca-card p-1 rounded-full border border-white/10">
-                        <button onclick="setTab('Mentah')" id="btn-tab-mentah" class="text-[9px] font-black px-4 py-2 rounded-full text-slate-500">MENTAH</button>
-                        <button onclick="setTab('Ungkep')" id="btn-tab-ungkep" class="text-[9px] font-black px-4 py-2 rounded-full bg-macca-yellow text-black">UNGKEP</button>
-                        <button onclick="setTab('Ikan')" id="btn-tab-ikan" class="text-[9px] font-black px-4 py-2 rounded-full text-slate-500">IKAN</button>
+                    <div class="bg-macca-card p-4 rounded-2xl border border-white/5 text-center">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase mb-1">Mentah</p>
+                        <p id="stat-mentah-main" class="text-xl font-black text-slate-300">0</p>
+                    </div>
+                    <div class="bg-macca-card p-4 rounded-2xl border border-white/5 text-center">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase mb-1">Ungkep</p>
+                        <p id="stat-ungkep-main" class="text-xl font-black text-macca-yellow">0</p>
+                    </div>
+                    <div class="bg-macca-card p-4 rounded-2xl border border-white/5 text-center">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase mb-1">Ikan</p>
+                        <p id="stat-ikan-main" class="text-xl font-black text-macca-green">0</p>
                     </div>
                 </div>
-                <div id="log-list" class="space-y-4"></div>
             </div>
+
+            <div id="tab-history" class="tab-content space-y-3">
+                <h3 class="text-xs font-black text-white uppercase italic tracking-widest px-2">Riwayat Hari Ini</h3>
+                <div id="history-list" class="space-y-3"></div>
+            </div>
+
+            <div id="tab-rekap" class="tab-content space-y-6">
+                <section class="space-y-3">
+                    <h3 class="text-xs font-black text-white uppercase italic tracking-widest px-2"><i class="fas fa-calendar-day mr-2 text-macca-yellow"></i>Rekap Hari Ini</h3>
+                    <div class="bg-macca-card rounded-3xl p-5 border border-white/5 shadow-xl">
+                        <table class="w-full text-[11px]">
+                            <tbody id="rekap-harian-body"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <div class="flex items-center justify-between px-2">
+                        <h3 class="text-xs font-black text-white uppercase italic tracking-widest"><i class="fas fa-calendar-alt mr-2 text-macca-blue"></i>Rekap Bulanan</h3>
+                        <input type="month" id="filter-bulan" class="bg-macca-card border border-white/10 rounded-lg text-[10px] p-2 outline-none text-macca-yellow">
+                    </div>
+                    <div class="bg-macca-card rounded-3xl p-5 border border-white/5 shadow-xl">
+                        <table class="w-full text-left text-[11px]">
+                            <thead>
+                                <tr class="text-slate-500 border-b border-white/5 font-bold uppercase">
+                                    <th class="py-3">Kategori</th>
+                                    <th class="py-3 text-right">Qty</th>
+                                    <th class="py-3 text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rekap-table-body"></tbody>
+                            <tfoot>
+                                <tr class="text-white border-t border-white/10">
+                                    <th class="py-4 font-black uppercase">GRAND TOTAL</th>
+                                    <th id="rekap-total-qty" class="py-4 text-right font-black">-</th>
+                                    <th id="rekap-grand-total" class="py-4 text-right font-black text-macca-green">-</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
         </main>
+    </div>
+
+    <div id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-macca-card border-t border-white/10 px-8 py-4 flex justify-between items-center z-50 hidden">
+        <button onclick="switchTab('home')" class="nav-item active flex flex-col items-center gap-1 transition-all">
+            <i class="fas fa-home text-xl"></i><span class="text-[9px] font-bold uppercase">Beranda</span>
+        </button>
+        <button onclick="switchTab('history')" class="nav-item flex flex-col items-center gap-1 transition-all">
+            <i class="fas fa-history text-xl"></i><span class="text-[9px] font-bold uppercase">Riwayat</span>
+        </button>
+        <button onclick="switchTab('rekap')" class="nav-item flex flex-col items-center gap-1 transition-all">
+            <i class="fas fa-chart-pie text-xl"></i><span class="text-[9px] font-bold uppercase">Rekap</span>
+        </button>
+    </div>
+
+    <div id="fab-container-right" class="fab-right hidden">
+        <div onclick="openInput('Ungkep')" class="fab-sub bg-macca-card border-2 border-macca-yellow"><span class="text-[9px] font-black text-macca-yellow uppercase">UNGKEP</span></div>
+        <div onclick="openInput('Ikan')" class="fab-sub bg-macca-card border-2 border-macca-green"><span class="text-[9px] font-black text-macca-green uppercase">IKAN</span></div>
+        <div onclick="openInput('Mentah')" class="fab-sub bg-macca-card border-2 border-macca-blue"><span class="text-[9px] font-black text-macca-blue uppercase">MENTAH</span></div>
+        <button id="main-fab-btn" onclick="toggleFab()" class="fab-main"><i class="fas fa-plus"></i></button>
+        <button id="quick-fab-btn" onclick="openQuickSale()" class="fab-quick hidden"><i class="fas fa-cash-register text-2xl mb-1"></i><span class="text-[8px] font-black uppercase">JUAL</span></button>
+    </div>
+
+    <div id="modal-input" class="fixed inset-0 z-[80] bg-black/95 hidden flex items-end justify-center">
+        <div class="bg-macca-card w-full max-w-md rounded-t-[3.5rem] p-7 pb-10 border-t border-white/10">
+            <div class="flex justify-between items-center mb-6 px-2">
+                <h2 class="text-3xl font-black uppercase italic text-macca-yellow" id="modal-title">QTY</h2>
+                <div id="price-tag" class="text-right"><p id="display-price" class="text-xl font-black text-macca-green">Rp 0</p></div>
+            </div>
+            <div id="item-selector" class="flex gap-3 mb-6 hidden">
+                <button onclick="selectItem('Ungkep')" id="sel-ayam" class="flex-1 py-5 rounded-2xl font-black text-sm border-2 border-macca-yellow text-macca-yellow">AYAM</button>
+                <button onclick="selectItem('Ikan')" id="sel-ikan" class="flex-1 py-5 rounded-2xl font-black text-sm border-2 border-white/5 text-slate-500">IKAN</button>
+            </div>
+            <input type="number" id="qty" placeholder="0" class="w-full text-center font-black text-macca-yellow bg-transparent outline-none mb-6">
+            <div id="note-section"><select id="note" class="w-full p-5 bg-black rounded-2xl font-black text-center mb-8 outline-none text-white border border-white/10 appearance-none uppercase"></select></div>
+            <div class="flex gap-3">
+                <button onclick="closeInput()" class="flex-1 py-6 rounded-3xl font-black text-slate-500 uppercase">Batal</button>
+                <button onclick="saveData()" class="flex-[2] bg-macca-green text-black font-black py-6 rounded-3xl uppercase active:scale-95">SIMPAN</button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -177,206 +203,207 @@
         const db = getDatabase(app);
         const dbRef = ref(db, 'stok_macca_v14_flow');
 
-        let userRole = ''; let userName = ''; let currentTab = 'Ungkep'; let currentMode = ''; let dataRaw = [];
-        let stockNow = { Mentah: 0, Ungkep: 0, Ikan: 0 };
-
-        window.toggleFab = () => document.getElementById('fab-menu').classList.toggle('active');
-        
-        window.openAuth = (r) => {
-            userRole = r;
-            document.getElementById('modal-auth').classList.remove('hidden');
-            document.getElementById('auth-title').innerText = r === 'admin' ? 'Kepala Dapur' : 'Staf Dapur';
-            r === 'admin' ? (document.getElementById('input-pass').classList.remove('hidden'), document.getElementById('input-user').classList.add('hidden')) : (document.getElementById('input-user').classList.remove('hidden'), document.getElementById('input-pass').classList.add('hidden'));
+        const PRICES = { "Ungkep": 14000, "Ikan": 13000, "Mentah": 0 };
+        const USERS = {
+            "1": { name: "Ibu Ati", type: "admin" },
+            "2": { name: "Nita (Asisten)", type: "admin" },
+            "3": { name: "Ara", type: "staff", notes: ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir"] },
+            "4": { name: "Dilla", type: "staff", notes: ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir"] },
+            "5": { name: "Rezky", type: "staff", notes: ["Penj. Gerai Depan"] },
+            "6": { name: "Sendy", type: "staff", notes: ["Penj. Gerai Depan"] }
         };
 
-        window.closeAuth = () => document.getElementById('modal-auth').classList.add('hidden');
+        let activeUser = null, dataRaw = [], currentTabItem = 'Ungkep', currentMode = '';
 
-        window.processLogin = () => {
-            if(userRole === 'admin') {
-                if(document.getElementById('input-pass').value === '1') { userName = 'Kepala Dapur'; initApp(); }
-                else alert('PIN SALAH!');
-            } else {
-                let n = document.getElementById('input-user').value;
-                if(n) { userName = n; initApp(); } else alert('ISI NAMA!');
-            }
+        // Inisialisasi Filter Bulan Saat Ini
+        const dNow = new Date();
+        const currentYearMonth = `${dNow.getFullYear()}-${(dNow.getMonth()+1).toString().padStart(2,'0')}`;
+        document.getElementById('filter-bulan').value = currentYearMonth;
+        document.getElementById('filter-bulan').addEventListener('change', () => render());
+
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
         };
 
-        function initApp() {
-            document.getElementById('section-login').classList.add('hidden');
-            document.getElementById('modal-auth').classList.add('hidden');
-            document.getElementById('section-app').classList.remove('hidden');
-            document.getElementById('fab-menu').classList.remove('hidden');
-            document.getElementById('label-user').innerText = 'User: ' + userName;
-            if(userRole === 'admin') {
-                document.getElementById('panel-rekap').classList.remove('hidden');
-                document.getElementById('fab-mentah').classList.remove('hidden');
-            }
-        }
+        window.handleLogin = () => {
+            const val = document.getElementById('login-code').value;
+            if (USERS[val]) { 
+                activeUser = USERS[val]; 
+                document.getElementById('section-login').classList.add('hidden');
+                document.getElementById('section-app').classList.remove('hidden');
+                document.getElementById('bottom-nav').classList.remove('hidden');
+                document.getElementById('display-user-name').innerText = activeUser.name;
+                document.getElementById('fab-container-right').classList.remove('hidden');
+                if(activeUser.type === "admin") {
+                    document.getElementById('main-fab-btn').classList.remove('hidden');
+                    document.getElementById('quick-fab-btn').classList.add('hidden');
+                } else {
+                    document.getElementById('main-fab-btn').classList.add('hidden');
+                    document.getElementById('quick-fab-btn').classList.remove('hidden');
+                }
+                onValue(dbRef, (snap) => { 
+                    dataRaw = snap.val() ? Object.values(snap.val()) : []; 
+                    render(); 
+                });
+            } else { alert("KODE SALAH!"); }
+        };
+
+        window.toggleFab = () => document.getElementById('fab-container-right').classList.toggle('active');
+
+        window.selectItem = (t) => {
+            currentTabItem = t;
+            document.getElementById('display-price').innerText = "Rp " + PRICES[t].toLocaleString();
+            document.getElementById('sel-ayam').className = t === 'Ungkep' ? 'flex-1 py-5 rounded-2xl font-black text-sm border-2 border-macca-yellow text-macca-yellow bg-macca-yellow/5' : 'flex-1 py-5 rounded-2xl font-black text-sm border-2 border-white/5 text-slate-500';
+            document.getElementById('sel-ikan').className = t === 'Ikan' ? 'flex-1 py-5 rounded-2xl font-black text-sm border-2 border-macca-green text-macca-green bg-macca-green/5' : 'flex-1 py-5 rounded-2xl font-black text-sm border-2 border-white/5 text-slate-500';
+        };
+
+        window.openQuickSale = () => {
+            document.getElementById('item-selector').classList.remove('hidden');
+            if (activeUser.notes && activeUser.notes.length > 1) {
+                document.getElementById('note-section').classList.remove('hidden');
+                const sel = document.getElementById('note');
+                sel.innerHTML = `<option value="" disabled selected>-- PILIH TUJUAN --</option>`;
+                activeUser.notes.forEach(n => { sel.innerHTML += `<option value="${n}">${n}</option>`; });
+            } else { document.getElementById('note-section').classList.add('hidden'); }
+            selectItem('Ungkep');
+            currentMode = 'Keluar';
+            document.getElementById('modal-title').innerText = 'JUAL';
+            document.getElementById('modal-input').classList.remove('hidden');
+        };
 
         window.openInput = (t) => {
-            currentTab = t; 
-            document.getElementById('input-tab-name').innerText = t;
-            document.getElementById('stat-current-modal').innerText = stockNow[t];
+            currentTabItem = t;
+            document.getElementById('modal-title').innerText = t;
             document.getElementById('modal-input').classList.remove('hidden');
-            document.getElementById('fab-menu').classList.remove('active');
-            const mc = document.getElementById('mode-container');
-            
-            if(userRole === 'admin') {
-                if(t === 'Mentah' || t === 'Ikan') {
-                    mc.innerHTML = `<button onclick="setMode('Masuk')" id="m-in" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-macca-blue text-white">ISI STOK (+)</button>`;
-                    setMode('Masuk');
-                } else if(t === 'Ungkep') {
-                    mc.innerHTML = `<button onclick="setMode('Proses Ungkep')" id="m-ung" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-macca-yellow text-black">UNGKEP DARI MENTAH (+)</button>`;
-                    setMode('Proses Ungkep');
-                }
-            } else {
-                if(t === 'Ungkep') {
-                    mc.innerHTML = `
-                        <button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-macca-red text-white">AMBIL (-)</button>
-                        <button onclick="setMode('Masuk')" id="m-ret" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-macca-green text-black">RETUR (+)</button>
-                    `;
-                    setMode('Keluar');
-                } else {
-                    mc.innerHTML = `<button onclick="setMode('Keluar')" id="m-out" class="flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-macca-red text-white">AMBIL (-)</button>`;
-                    setMode('Keluar');
-                }
-            }
+            document.getElementById('fab-container-right').classList.remove('active');
+            document.getElementById('item-selector').classList.add('hidden');
+            currentMode = t === 'Ungkep' ? 'Proses Ungkep' : 'Masuk';
+            document.getElementById('note-section').classList.add('hidden');
         };
 
-        window.setMode = (m) => { 
-            currentMode = m; 
-            const btns = document.querySelectorAll('#mode-container button');
-            btns.forEach(b => {
-                if(b.innerText.includes('AMBIL') && m === 'Keluar') b.className = "flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-macca-red text-white";
-                else if(b.innerText.includes('RETUR') && m === 'Masuk') b.className = "flex-1 py-5 rounded-2xl text-[10px] font-black uppercase bg-macca-green text-black";
-                else b.className = b.className.replace('bg-', 'bg-opacity-20 bg-'); 
-            });
-        };
-
-        window.closeInput = () => { document.getElementById('modal-input').classList.add('hidden'); document.getElementById('qty').value = ''; document.getElementById('note').value = ''; };
+        window.closeInput = () => { document.getElementById('modal-input').classList.add('hidden'); document.getElementById('qty').value = ''; };
 
         window.saveData = () => {
-            const v = parseInt(document.getElementById('qty').value);
-            let n = document.getElementById('note').value;
-            if(!v) return;
-
+            const valQty = parseInt(document.getElementById('qty').value);
+            if(!valQty) return alert("Isi Jumlah!");
+            let noteStr = (activeUser.type === 'admin' && currentMode !== 'Keluar') ? (currentMode === 'Proses Ungkep' ? "PROSES UNGKEP" : "TAMBAH STOK " + currentTabItem.toUpperCase()) : (document.getElementById('note-section').classList.contains('hidden') ? activeUser.notes[0] : document.getElementById('note').value);
+            if(!noteStr) return alert("Pilih Tujuan!");
+            const sellPrice = (noteStr.toLowerCase().includes('penj') || noteStr.toLowerCase().includes('grab') || noteStr.toLowerCase().includes('kasir') || noteStr.toLowerCase().includes('gerai')) ? PRICES[currentTabItem] : 0;
+            
             if(currentMode === 'Proses Ungkep') {
-                if(stockNow.Mentah < v) { alert('Stok Mentah tidak cukup!'); return; }
-                const finalNote = n || "Proses Ungkep Harian";
-                push(dbRef, { user: userName, type: 'Mentah', qty: v, status: 'Keluar', note: 'Ungkep: ' + finalNote, time: serverTimestamp() });
-                push(dbRef, { user: userName, type: 'Ungkep', qty: v, status: 'Masuk', note: 'Hasil: ' + finalNote, time: serverTimestamp() }).then(() => closeInput());
+                push(dbRef, { user: activeUser.name, type: 'Mentah', qty: valQty, status: 'Keluar', note: 'PROSES UNGKEP (KELUAR)', price: 0, time: serverTimestamp() });
+                push(dbRef, { user: activeUser.name, type: 'Ungkep', qty: valQty, status: 'Masuk', note: 'TAMBAH STOK UNGKEP (HASIL)', price: 0, time: serverTimestamp() }).then(() => closeInput());
             } else {
-                const finalNote = n || (currentMode === 'Masuk' && currentTab === 'Ungkep' ? "Pengembalian Stok (Retur)" : "Tanpa keterangan");
-                push(dbRef, { user: userName, type: currentTab, qty: v, status: currentMode, note: finalNote, time: serverTimestamp() }).then(() => closeInput());
+                push(dbRef, { user: activeUser.name, type: currentTabItem, qty: valQty, status: currentMode, note: noteStr, price: sellPrice, time: serverTimestamp() }).then(() => closeInput());
             }
         };
 
-        window.setTab = (t) => {
-            currentTab = t;
-            ['Mentah', 'Ungkep', 'Ikan'].forEach(tab => {
-                const el = document.getElementById('btn-tab-' + tab.toLowerCase());
-                el.className = t === tab ? 'text-[9px] font-black px-4 py-2 rounded-full bg-macca-yellow text-black' : 'text-[9px] font-black px-4 py-2 rounded-full text-slate-500';
-            });
-            render();
-        };
-
-        onValue(dbRef, (s) => { dataRaw = s.val() ? Object.values(s.val()) : []; render(); });
-
         function render() {
-            let sM = 0; let sU = 0; let sI = 0;
+            let sM = 0, sU = 0, sI = 0, omzHarianTotal = 0, aQtyHarian = 0, iQtyHarian = 0, aOmzHarian = 0, iOmzHarian = 0;
+            let rekapHarian = {};
+            let rekapBulanan = {}; let rGrandQ = 0; let rGrandT = 0;
+            
+            const startToday = new Date().setHours(0,0,0,0);
+            const filterBln = document.getElementById('filter-bulan').value; // format YYYY-MM
+            
+            const hl = document.getElementById('history-list'); hl.innerHTML = '';
+
             dataRaw.forEach(i => {
                 const add = (i.status === 'Masuk') ? i.qty : -i.qty;
                 if(i.type === 'Mentah') sM += add;
                 else if(i.type === 'Ungkep') sU += add;
                 else if(i.type === 'Ikan') sI += add;
-            });
-            stockNow = { Mentah: sM, Ungkep: sU, Ikan: sI };
-            document.getElementById('stat-mentah-main').innerText = sM;
-            document.getElementById('stat-ungkep-main').innerText = sU;
-            document.getElementById('stat-ikan-main').innerText = sI;
-            document.getElementById('stat-mentah-fab').innerText = sM;
-            document.getElementById('stat-ungkep-fab').innerText = sU;
-            document.getElementById('stat-ikan-fab').innerText = sI;
 
-            const list = document.getElementById('log-list'); list.innerHTML = '';
-            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-            
-            dataRaw.slice().reverse().filter(i => i.type === currentTab).slice(0, 15).forEach(i => {
                 const dt = new Date(i.time);
-                const dayName = days[dt.getDay()];
-                const datePart = `${dt.getDate().toString().padStart(2,'0')}/${(dt.getMonth()+1).toString().padStart(2,'0')}/${dt.getFullYear().toString().substr(-2)}`;
-                const timePart = `${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
-                const fullDateTime = `${dayName}, ${datePart} • ${timePart}`;
+                const isSale = i.price > 0;
                 
-                let color = i.status === 'Keluar' ? 'text-macca-red bg-macca-red/10' : 'text-macca-green bg-macca-green/10';
-                let sign = i.status === 'Keluar' ? '-' : '+';
-                
-                list.innerHTML += `
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 flex justify-between items-center">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black ${color}">${sign}</div>
+                // Format YYYY-MM untuk pembandingan filter
+                const itemBulan = `${dt.getFullYear()}-${(dt.getMonth()+1).toString().padStart(2,'0')}`;
+
+                // --- REKAP HARIAN (Hari ini saja) ---
+                if(i.time >= startToday && isSale) {
+                    const lineTotal = i.qty * i.price;
+                    omzHarianTotal += lineTotal;
+                    if(i.type === 'Ungkep') { aQtyHarian += i.qty; aOmzHarian += lineTotal; } 
+                    else { iQtyHarian += i.qty; iOmzHarian += lineTotal; }
+                    
+                    if(!rekapHarian[i.note]) rekapHarian[i.note] = { qty: 0, total: 0 };
+                    rekapHarian[i.note].qty += i.qty;
+                    rekapHarian[i.note].total += lineTotal;
+                }
+
+                // --- REKAP BULANAN (Sesuai Filter Bulan) ---
+                if(itemBulan === filterBln && isSale) {
+                    if(!rekapBulanan[i.note]) rekapBulanan[i.note] = { qty: 0, total: 0 };
+                    rekapBulanan[i.note].qty += i.qty;
+                    rekapBulanan[i.note].total += (i.qty * i.price);
+                    rGrandQ += i.qty;
+                    rGrandT += (i.qty * i.price);
+                }
+
+                // --- RIWAYAT (Hari ini saja) ---
+                if(i.time >= startToday) {
+                    const tm = `${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
+                    const icon = i.status === 'Masuk' ? 'fa-arrow-down text-macca-green' : (isSale ? 'fa-tag text-macca-yellow' : 'fa-arrow-up text-macca-red');
+                    let labelTipe = i.type;
+                    if(isSale && i.type === 'Ungkep') labelTipe = 'AYAM';
+                    const labelFinal = isSale ? `PENJUALAN ${labelTipe.toUpperCase()}` : labelTipe.toUpperCase();
+
+                    hl.innerHTML = `
+                    <div class="bg-macca-card p-4 rounded-3xl border border-white/5 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-sm"><i class="fas ${icon}"></i></div>
                             <div>
-                                <h4 class="font-black text-xs text-white uppercase">${i.user}</h4>
-                                <p class="text-[8px] text-macca-yellow font-bold uppercase mb-1 tracking-tight">${fullDateTime}</p>
-                                <p class="text-[12px] text-slate-200 font-bold leading-tight italic">"${i.note}"</p>
+                                <h4 class="font-black text-[10px] text-white uppercase">${i.note} <span class="text-slate-600 ml-1">#${tm}</span></h4>
+                                <p class="text-[9px] text-slate-500 font-bold uppercase">${i.user} • ${labelFinal}</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-xl font-black ${i.status==='Keluar'?'text-white':'text-macca-green'}">${i.qty}</span>
+                            <p class="text-lg font-black ${i.status === 'Masuk' ? 'text-macca-green' : 'text-white'}">${i.status === 'Masuk' ? '+' : '-'}${i.qty}</p>
+                            ${isSale ? `<p class="text-[9px] font-bold text-macca-green">Rp ${(i.qty * i.price).toLocaleString()}</p>` : ''}
                         </div>
-                    </div>`;
+                    </div>` + hl.innerHTML;
+                }
             });
+
+            // Update Beranda
+            document.getElementById('stat-mentah-main').innerText = sM;
+            document.getElementById('stat-ungkep-main').innerText = sU;
+            document.getElementById('stat-ikan-main').innerText = sI;
+            document.getElementById('total-omzet').innerText = "Rp " + omzHarianTotal.toLocaleString();
+            document.getElementById('count-ayam-sales').innerText = aQtyHarian;
+            document.getElementById('count-ikan-sales').innerText = iQtyHarian;
+            document.getElementById('omzet-ayam').innerText = "Rp " + aOmzHarian.toLocaleString();
+            document.getElementById('omzet-ikan').innerText = "Rp " + iOmzHarian.toLocaleString();
+
+            // Render Tabel Harian
+            const rh = document.getElementById('rekap-harian-body'); rh.innerHTML = '';
+            const keysH = Object.keys(rekapHarian).sort();
+            if(keysH.length === 0) rh.innerHTML = '<tr><td class="py-3 text-center text-slate-500 font-bold uppercase">Belum ada penjualan hari ini</td></tr>';
+            keysH.forEach(key => {
+                rh.innerHTML += `<tr class="border-b border-white/5">
+                    <td class="py-3 text-slate-300 font-bold uppercase">${key}</td>
+                    <td class="py-3 text-right font-black text-white">${rekapHarian[key].qty}</td>
+                    <td class="py-3 text-right font-black text-macca-yellow">Rp ${rekapHarian[key].total.toLocaleString()}</td>
+                </tr>`;
+            });
+
+            // Render Tabel Bulanan
+            const rb = document.getElementById('rekap-table-body'); rb.innerHTML = '';
+            const keysB = Object.keys(rekapBulanan).sort();
+            keysB.forEach(key => {
+                rb.innerHTML += `<tr class="border-b border-white/5">
+                    <td class="py-3 text-slate-300 font-bold uppercase">${key}</td>
+                    <td class="py-3 text-right font-black">${rekapBulanan[key].qty}</td>
+                    <td class="py-3 text-right font-black text-macca-yellow">Rp ${rekapBulanan[key].total.toLocaleString()}</td>
+                </tr>`;
+            });
+            document.getElementById('rekap-total-qty').innerText = rGrandQ;
+            document.getElementById('rekap-grand-total').innerText = "Rp " + rGrandT.toLocaleString();
         }
-
-        window.togglePicker = (type) => {
-            const ui = document.getElementById('date-picker-ui');
-            ui.classList.remove('hidden');
-            const content = document.getElementById('picker-content');
-            content.innerHTML = '';
-            if(type === 'hari') {
-                document.getElementById('picker-title').innerText = 'PILIH TANGGAL';
-                content.innerHTML = `<input type="date" id="cal-input" class="w-full p-5 bg-black rounded-2xl text-macca-yellow font-black text-center outline-none border border-white/10"><button onclick="applyDate('hari')" class="w-full py-4 bg-macca-yellow text-black font-black rounded-xl">LIHAT</button>`;
-            } else if(type === 'bulan') {
-                const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-                let h = `<div class="grid grid-cols-3 gap-2">`;
-                months.forEach((m, idx) => h += `<button onclick="applyDate('bulan', ${idx})" class="py-3 bg-white/5 rounded-xl text-[9px] font-black uppercase">${m}</button>`);
-                content.innerHTML = h + `</div>`;
-            } else {
-                content.innerHTML = `<button onclick="applyDate('tahun', 2025)" class="w-full py-5 bg-white/5 rounded-2xl font-black text-macca-yellow text-xl">2025</button>`;
-            }
-        };
-
-        window.hidePicker = () => document.getElementById('date-picker-ui').classList.add('hidden');
-
-        window.applyDate = (type, val) => {
-            let start, end, label;
-            const now = new Date();
-            if(type === 'hari') {
-                const raw = document.getElementById('cal-input').value; if(!raw) return;
-                start = new Date(raw).setHours(0,0,0,0); end = new Date(raw).setHours(23,59,59,999); label = raw;
-            } else if(type === 'bulan') {
-                start = new Date(now.getFullYear(), val, 1).getTime();
-                end = new Date(now.getFullYear(), val + 1, 0, 23, 59, 59, 999).getTime();
-                label = 'BULAN ' + (val+1);
-            } else {
-                start = new Date(val, 0, 1).getTime(); end = new Date(val, 11, 31, 23, 59, 59, 999).getTime(); label = 'TAHUN ' + val;
-            }
-            const r = { mIn:0, mOut:0, uIn:0, uOut:0, iIn:0, iOut:0 };
-            dataRaw.filter(i => i.time >= start && i.time <= end).forEach(i => {
-                const k = i.type === 'Mentah' ? (i.status==='Masuk'?'mIn':'mOut') : (i.type==='Ungkep' ? (i.status==='Masuk'?'uIn':'uOut') : (i.status==='Masuk'?'iIn':'iOut'));
-                r[k] += i.qty;
-            });
-            hidePicker();
-            document.getElementById('rekap-display').classList.remove('hidden');
-            document.getElementById('rekap-title').innerText = label;
-            document.getElementById('rekap-stats-body').innerHTML = `
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="bg-white/5 p-3 rounded-xl">MENTAH: +${r.mIn} | -${r.mOut}</div>
-                    <div class="bg-white/5 p-3 rounded-xl">UNGKEP: +${r.uIn} | -${r.uOut}</div>
-                    <div class="bg-white/5 p-3 rounded-xl col-span-2 text-center">IKAN: +${r.iIn} | -${r.iOut}</div>
-                </div>
-            `;
-        };
     </script>
 </body>
 </html>
