@@ -173,7 +173,9 @@
                 <button onclick="selectItem('Ikan')" id="sel-ikan" class="flex-1 py-5 rounded-2xl font-black text-sm border-2 border-white/5 text-slate-500">IKAN</button>
             </div>
             <input type="number" id="qty" placeholder="0" class="w-full text-center font-black text-macca-yellow bg-transparent outline-none mb-6">
-            <div id="note-section"><select id="note" onchange="updatePriceDisplay()" class="w-full p-5 bg-black rounded-2xl font-black text-center mb-8 outline-none text-white border border-white/10 appearance-none uppercase"></select></div>
+            <div id="note-section">
+                <select id="note" onchange="updatePriceDisplay()" class="w-full p-5 bg-black rounded-2xl font-black text-center mb-8 outline-none text-white border border-white/10 appearance-none uppercase"></select>
+            </div>
             <div class="flex flex-col gap-3">
                 <div class="flex gap-3">
                     <button onclick="closeInput()" class="flex-1 py-6 rounded-3xl font-black text-slate-500 uppercase">Batal</button>
@@ -208,10 +210,10 @@
         const USERS = {
             "1": { name: "Ibu Ati", type: "admin" },
             "2": { name: "Nita (Asisten)", type: "admin" },
-            "3": { name: "Ara", type: "staff", notes: ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir", "Ayam Karyawan", "Ayam Rusak"] },
-            "4": { name: "Dilla", type: "staff", notes: ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir", "Ayam Karyawan", "Ayam Rusak"] },
-            "5": { name: "Rezky", type: "staff", notes: ["Penj. Gerai Depan"] },
-            "6": { name: "Sendy", type: "staff", notes: ["Penj. Gerai Depan"] }
+            "3": { name: "Ara", type: "staff", id: "3" },
+            "4": { name: "Dilla", type: "staff", id: "4" },
+            "5": { name: "Rezky", type: "staff", id: "5" },
+            "6": { name: "Sendy", type: "staff", id: "6" }
         };
 
         let activeUser = null, dataRaw = [], currentTabItem = 'Ungkep', currentMode = '';
@@ -237,6 +239,7 @@
                 document.getElementById('bottom-nav').classList.remove('hidden');
                 document.getElementById('display-user-name').innerText = activeUser.name;
                 document.getElementById('fab-container-right').classList.remove('hidden');
+                
                 if(activeUser.type === "admin") {
                     document.getElementById('main-fab-btn').classList.remove('hidden');
                     document.getElementById('quick-fab-btn').classList.add('hidden');
@@ -253,16 +256,46 @@
 
         window.toggleFab = () => document.getElementById('fab-container-right').classList.toggle('active');
 
+        // LOGIKA BARU: Filter Opsi Berdasarkan User & Tipe Item
+        window.updateNoteOptions = () => {
+            const sel = document.getElementById('note');
+            sel.innerHTML = `<option value="" disabled selected>-- PILIH TUJUAN --</option>`;
+            
+            let options = [];
+            
+            if (activeUser.id === "3" || activeUser.id === "4") {
+                if (currentTabItem === 'Ungkep') {
+                    // Semua Opsi Muncul untuk Ayam
+                    options = ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir", "Ayam Karyawan", "Ayam Rusak"];
+                } else if (currentTabItem === 'Ikan') {
+                    // Opsi Terbatas untuk Ikan (Merubah Ayam jadi Ikan)
+                    options = ["Penj. Kasir", "Penj. Grab", "Ikan Karyawan", "Ikan Rusak"];
+                }
+            } else if (activeUser.id === "5" || activeUser.id === "6") {
+                options = ["Penj. Gerai Depan"];
+            }
+
+            options.forEach(n => {
+                sel.innerHTML += `<option value="${n}">${n}</option>`;
+            });
+            
+            // Auto select if only 1 option
+            if (options.length === 1) {
+                sel.value = options[0];
+            }
+        };
+
         window.selectItem = (t) => {
             currentTabItem = t;
+            updateNoteOptions();
             updatePriceDisplay();
             document.getElementById('sel-ayam').className = t === 'Ungkep' ? 'flex-1 py-5 rounded-2xl font-black text-sm border-2 border-macca-yellow text-macca-yellow bg-macca-yellow/5' : 'flex-1 py-5 rounded-2xl font-black text-sm border-2 border-white/5 text-slate-500';
             document.getElementById('sel-ikan').className = t === 'Ikan' ? 'flex-1 py-5 rounded-2xl font-black text-sm border-2 border-macca-green text-macca-green bg-macca-green/5' : 'flex-1 py-5 rounded-2xl font-black text-sm border-2 border-white/5 text-slate-500';
         };
 
-        // Fungsi baru untuk update tampilan harga di modal
         window.updatePriceDisplay = () => {
             const noteVal = document.getElementById('note').value.toLowerCase();
+            // List item harga 0
             const freeItems = ['nasi goreng', 'suir', 'karyawan', 'rusak'];
             const isFree = freeItems.some(item => noteVal.includes(item));
             
@@ -277,19 +310,10 @@
             document.getElementById('item-selector').classList.remove('hidden');
             document.getElementById('btn-save-qris').classList.remove('hidden');
             document.getElementById('btn-save-cash').innerText = 'SIMPAN (CASH)';
-            
-            const sel = document.getElementById('note');
-            if (activeUser.notes && activeUser.notes.length > 1) {
-                document.getElementById('note-section').classList.remove('hidden');
-                sel.innerHTML = `<option value="" disabled selected>-- PILIH TUJUAN --</option>`;
-                activeUser.notes.forEach(n => { sel.innerHTML += `<option value="${n}">${n}</option>`; });
-            } else { 
-                document.getElementById('note-section').classList.add('hidden'); 
-                sel.innerHTML = `<option value="${activeUser.notes[0]}">${activeUser.notes[0]}</option>`;
-            }
+            document.getElementById('note-section').classList.remove('hidden');
             
             currentMode = 'Keluar';
-            selectItem('Ungkep');
+            selectItem('Ungkep'); // Default Ayam
             document.getElementById('modal-title').innerText = 'JUAL';
             document.getElementById('modal-input').classList.remove('hidden');
         };
@@ -313,13 +337,13 @@
             const valQty = parseInt(document.getElementById('qty').value);
             if(!valQty) return alert("Isi Jumlah!");
             
+            const selNode = document.getElementById('note');
             let noteStr = (activeUser.type === 'admin' && currentMode !== 'Keluar') 
                 ? (currentMode === 'Proses Ungkep' ? "PROSES UNGKEP" : "TAMBAH STOK " + currentTabItem.toUpperCase()) 
-                : document.getElementById('note').value;
+                : selNode.value;
                 
-            if(!noteStr) return alert("Pilih Tujuan!");
+            if(!noteStr && currentMode === 'Keluar') return alert("Pilih Tujuan!");
             
-            // Logika Harga: Jika mengandung kata-kata freeItems, harga jadi 0
             const freeItems = ['nasi goreng', 'suir', 'karyawan', 'rusak'];
             const isFreeItem = freeItems.some(term => noteStr.toLowerCase().includes(term));
             
@@ -359,7 +383,6 @@
                 const isQRIS = i.note.includes("(QRIS)");
                 const itemBulan = `${dt.getFullYear()}-${(dt.getMonth()+1).toString().padStart(2,'0')}`;
 
-                // --- LOGIKA DASHBOARD HOME (Hanya Tunai) ---
                 if(i.time >= startToday && isSale && !isQRIS) {
                     const lineTotal = i.qty * i.price;
                     omzHarianTunai += lineTotal;
@@ -367,15 +390,12 @@
                     else if(i.type === 'Ikan') { iQtyTunai += i.qty; iOmzTunai += lineTotal; }
                 }
 
-                // --- REKAP HARIAN (Semua yang berharga > 0 masuk rekap omzet) ---
                 if(i.time >= startToday && (isSale || i.status === 'Keluar')) {
-                    const key = i.note;
-                    if(!rekapHarian[key]) rekapHarian[key] = { qty: 0, total: 0 };
-                    rekapHarian[key].qty += i.qty;
-                    rekapHarian[key].total += (i.qty * i.price);
+                    if(!rekapHarian[i.note]) rekapHarian[i.note] = { qty: 0, total: 0 };
+                    rekapHarian[i.note].qty += i.qty;
+                    rekapHarian[i.note].total += (i.qty * i.price);
                 }
 
-                // --- REKAP BULANAN ---
                 if(itemBulan === filterBln && (isSale || i.status === 'Keluar')) {
                     if(!rekapBulanan[i.note]) rekapBulanan[i.note] = { qty: 0, total: 0 };
                     rekapBulanan[i.note].qty += i.qty;
@@ -384,16 +404,14 @@
                     rGrandT += (i.qty * i.price);
                 }
 
-                // --- RIWAYAT ---
                 if(i.time >= startToday) {
                     const tm = `${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
                     const icon = i.status === 'Masuk' ? 'fa-arrow-down text-macca-green' : (isSale ? (isQRIS ? 'fa-qrcode text-macca-purple' : 'fa-tag text-macca-yellow') : 'fa-arrow-up text-macca-red');
-                    let labelTipe = i.type;
-                    if(i.status === 'Keluar' && i.type === 'Ungkep') labelTipe = 'AYAM';
+                    let labelTipe = i.type === 'Ungkep' ? 'AYAM' : i.type.toUpperCase();
                     
                     const freeItems = ['nasi goreng', 'suir', 'karyawan', 'rusak'];
                     const isFree = freeItems.some(term => i.note.toLowerCase().includes(term));
-                    const labelFinal = isFree ? `PENGGUNAAN ${labelTipe.toUpperCase()}` : (isSale ? `PENJUALAN ${labelTipe.toUpperCase()}` : labelTipe.toUpperCase());
+                    const labelFinal = isFree ? `PENGGUNAAN ${labelTipe}` : (isSale ? `PENJUALAN ${labelTipe}` : labelTipe);
 
                     hl.innerHTML = `
                     <div class="bg-macca-card p-4 rounded-3xl border border-white/5 flex items-center justify-between">
@@ -412,7 +430,6 @@
                 }
             });
 
-            // Update UI
             document.getElementById('stat-mentah-main').innerText = sM;
             document.getElementById('stat-ungkep-main').innerText = sU;
             document.getElementById('stat-ikan-main').innerText = sI;
