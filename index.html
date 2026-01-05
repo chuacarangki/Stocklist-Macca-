@@ -15,28 +15,15 @@
                 extend: {
                     colors: {
                         'macca-dark': '#0a0a0c',
-                        'macca-card': '#16161a',
+                        'macca-card': 'rgba(22, 22, 26, 0.8)',
                         'macca-yellow': '#fbbf24',
+                        'macca-gold': '#d4af37',
                         'macca-green': '#22c55e',
                         'macca-blue': '#3b82f6',
                         'macca-red': '#ef4444',
                         'macca-purple': '#a855f7',
                         'macca-cyan': '#06b6d4',
                         'macca-orange': '#f97316',
-                    },
-                    animation: {
-                        'slide-down': 'slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
-                        'fade-out': 'fadeOut 0.5s ease forwards',
-                    },
-                    keyframes: {
-                        slideDown: {
-                            '0%': { transform: 'translateY(-100%)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                        fadeOut: {
-                            '0%': { opacity: '1' },
-                            '100%': { opacity: '0' },
-                        }
                     }
                 }
             }
@@ -44,31 +31,29 @@
     </script>
 
     <style>
-        body { background-color: #0a0a0c; color: white; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #0a0a0c; color: white; font-family: 'Plus Jakarta Sans', sans-serif; background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.05), transparent); }
+        .glass { background: rgba(22, 22, 26, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .nav-item.active { color: #fbbf24; }
-        .nav-item.active i { transform: translateY(-3px); color: #fbbf24; }
+        .tab-content.active { display: block; }
+        .nav-item.active { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.4); }
         .fab-right { position: fixed; bottom: 100px; right: 20px; z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 12px; }
         .fab-sub { width: 60px; height: 60px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0); opacity: 0; pointer-events: none; }
-        .fab-main { width: 70px; height: 70px; border-radius: 50%; background: #fbbf24; color: #000; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3); z-index: 52; }
-        .fab-quick { width: 70px; height: 70px; border-radius: 50%; background: #ef4444; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3); border: 3px solid #0a0a0c; }
+        .fab-main { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24, #d4af37); color: #000; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+        .fab-quick { width: 70px; height: 70px; border-radius: 50%; background: #ef4444; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .fab-right.active .fab-sub { transform: scale(1); opacity: 1; pointer-events: auto; }
-        #qty { font-size: 80px !important; line-height: 1; height: 100px; }
-        ::-webkit-scrollbar { width: 0px; }
-        input[type="date"], input[type="month"] { color-scheme: dark; }
-        
+        #qty { font-size: 80px !important; color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.2); }
         #welcome-toast.show { display: flex; animation: slideDown 0.5s forwards; }
-        #welcome-toast.hide { animation: fadeOut 0.5s forwards; }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+        
+        /* Style untuk tombol aktif di selector */
+        .btn-sel-active { border-color: #fbbf24 !important; color: #fbbf24 !important; transform: scale(1.05); }
+        .btn-sel-inactive { border-color: rgba(255,255,255,0.05) !important; color: #64748b !important; }
     </style>
 </head>
 <body class="antialiased pb-24">
 
     <div id="welcome-toast" class="hidden fixed top-6 left-4 right-4 z-[200] bg-macca-yellow rounded-3xl p-4 shadow-2xl items-center gap-4 border-2 border-white/20">
-        <div class="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-macca-yellow text-xl">
-            <i class="fas fa-hand-sparkles"></i>
-        </div>
+        <div class="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-macca-yellow text-xl"><i class="fas fa-hand-sparkles"></i></div>
         <div>
             <p class="text-[10px] font-black text-black/60 uppercase tracking-widest">Selamat Bekerja,</p>
             <h4 id="toast-user-name" class="text-lg font-black text-black leading-tight uppercase">USER</h4>
@@ -76,31 +61,31 @@
     </div>
 
     <div id="section-login" class="fixed inset-0 z-[100] bg-macca-dark flex flex-col items-center justify-center px-8 text-center">
-        <h1 class="text-5xl font-black text-macca-yellow italic mb-1 uppercase">MACCA<span class="text-white">.v19</span></h1>
-        <p class="text-slate-500 text-[10px] font-bold uppercase mb-10 tracking-widest">Management System</p>
+        <h1 class="text-5xl font-black text-macca-yellow italic mb-1 uppercase tracking-tighter">MACCA<span class="text-white">.v19</span></h1>
+        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-10">Inventory Management</p>
         <div class="w-full max-w-xs space-y-5">
-            <input type="password" id="login-code" inputmode="numeric" placeholder="KODE" class="w-full p-5 bg-macca-card rounded-3xl text-center text-4xl font-black text-macca-yellow outline-none border border-white/10">
-            <button onclick="handleLogin()" class="w-full bg-macca-yellow text-black font-black py-6 rounded-3xl uppercase tracking-widest active:scale-95 transition-transform">MASUK</button>
+            <input type="password" id="login-code" inputmode="numeric" placeholder="KODE" class="glass w-full p-5 rounded-3xl text-center text-4xl font-black text-macca-yellow outline-none border-2 border-white/5 focus:border-macca-yellow/30 transition-all">
+            <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-macca-yellow to-macca-gold text-black font-black py-6 rounded-3xl uppercase shadow-lg shadow-macca-yellow/20 hover:scale-[1.02] active:scale-95 transition-all"><i class="fas fa-sign-in-alt mr-2"></i> MASUK</button>
         </div>
     </div>
 
     <div id="section-app" class="hidden">
-        <nav class="px-6 py-5 flex justify-between items-center bg-macca-dark sticky top-0 z-40 border-b border-white/5">
+        <nav class="px-6 py-5 flex justify-between items-center bg-macca-dark/80 backdrop-blur-md sticky top-0 z-40 border-b border-white/5">
             <div>
                 <h1 class="text-xl font-black italic text-macca-yellow uppercase">Macca Stock</h1>
                 <p id="display-user-name" class="text-[10px] text-macca-green font-bold uppercase"></p>
             </div>
-            <button onclick="location.reload()" class="w-10 h-10 bg-macca-card rounded-xl flex items-center justify-center text-macca-red border border-white/10"><i class="fas fa-power-off"></i></button>
+            <button onclick="location.reload()" class="w-10 h-10 glass rounded-xl flex items-center justify-center text-macca-red"><i class="fas fa-power-off"></i></button>
         </nav>
 
         <main class="max-w-md mx-auto p-4">
             <div id="tab-home" class="tab-content active space-y-6">
-                <section class="bg-macca-card rounded-[2.5rem] p-6 border border-white/5 shadow-xl text-center">
+                <section class="glass rounded-[2.5rem] p-6 shadow-xl text-center">
                     <p class="text-[10px] font-bold text-macca-green uppercase tracking-widest mb-1">Omzet Tunai Hari Ini</p>
                     <h2 id="total-omzet" class="text-4xl font-black text-white mb-5">Rp 0</h2>
                     <div class="grid grid-cols-3 gap-2">
                         <div class="bg-black/30 p-3 rounded-2xl border border-white/5 text-left">
-                            <p class="text-[8px] text-slate-500 uppercase font-bold mb-1">Ayam</p>
+                            <p class="text-[8px] text-slate-500 uppercase font-bold mb-1">Ayam/Crispy</p>
                             <h2 id="count-ayam-sales" class="text-lg font-black text-macca-yellow">0</h2>
                             <p id="omzet-ayam" class="text-[8px] text-slate-400">Rp 0</p>
                         </div>
@@ -118,69 +103,39 @@
                 </section>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px]">
-                        <p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2 tracking-wider">Ayam Mentah</p>
-                        <p id="stat-mentah-main" class="text-3xl font-black text-slate-300">0</p>
-                    </div>
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px]">
-                        <p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2 tracking-wider">Ayam Ungkep</p>
-                        <p id="stat-ungkep-main" class="text-3xl font-black text-macca-yellow">0</p>
-                    </div>
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px] col-span-2 border-macca-orange/20">
-                        <p class="text-[10px] font-extrabold text-macca-orange uppercase mb-1 tracking-widest">Ayam Crispy</p>
-                        <p id="stat-crispy-main" class="text-4xl font-black text-white">0</p>
-                    </div>
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px]">
-                        <p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2 tracking-wider">Ikan Bandeng</p>
-                        <p id="stat-ikan-main" class="text-3xl font-black text-macca-green">0</p>
-                    </div>
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px]">
-                        <p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2 tracking-wider">Ikan Laut</p>
-                        <p id="stat-ikanlaut-main" class="text-3xl font-black text-macca-cyan">0</p>
-                    </div>
+                    <div class="glass p-5 rounded-[2rem] text-center"><p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2">Mentah</p><p id="stat-mentah-main" class="text-3xl font-black text-slate-300">0</p></div>
+                    <div class="glass p-5 rounded-[2rem] text-center"><p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2">Ungkep</p><p id="stat-ungkep-main" class="text-3xl font-black text-macca-yellow">0</p></div>
+                    <div class="glass p-5 rounded-[2rem] text-center col-span-2 border-macca-orange/20"><p class="text-[10px] font-extrabold text-macca-orange uppercase mb-1">Crispy</p><p id="stat-crispy-main" class="text-4xl font-black text-white">0</p></div>
+                    <div class="glass p-5 rounded-[2rem] text-center"><p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2">Bandeng</p><p id="stat-ikan-main" class="text-3xl font-black text-macca-green">0</p></div>
+                    <div class="glass p-5 rounded-[2rem] text-center"><p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2">I.Laut</p><p id="stat-ikanlaut-main" class="text-3xl font-black text-macca-cyan">0</p></div>
                 </div>
             </div>
 
             <div id="tab-history" class="tab-content space-y-3">
-                <h3 class="text-xs font-black text-white uppercase italic tracking-widest px-2">Riwayat Hari Ini</h3>
+                <h3 class="text-xs font-black text-white uppercase italic tracking-widest px-2"><i class="fas fa-history mr-2 text-macca-yellow"></i>Riwayat Hari Ini</h3>
                 <div id="history-list" class="space-y-3"></div>
             </div>
 
             <div id="tab-rekap" class="tab-content space-y-6">
                 <section class="space-y-3">
                     <div class="flex items-center justify-between px-2">
-                        <h3 class="text-xs font-black text-white uppercase italic tracking-widest"><i class="fas fa-calendar-day mr-2 text-macca-yellow"></i>Rekap Harian</h3>
-                        <input type="date" id="filter-tanggal" class="bg-macca-card border border-white/10 rounded-lg text-[10px] p-2 outline-none text-macca-yellow">
+                        <h3 class="text-xs font-black text-white uppercase italic tracking-widest">Rekap Harian</h3>
+                        <input type="date" id="filter-tanggal" class="glass rounded-lg text-[10px] p-2 outline-none text-macca-yellow">
                     </div>
-                    <div class="bg-macca-card rounded-3xl p-5 border border-white/5 shadow-xl overflow-hidden">
-                        <table class="w-full text-[11px]">
-                            <tbody id="rekap-harian-body"></tbody>
-                        </table>
+                    <div class="glass rounded-3xl p-5 overflow-hidden">
+                        <table class="w-full text-[11px]"><tbody id="rekap-harian-body"></tbody></table>
                     </div>
                 </section>
-
                 <section class="space-y-3">
                     <div class="flex items-center justify-between px-2">
-                        <h3 class="text-xs font-black text-white uppercase italic tracking-widest"><i class="fas fa-calendar-alt mr-2 text-macca-blue"></i>Rekap Bulanan</h3>
-                        <input type="month" id="filter-bulan" class="bg-macca-card border border-white/10 rounded-lg text-[10px] p-2 outline-none text-macca-yellow">
+                        <h3 class="text-xs font-black text-white uppercase italic tracking-widest">Rekap Bulanan</h3>
+                        <input type="month" id="filter-bulan" class="glass rounded-lg text-[10px] p-2 outline-none text-macca-yellow">
                     </div>
-                    <div class="bg-macca-card rounded-3xl p-5 border border-white/5 shadow-xl">
+                    <div class="glass rounded-3xl p-5 shadow-xl">
                         <table class="w-full text-left text-[11px]">
-                            <thead>
-                                <tr class="text-slate-500 border-b border-white/5 font-bold uppercase">
-                                    <th class="py-3">Kategori</th>
-                                    <th class="py-3 text-right">Qty</th>
-                                    <th class="py-3 text-right">Total</th>
-                                </tr>
-                            </thead>
+                            <thead><tr class="text-slate-500 border-b border-white/5 font-bold uppercase"><th class="py-3">Kategori</th><th class="py-3 text-right">Qty</th><th class="py-3 text-right">Total</th></tr></thead>
                             <tbody id="rekap-table-body"></tbody>
-                            <tfoot>
-                                <tr class="text-white border-t border-white/10">
-                                    <th class="py-4 font-black uppercase">TOTAL (CASH+QRIS)</th>
-                                    <th id="rekap-total-qty" class="py-4 text-right font-black">-</th>
-                                    <th id="rekap-grand-total" class="py-4 text-right font-black text-macca-green">-</th>
-                                </tr>
-                            </tfoot>
+                            <tfoot><tr class="text-white border-t border-white/10"><th class="py-4 font-black uppercase">TOTAL</th><th id="rekap-total-qty" class="py-4 text-right font-black">-</th><th id="rekap-grand-total" class="py-4 text-right font-black text-macca-green">-</th></tr></tfoot>
                         </table>
                     </div>
                 </section>
@@ -188,52 +143,42 @@
         </main>
     </div>
 
-    <div id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-macca-card border-t border-white/10 px-8 py-4 flex justify-between items-center z-50 hidden">
-        <button onclick="switchTab('home')" class="nav-item active flex flex-col items-center gap-1 transition-all">
-            <i class="fas fa-home text-xl"></i><span class="text-[9px] font-bold uppercase">Beranda</span>
-        </button>
-        <button onclick="switchTab('history')" class="nav-item flex flex-col items-center gap-1 transition-all">
-            <i class="fas fa-history text-xl"></i><span class="text-[9px] font-bold uppercase">Riwayat</span>
-        </button>
-        <button onclick="switchTab('rekap')" class="nav-item flex flex-col items-center gap-1 transition-all">
-            <i class="fas fa-chart-pie text-xl"></i><span class="text-[9px] font-bold uppercase">Rekap</span>
-        </button>
+    <div id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-macca-dark/90 backdrop-blur-xl border-t border-white/10 px-8 py-4 flex justify-between items-center z-50 hidden">
+        <button onclick="switchTab('home')" class="nav-item active flex flex-col items-center gap-1"><i class="fas fa-home text-xl"></i><span class="text-[9px] font-bold uppercase">Beranda</span></button>
+        <button onclick="switchTab('history')" class="nav-item flex flex-col items-center gap-1"><i class="fas fa-history text-xl"></i><span class="text-[9px] font-bold uppercase">Riwayat</span></button>
+        <button onclick="switchTab('rekap')" class="nav-item flex flex-col items-center gap-1"><i class="fas fa-chart-pie text-xl"></i><span class="text-[9px] font-bold uppercase">Rekap</span></button>
     </div>
 
     <div id="fab-container-right" class="fab-right hidden">
-        <div onclick="openInput('Crispy')" class="fab-sub bg-macca-card border-2 border-macca-orange"><span class="text-[9px] font-black text-macca-orange uppercase">CRISPY</span></div>
-        <div onclick="openInput('Ungkep')" class="fab-sub bg-macca-card border-2 border-macca-yellow"><span class="text-[9px] font-black text-macca-yellow uppercase">UNGKEP</span></div>
-        <div onclick="openInput('Ikan')" class="fab-sub bg-macca-card border-2 border-macca-green"><span class="text-[9px] font-black text-macca-green uppercase">I.BANDENG</span></div>
-        <div onclick="openInput('IkanLaut')" class="fab-sub bg-macca-card border-2 border-macca-cyan"><span class="text-[9px] font-black text-macca-cyan uppercase">I.LAUT</span></div>
-        <div onclick="openInput('Mentah')" class="fab-sub bg-macca-card border-2 border-macca-blue"><span class="text-[9px] font-black text-macca-blue uppercase">MENTAH</span></div>
+        <div onclick="openInput('Crispy')" class="fab-sub glass border-2 border-macca-orange"><span class="text-[9px] font-black text-macca-orange">CRISPY</span></div>
+        <div onclick="openInput('Ungkep')" class="fab-sub glass border-2 border-macca-yellow"><span class="text-[9px] font-black text-macca-yellow">UNGKEP</span></div>
+        <div onclick="openInput('Ikan')" class="fab-sub glass border-2 border-macca-green"><span class="text-[9px] font-black text-macca-green">BANDENG</span></div>
+        <div onclick="openInput('IkanLaut')" class="fab-sub glass border-2 border-macca-cyan"><span class="text-[9px] font-black text-macca-cyan">I.LAUT</span></div>
+        <div onclick="openInput('Mentah')" class="fab-sub glass border-2 border-macca-blue"><span class="text-[9px] font-black text-macca-blue">MENTAH</span></div>
         <button id="main-fab-btn" onclick="toggleFab()" class="fab-main"><i class="fas fa-plus"></i></button>
-        <button id="quick-fab-btn" onclick="openQuickSale()" class="fab-quick hidden"><i class="fas fa-cash-register text-2xl mb-1"></i><span class="text-[8px] font-black uppercase">JUAL</span></button>
+        <button id="quick-fab-btn" onclick="openQuickSale()" class="fab-quick hidden transition-transform active:scale-90 shadow-lg shadow-red-500/20"><i class="fas fa-cash-register text-2xl mb-1"></i><span class="text-[8px] font-black uppercase">JUAL</span></button>
     </div>
 
     <div id="modal-input" class="fixed inset-0 z-[80] bg-black/95 hidden flex items-end justify-center">
-        <div class="bg-macca-card w-full max-w-md rounded-t-[3.5rem] p-7 pb-10 border-t border-white/10">
-            <div class="flex justify-between items-center mb-6 px-2">
+        <div class="glass w-full max-w-md rounded-t-[3.5rem] p-7 pb-10 shadow-2xl transition-all">
+            <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-black uppercase italic text-macca-yellow" id="modal-title">QTY</h2>
-                <div id="price-tag" class="text-right"><p id="display-price" class="text-xl font-black text-macca-green">Rp 0</p></div>
+                <div id="price-tag"><p id="display-price" class="text-xl font-black text-macca-green">Rp 0</p></div>
             </div>
-            <div id="item-selector" class="flex gap-2 mb-6 hidden overflow-x-auto pb-4">
-                <button onclick="selectItem('Ungkep')" id="sel-ayam" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-yellow text-macca-yellow">AYAM</button>
-                <button onclick="selectItem('Crispy')" id="sel-crispy" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500">CRISPY</button>
-                <button onclick="selectItem('Ikan')" id="sel-ikan" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500">I.BANDENG</button>
-                <button onclick="selectItem('IkanLaut')" id="sel-ikanlaut" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500">I.LAUT</button>
+            <div id="item-selector" class="flex gap-2 mb-6 hidden overflow-x-auto pb-2">
+                <button onclick="selectItem('Ungkep')" id="sel-ungkep" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 transition-all">AYAM</button>
+                <button onclick="selectItem('Crispy')" id="sel-crispy" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 transition-all">CRISPY</button>
+                <button onclick="selectItem('Ikan')" id="sel-ikan" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 transition-all">BANDENG</button>
+                <button onclick="selectItem('IkanLaut')" id="sel-ikanlaut" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 transition-all">I.LAUT</button>
             </div>
-            <input type="number" id="qty" placeholder="0" class="w-full text-center font-black text-macca-yellow bg-transparent outline-none mb-6">
-            <div id="note-section">
-                <select id="note" onchange="updatePriceDisplay()" class="w-full p-5 bg-black rounded-2xl font-black text-center mb-8 outline-none text-white border border-white/10 appearance-none uppercase"></select>
-            </div>
+            <input type="number" id="qty" placeholder="0" class="w-full text-center font-black bg-transparent outline-none mb-6 text-macca-yellow">
+            <div id="note-section"><select id="note" onchange="updatePriceDisplay()" class="w-full p-5 bg-black/50 rounded-2xl font-black text-center mb-8 text-white uppercase border border-white/10 outline-none"></select></div>
             <div class="flex flex-col gap-3">
                 <div class="flex gap-3">
-                    <button onclick="closeInput()" class="flex-1 py-6 rounded-3xl font-black text-slate-500 uppercase">Batal</button>
-                    <button id="btn-save-cash" onclick="saveData('CASH')" class="flex-[2] bg-macca-green text-black font-black py-6 rounded-3xl uppercase active:scale-95">SIMPAN (CASH)</button>
+                    <button onclick="closeInput()" class="flex-1 py-6 rounded-3xl font-black text-slate-500 uppercase transition-all">Batal</button>
+                    <button id="btn-save-cash" onclick="saveData('CASH')" class="flex-[2] bg-gradient-to-r from-macca-green to-green-600 text-black font-black py-6 rounded-3xl uppercase shadow-lg shadow-green-500/20 transition-all active:scale-95"><i class="fas fa-save mr-2"></i> SIMPAN</button>
                 </div>
-                <button id="btn-save-qris" onclick="saveData('QRIS')" class="hidden w-full bg-macca-purple text-white font-black py-6 rounded-3xl uppercase active:scale-95 flex items-center justify-center gap-3">
-                    <i class="fas fa-qrcode"></i> SIMPAN (QRIS)
-                </button>
+                <button id="btn-save-qris" onclick="saveData('QRIS')" class="hidden w-full bg-macca-purple text-white font-black py-6 rounded-3xl uppercase shadow-lg shadow-purple-500/20 transition-all active:scale-95"><i class="fas fa-qrcode mr-2"></i> SIMPAN (QRIS)</button>
             </div>
         </div>
     </div>
@@ -256,7 +201,6 @@
         const db = getDatabase(app);
         const dbRef = ref(db, 'stok_macca_v14_flow');
 
-        // Added Crispy price
         const PRICES = { "Ungkep": 14000, "Crispy": 12000, "Ikan": 13000, "IkanLaut": 13000, "Mentah": 0 };
         const USERS = {
             "1": { name: "Ibu Ati", type: "admin" },
@@ -269,21 +213,6 @@
 
         let activeUser = null, dataRaw = [], currentTabItem = 'Ungkep', currentMode = '';
 
-        const dNow = new Date();
-        const year = dNow.getFullYear();
-        const month = (dNow.getMonth() + 1).toString().padStart(2, '0');
-        const day = dNow.getDate().toString().padStart(2, '0');
-        const currentYearMonth = `${year}-${month}`;
-        const currentFullDate = `${year}-${month}-${day}`;
-
-        window.onload = () => {
-            document.getElementById('filter-bulan').value = currentYearMonth;
-            document.getElementById('filter-tanggal').value = currentFullDate;
-        };
-
-        document.getElementById('filter-bulan').addEventListener('change', () => render());
-        document.getElementById('filter-tanggal').addEventListener('change', () => render());
-
         window.handleLogin = () => {
             const val = document.getElementById('login-code').value;
             if (USERS[val]) { 
@@ -294,7 +223,10 @@
                 document.getElementById('display-user-name').innerText = activeUser.name;
                 document.getElementById('fab-container-right').classList.remove('hidden');
                 
-                showWelcome(activeUser.name);
+                const toast = document.getElementById('welcome-toast');
+                document.getElementById('toast-user-name').innerText = activeUser.name;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
 
                 if(activeUser.type === "admin") {
                     document.getElementById('main-fab-btn').classList.remove('hidden');
@@ -306,21 +238,6 @@
                 onValue(dbRef, (snap) => { dataRaw = snap.val() ? Object.values(snap.val()) : []; render(); });
             } else { alert("KODE SALAH!"); }
         };
-
-        function showWelcome(name) {
-            const toast = document.getElementById('welcome-toast');
-            document.getElementById('toast-user-name').innerText = name;
-            toast.classList.remove('hidden');
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-                toast.classList.add('hide');
-                setTimeout(() => {
-                    toast.classList.add('hidden');
-                    toast.classList.remove('hide');
-                }, 500);
-            }, 3000);
-        }
 
         window.switchTab = (tabId) => {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -335,13 +252,16 @@
             const sel = document.getElementById('note');
             sel.innerHTML = `<option value="" disabled selected>-- PILIH TUJUAN --</option>`;
             let options = [];
-            if (activeUser.id === "3" || activeUser.id === "4") {
-                if (currentTabItem === 'Ungkep' || currentTabItem === 'Crispy') options = ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir", "Ayam Karyawan", "Ayam Rusak"];
-                else if (currentTabItem === 'Ikan') options = ["Penj. Kasir", "Penj. Grab", "Ikan Karyawan", "Ikan Rusak"];
-                else if (currentTabItem === 'IkanLaut') options = ["Penj. Kasir", "Penj. Grab", "Ikan Karyawan", "Ikan Rusak"];
-            } else if (activeUser.id === "5" || activeUser.id === "6") {
-                options = ["Penj. Gerai Depan"];
+            
+            if (["3","4","5","6"].includes(activeUser.id)) {
+                if (currentTabItem === 'Ungkep' || currentTabItem === 'Crispy') {
+                    options = ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir", "Ayam Karyawan", "Ayam Rusak"];
+                } else {
+                    options = ["Penj. Kasir", "Penj. Grab", "Karyawan", "Rusak"];
+                }
+                if (["5","6"].includes(activeUser.id)) options.unshift("Penj. Gerai Depan");
             }
+            
             options.forEach(n => { sel.innerHTML += `<option value="${n}">${n}</option>`; });
             if (options.length === 1) sel.value = options[0];
         };
@@ -350,18 +270,27 @@
             currentTabItem = t;
             updateNoteOptions();
             updatePriceDisplay();
-            document.getElementById('sel-ayam').className = t === 'Ungkep' ? 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-yellow text-macca-yellow bg-macca-yellow/5' : 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500';
-            document.getElementById('sel-crispy').className = t === 'Crispy' ? 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-orange text-macca-orange bg-macca-orange/5' : 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500';
-            document.getElementById('sel-ikan').className = t === 'Ikan' ? 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-green text-macca-green bg-macca-green/5' : 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500';
-            document.getElementById('sel-ikanlaut').className = t === 'IkanLaut' ? 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-cyan text-macca-cyan bg-macca-cyan/5' : 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500';
+            
+            // PERBAIKAN LOGIKA LINGKARAN KUNING:
+            ['ungkep', 'crispy', 'ikan', 'ikanlaut'].forEach(id => {
+                const btn = document.getElementById('sel-' + id);
+                if (btn) {
+                    if (t.toLowerCase() === id) {
+                        btn.classList.remove('btn-sel-inactive');
+                        btn.classList.add('btn-sel-active');
+                    } else {
+                        btn.classList.remove('btn-sel-active');
+                        btn.classList.add('btn-sel-inactive');
+                    }
+                }
+            });
         };
 
         window.updatePriceDisplay = () => {
             const noteVal = document.getElementById('note').value.toLowerCase();
             const freeItems = ['nasi goreng', 'suir', 'karyawan', 'rusak'];
             const isFree = freeItems.some(item => noteVal.includes(item));
-            if (isFree && currentMode === 'Keluar') document.getElementById('display-price').innerText = "Rp 0";
-            else document.getElementById('display-price').innerText = "Rp " + (PRICES[currentTabItem] || 0).toLocaleString();
+            document.getElementById('display-price').innerText = isFree ? "Rp 0" : "Rp " + (PRICES[currentTabItem] || 0).toLocaleString();
         };
 
         window.openQuickSale = () => {
@@ -377,14 +306,13 @@
 
         window.openInput = (t) => {
             currentTabItem = t;
-            document.getElementById('modal-title').innerText = (t === 'IkanLaut' ? 'I.LAUT' : (t === 'Crispy' ? 'CRISPY' : t));
+            document.getElementById('modal-title').innerText = t === 'Ungkep' ? 'AYAM' : t.toUpperCase();
             document.getElementById('modal-input').classList.remove('hidden');
-            document.getElementById('fab-container-right').classList.remove('active');
             document.getElementById('item-selector').classList.add('hidden');
             document.getElementById('btn-save-qris').classList.add('hidden');
             document.getElementById('btn-save-cash').innerText = 'SIMPAN';
-            currentMode = (t === 'Ungkep' || t === 'Crispy') ? `Tambah ${t}` : 'Masuk';
             document.getElementById('note-section').classList.add('hidden');
+            currentMode = (t === 'Ungkep' || t === 'Crispy') ? `Tambah ${t}` : 'Masuk';
             updatePriceDisplay();
         };
 
@@ -393,28 +321,46 @@
         window.saveData = (metode = 'CASH') => {
             const valQty = parseInt(document.getElementById('qty').value);
             if(!valQty) return alert("Isi Jumlah!");
+            
             const selNode = document.getElementById('note');
             let noteStr = (activeUser.type === 'admin' && currentMode !== 'Keluar') 
-                ? ("TAMBAH STOK " + currentTabItem.toUpperCase()) 
+                ? ("TAMBAH STOK " + (currentTabItem === 'Ungkep' ? 'UNGKEP' : currentTabItem.toUpperCase())) 
                 : selNode.value;
+
             if(!noteStr && currentMode === 'Keluar') return alert("Pilih Tujuan!");
-            const freeItems = ['nasi goreng', 'suir', 'karyawan', 'rusak'];
-            const isFreeItem = freeItems.some(term => noteStr.toLowerCase().includes(term));
+            
             let price = 0;
-            if (!isFreeItem) price = (noteStr.toLowerCase().includes('penj') || noteStr.toLowerCase().includes('grab') || noteStr.toLowerCase().includes('kasir') || noteStr.toLowerCase().includes('gerai')) ? PRICES[currentTabItem] : 0;
+            const noteLower = noteStr.toLowerCase();
+            const freeKeywords = ['nasi goreng', 'suir', 'karyawan', 'rusak'];
+            const isFree = freeKeywords.some(k => noteLower.includes(k));
+
+            if (!isFree) {
+                if (noteLower.includes('penj') || noteLower.includes('kasir') || noteLower.includes('grab') || noteLower.includes('gerai')) {
+                    price = PRICES[currentTabItem];
+                }
+            }
+
             let finalNote = noteStr;
             if(metode === 'QRIS' && price > 0) finalNote += " (QRIS)";
             
-            push(dbRef, { user: activeUser.name, type: currentTabItem, qty: valQty, status: currentMode === 'Keluar' ? 'Keluar' : 'Masuk', note: finalNote, price: price, time: serverTimestamp() }).then(() => closeInput());
+            if (activeUser.type === 'admin' && currentTabItem === 'Ungkep' && currentMode === 'Tambah Ungkep') {
+                push(dbRef, { user: activeUser.name, type: 'Ungkep', qty: valQty, status: 'Masuk', note: finalNote, price: 0, time: serverTimestamp() });
+                push(dbRef, { user: activeUser.name, type: 'Mentah', qty: valQty, status: 'Keluar', note: 'PROSES UNGKEP (AUTO)', price: 0, time: serverTimestamp() });
+            } else {
+                push(dbRef, { user: activeUser.name, type: currentTabItem, qty: valQty, status: currentMode === 'Keluar' ? 'Keluar' : 'Masuk', note: finalNote, price: price, time: serverTimestamp() });
+            }
+            
+            closeInput();
         };
 
         function render() {
             let sM = 0, sU = 0, sC = 0, sI = 0, sIL = 0; 
             let omzHarianTunai = 0, aQtyTunai = 0, iQtyTunai = 0, ilQtyTunai = 0, aOmzTunai = 0, iOmzTunai = 0, ilOmzTunai = 0;
             let rekapHarian = {}; let rekapBulanan = {}; let rGrandQ = 0; let rGrandT = 0;
+            
             const startToday = new Date().setHours(0,0,0,0);
-            const filterTgl = document.getElementById('filter-tanggal').value;
-            const filterBln = document.getElementById('filter-bulan').value;
+            const filterTgl = document.getElementById('filter-tanggal').value || new Date().toISOString().split('T')[0];
+            const filterBln = document.getElementById('filter-bulan').value || new Date().toISOString().slice(0,7);
             const hl = document.getElementById('history-list'); hl.innerHTML = '';
 
             dataRaw.forEach(i => {
@@ -429,7 +375,7 @@
                 const isSale = i.price > 0;
                 const isQRIS = i.note.includes("(QRIS)");
                 const itemTgl = dt.toISOString().split('T')[0];
-                const itemBulan = `${dt.getFullYear()}-${(dt.getMonth()+1).toString().padStart(2,'0')}`;
+                const itemBulan = dt.toISOString().slice(0,7);
 
                 if(i.time >= startToday && isSale && !isQRIS) {
                     const lineTotal = i.qty * i.price;
@@ -439,35 +385,41 @@
                     else if(i.type === 'IkanLaut') { ilQtyTunai += i.qty; ilOmzTunai += lineTotal; }
                 }
 
+                let displayType = i.type.toUpperCase();
+                if (i.type === 'Ungkep') {
+                    displayType = (i.status === 'Keluar') ? 'AYAM' : 'UNGKEP';
+                }
+                
+                const key = `${displayType} - ${i.note}`;
+
                 if(itemTgl === filterTgl && (isSale || i.status === 'Keluar')) {
-                    if(!rekapHarian[i.note]) rekapHarian[i.note] = { qty: 0, total: 0 };
-                    rekapHarian[i.note].qty += i.qty;
-                    rekapHarian[i.note].total += (i.qty * i.price);
+                    if(!rekapHarian[key]) rekapHarian[key] = { qty: 0, total: 0 };
+                    rekapHarian[key].qty += i.qty;
+                    rekapHarian[key].total += (i.qty * i.price);
                 }
 
                 if(itemBulan === filterBln && (isSale || i.status === 'Keluar')) {
-                    if(!rekapBulanan[i.note]) rekapBulanan[i.note] = { qty: 0, total: 0 };
-                    rekapBulanan[i.note].qty += i.qty;
-                    rekapBulanan[i.note].total += (i.qty * i.price);
+                    if(!rekapBulanan[key]) rekapBulanan[key] = { qty: 0, total: 0 };
+                    rekapBulanan[key].qty += i.qty;
+                    rekapBulanan[key].total += (i.qty * i.price);
                     rGrandQ += i.qty; rGrandT += (i.qty * i.price);
                 }
 
                 if(i.time >= startToday) {
                     const tm = `${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
                     const icon = i.status === 'Masuk' ? 'fa-arrow-down text-macca-green' : (isSale ? (isQRIS ? 'fa-qrcode text-macca-purple' : 'fa-tag text-macca-yellow') : 'fa-arrow-up text-macca-red');
-                    let labelTipe = (i.type === 'Ungkep') ? 'AYAM' : (i.type === 'Crispy' ? 'CRISPY' : (i.type === 'IkanLaut' ? 'I.LAUT' : (i.type === 'Ikan' ? 'I.BANDENG' : i.type.toUpperCase())));
                     hl.innerHTML = `
-                    <div class="bg-macca-card p-4 rounded-3xl border border-white/5 flex items-center justify-between">
+                    <div class="glass p-4 rounded-3xl border border-white/5 flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-sm"><i class="fas ${icon}"></i></div>
                             <div>
                                 <h4 class="font-black text-[10px] text-white uppercase">${i.note} <span class="text-slate-600 ml-1">#${tm}</span></h4>
-                                <p class="text-[9px] text-slate-500 font-bold uppercase">${i.user} • ${labelTipe}</p>
+                                <p class="text-[9px] text-slate-500 font-bold uppercase">${i.user} • ${displayType}</p>
                             </div>
                         </div>
                         <div class="text-right">
                             <p class="text-lg font-black ${i.status === 'Masuk' ? 'text-macca-green' : 'text-white'}">${i.status === 'Masuk' ? '+' : '-'}${i.qty}</p>
-                            ${i.price > 0 ? `<p class="text-[9px] font-bold ${isQRIS ? 'text-macca-purple' : 'text-macca-green'}">Rp ${(i.qty * i.price).toLocaleString()}</p>` : '<p class="text-[9px] font-bold text-slate-600 italic">Rp 0</p>'}
+                            <p class="text-[9px] font-bold ${isQRIS ? 'text-macca-purple' : 'text-macca-green'}">${i.price > 0 ? 'Rp '+(i.qty*i.price).toLocaleString() : 'Rp 0'}</p>
                         </div>
                     </div>` + hl.innerHTML;
                 }
@@ -487,17 +439,15 @@
             document.getElementById('omzet-ikanlaut').innerText = "Rp " + ilOmzTunai.toLocaleString();
 
             const rh = document.getElementById('rekap-harian-body'); rh.innerHTML = '';
-            const harianKeys = Object.keys(rekapHarian).sort();
-            if(harianKeys.length === 0) rh.innerHTML = '<tr><td colspan="3" class="py-10 text-center text-slate-500 font-bold uppercase text-[10px]">Tidak ada data</td></tr>';
-            harianKeys.forEach(key => {
-                const color = key.includes('QRIS') ? 'text-macca-purple' : (rekapHarian[key].total > 0 ? 'text-macca-yellow' : 'text-slate-500');
-                rh.innerHTML += `<tr class="border-b border-white/5"><td class="py-3 text-slate-300 font-bold uppercase">${key}</td><td class="py-3 text-right font-black text-white">${rekapHarian[key].qty}</td><td class="py-3 text-right font-black ${color}">Rp ${rekapHarian[key].total.toLocaleString()}</td></tr>`;
+            Object.keys(rekapHarian).sort().forEach(k => {
+                const color = k.includes('QRIS') ? 'text-macca-purple' : (rekapHarian[k].total > 0 ? 'text-macca-yellow' : 'text-slate-500');
+                rh.innerHTML += `<tr class="border-b border-white/5"><td class="py-3 text-slate-300 font-bold uppercase">${k}</td><td class="py-3 text-right font-black text-white">${rekapHarian[k].qty}</td><td class="py-3 text-right font-black ${color}">Rp ${rekapHarian[k].total.toLocaleString()}</td></tr>`;
             });
 
             const rb = document.getElementById('rekap-table-body'); rb.innerHTML = '';
-            Object.keys(rekapBulanan).sort().forEach(key => {
-                const color = key.includes('QRIS') ? 'text-macca-purple' : (rekapBulanan[key].total > 0 ? 'text-macca-yellow' : 'text-slate-500');
-                rb.innerHTML += `<tr class="border-b border-white/5"><td class="py-3 text-slate-300 font-bold uppercase">${key}</td><td class="py-3 text-right font-black">${rekapBulanan[key].qty}</td><td class="py-3 text-right font-black ${color}">Rp ${rekapBulanan[key].total.toLocaleString()}</td></tr>`;
+            Object.keys(rekapBulanan).sort().forEach(k => {
+                const color = k.includes('QRIS') ? 'text-macca-purple' : (rekapBulanan[k].total > 0 ? 'text-macca-yellow' : 'text-slate-500');
+                rb.innerHTML += `<tr class="border-b border-white/5"><td class="py-3 text-slate-300 font-bold uppercase">${k}</td><td class="py-3 text-right font-black text-white">${rekapBulanan[k].qty}</td><td class="py-3 text-right font-black ${color}">Rp ${rekapBulanan[k].total.toLocaleString()}</td></tr>`;
             });
             document.getElementById('rekap-total-qty').innerText = rGrandQ;
             document.getElementById('rekap-grand-total').innerText = "Rp " + rGrandT.toLocaleString();
