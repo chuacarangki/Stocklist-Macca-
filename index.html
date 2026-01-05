@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Macca Stock v19.9.3</title>
+    <title>Macca Stock v19.10.0</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -22,6 +22,7 @@
                         'macca-red': '#ef4444',
                         'macca-purple': '#a855f7',
                         'macca-cyan': '#06b6d4',
+                        'macca-orange': '#f97316',
                     },
                     animation: {
                         'slide-down': 'slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
@@ -75,8 +76,8 @@
     </div>
 
     <div id="section-login" class="fixed inset-0 z-[100] bg-macca-dark flex flex-col items-center justify-center px-8 text-center">
-        <h1 class="text-5xl font-black text-macca-yellow italic mb-1 uppercase">MACCA<span class="text-white"> STOCKLIST</span></h1>
-        <p class="text-slate-500 text-[10px] font-bold uppercase mb-10 tracking-widest">Macca Stock Management System</p>
+        <h1 class="text-5xl font-black text-macca-yellow italic mb-1 uppercase">MACCA<span class="text-white">.v19</span></h1>
+        <p class="text-slate-500 text-[10px] font-bold uppercase mb-10 tracking-widest">Management System</p>
         <div class="w-full max-w-xs space-y-5">
             <input type="password" id="login-code" inputmode="numeric" placeholder="KODE" class="w-full p-5 bg-macca-card rounded-3xl text-center text-4xl font-black text-macca-yellow outline-none border border-white/10">
             <button onclick="handleLogin()" class="w-full bg-macca-yellow text-black font-black py-6 rounded-3xl uppercase tracking-widest active:scale-95 transition-transform">MASUK</button>
@@ -97,36 +98,45 @@
                 <section class="bg-macca-card rounded-[2.5rem] p-6 border border-white/5 shadow-xl text-center">
                     <p class="text-[10px] font-bold text-macca-green uppercase tracking-widest mb-1">Omzet Tunai Hari Ini</p>
                     <h2 id="total-omzet" class="text-4xl font-black text-white mb-5">Rp 0</h2>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-black/30 p-4 rounded-2xl border border-white/5 text-left">
-                            <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Ayam (Tunai)</p>
-                            <h2 id="count-ayam-sales" class="text-xl font-black text-macca-yellow">0</h2>
-                            <p id="omzet-ayam" class="text-[9px] text-slate-400">Rp 0</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-black/30 p-3 rounded-2xl border border-white/5 text-left">
+                            <p class="text-[8px] text-slate-500 uppercase font-bold mb-1">Ayam</p>
+                            <h2 id="count-ayam-sales" class="text-lg font-black text-macca-yellow">0</h2>
+                            <p id="omzet-ayam" class="text-[8px] text-slate-400">Rp 0</p>
                         </div>
-                        <div class="bg-black/30 p-4 rounded-2xl border border-white/5 text-left">
-                            <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Ikan (Tunai)</p>
-                            <h2 id="count-ikan-sales" class="text-xl font-black text-macca-blue">0</h2>
-                            <p id="omzet-ikan" class="text-[9px] text-slate-400">Rp 0</p>
+                        <div class="bg-black/30 p-3 rounded-2xl border border-white/5 text-left">
+                            <p class="text-[8px] text-slate-500 uppercase font-bold mb-1">I.Bandeng</p>
+                            <h2 id="count-ikan-sales" class="text-lg font-black text-macca-blue">0</h2>
+                            <p id="omzet-ikan" class="text-[8px] text-slate-400">Rp 0</p>
+                        </div>
+                        <div class="bg-black/30 p-3 rounded-2xl border border-white/5 text-left">
+                            <p class="text-[8px] text-slate-500 uppercase font-bold mb-1">I.Laut</p>
+                            <h2 id="count-ikanlaut-sales" class="text-lg font-black text-macca-cyan">0</h2>
+                            <p id="omzet-ikanlaut" class="text-[8px] text-slate-400">Rp 0</p>
                         </div>
                     </div>
                 </section>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[120px]">
+                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px]">
                         <p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2 tracking-wider">Ayam Mentah</p>
-                        <p id="stat-mentah-main" class="text-4xl font-black text-slate-300">0</p>
+                        <p id="stat-mentah-main" class="text-3xl font-black text-slate-300">0</p>
                     </div>
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[120px]">
+                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px]">
                         <p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2 tracking-wider">Ayam Ungkep</p>
-                        <p id="stat-ungkep-main" class="text-4xl font-black text-macca-yellow">0</p>
+                        <p id="stat-ungkep-main" class="text-3xl font-black text-macca-yellow">0</p>
                     </div>
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[120px]">
-                        <p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2 tracking-wider">Ikan Tawar</p>
-                        <p id="stat-ikan-main" class="text-4xl font-black text-macca-green">0</p>
+                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px] col-span-2 border-macca-orange/20">
+                        <p class="text-[10px] font-extrabold text-macca-orange uppercase mb-1 tracking-widest">Ayam Crispy</p>
+                        <p id="stat-crispy-main" class="text-4xl font-black text-white">0</p>
                     </div>
-                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[120px]">
+                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px]">
+                        <p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2 tracking-wider">Ikan Bandeng</p>
+                        <p id="stat-ikan-main" class="text-3xl font-black text-macca-green">0</p>
+                    </div>
+                    <div class="bg-macca-card p-5 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center min-h-[110px]">
                         <p class="text-[10px] font-extrabold text-slate-500 uppercase mb-2 tracking-wider">Ikan Laut</p>
-                        <p id="stat-ikanlaut-main" class="text-4xl font-black text-macca-cyan">0</p>
+                        <p id="stat-ikanlaut-main" class="text-3xl font-black text-macca-cyan">0</p>
                     </div>
                 </div>
             </div>
@@ -191,8 +201,9 @@
     </div>
 
     <div id="fab-container-right" class="fab-right hidden">
+        <div onclick="openInput('Crispy')" class="fab-sub bg-macca-card border-2 border-macca-orange"><span class="text-[9px] font-black text-macca-orange uppercase">CRISPY</span></div>
         <div onclick="openInput('Ungkep')" class="fab-sub bg-macca-card border-2 border-macca-yellow"><span class="text-[9px] font-black text-macca-yellow uppercase">UNGKEP</span></div>
-        <div onclick="openInput('Ikan')" class="fab-sub bg-macca-card border-2 border-macca-green"><span class="text-[9px] font-black text-macca-green uppercase">I.TAWAR</span></div>
+        <div onclick="openInput('Ikan')" class="fab-sub bg-macca-card border-2 border-macca-green"><span class="text-[9px] font-black text-macca-green uppercase">I.BANDENG</span></div>
         <div onclick="openInput('IkanLaut')" class="fab-sub bg-macca-card border-2 border-macca-cyan"><span class="text-[9px] font-black text-macca-cyan uppercase">I.LAUT</span></div>
         <div onclick="openInput('Mentah')" class="fab-sub bg-macca-card border-2 border-macca-blue"><span class="text-[9px] font-black text-macca-blue uppercase">MENTAH</span></div>
         <button id="main-fab-btn" onclick="toggleFab()" class="fab-main"><i class="fas fa-plus"></i></button>
@@ -205,9 +216,10 @@
                 <h2 class="text-3xl font-black uppercase italic text-macca-yellow" id="modal-title">QTY</h2>
                 <div id="price-tag" class="text-right"><p id="display-price" class="text-xl font-black text-macca-green">Rp 0</p></div>
             </div>
-            <div id="item-selector" class="flex gap-2 mb-6 hidden overflow-x-auto pb-2">
+            <div id="item-selector" class="flex gap-2 mb-6 hidden overflow-x-auto pb-4">
                 <button onclick="selectItem('Ungkep')" id="sel-ayam" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-yellow text-macca-yellow">AYAM</button>
-                <button onclick="selectItem('Ikan')" id="sel-ikan" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500">I.TAWAR</button>
+                <button onclick="selectItem('Crispy')" id="sel-crispy" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500">CRISPY</button>
+                <button onclick="selectItem('Ikan')" id="sel-ikan" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500">I.BANDENG</button>
                 <button onclick="selectItem('IkanLaut')" id="sel-ikanlaut" class="whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500">I.LAUT</button>
             </div>
             <input type="number" id="qty" placeholder="0" class="w-full text-center font-black text-macca-yellow bg-transparent outline-none mb-6">
@@ -244,7 +256,8 @@
         const db = getDatabase(app);
         const dbRef = ref(db, 'stok_macca_v14_flow');
 
-        const PRICES = { "Ungkep": 14000, "Ikan": 13000, "IkanLaut": 0, "Mentah": 0 };
+        // Added Crispy price
+        const PRICES = { "Ungkep": 14000, "Crispy": 12000, "Ikan": 13000, "IkanLaut": 13000, "Mentah": 0 };
         const USERS = {
             "1": { name: "Ibu Ati", type: "admin" },
             "2": { name: "Nita (Asisten)", type: "admin" },
@@ -323,7 +336,7 @@
             sel.innerHTML = `<option value="" disabled selected>-- PILIH TUJUAN --</option>`;
             let options = [];
             if (activeUser.id === "3" || activeUser.id === "4") {
-                if (currentTabItem === 'Ungkep') options = ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir", "Ayam Karyawan", "Ayam Rusak"];
+                if (currentTabItem === 'Ungkep' || currentTabItem === 'Crispy') options = ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir", "Ayam Karyawan", "Ayam Rusak"];
                 else if (currentTabItem === 'Ikan') options = ["Penj. Kasir", "Penj. Grab", "Ikan Karyawan", "Ikan Rusak"];
                 else if (currentTabItem === 'IkanLaut') options = ["Penj. Kasir", "Penj. Grab", "Ikan Karyawan", "Ikan Rusak"];
             } else if (activeUser.id === "5" || activeUser.id === "6") {
@@ -338,6 +351,7 @@
             updateNoteOptions();
             updatePriceDisplay();
             document.getElementById('sel-ayam').className = t === 'Ungkep' ? 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-yellow text-macca-yellow bg-macca-yellow/5' : 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500';
+            document.getElementById('sel-crispy').className = t === 'Crispy' ? 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-orange text-macca-orange bg-macca-orange/5' : 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500';
             document.getElementById('sel-ikan').className = t === 'Ikan' ? 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-green text-macca-green bg-macca-green/5' : 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500';
             document.getElementById('sel-ikanlaut').className = t === 'IkanLaut' ? 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-macca-cyan text-macca-cyan bg-macca-cyan/5' : 'whitespace-nowrap px-6 py-4 rounded-2xl font-black text-xs border-2 border-white/5 text-slate-500';
         };
@@ -363,13 +377,13 @@
 
         window.openInput = (t) => {
             currentTabItem = t;
-            document.getElementById('modal-title').innerText = t === 'IkanLaut' ? 'I.LAUT' : t;
+            document.getElementById('modal-title').innerText = (t === 'IkanLaut' ? 'I.LAUT' : (t === 'Crispy' ? 'CRISPY' : t));
             document.getElementById('modal-input').classList.remove('hidden');
             document.getElementById('fab-container-right').classList.remove('active');
             document.getElementById('item-selector').classList.add('hidden');
             document.getElementById('btn-save-qris').classList.add('hidden');
             document.getElementById('btn-save-cash').innerText = 'SIMPAN';
-            currentMode = t === 'Ungkep' ? 'Proses Ungkep' : 'Masuk';
+            currentMode = (t === 'Ungkep' || t === 'Crispy') ? `Tambah ${t}` : 'Masuk';
             document.getElementById('note-section').classList.add('hidden');
             updatePriceDisplay();
         };
@@ -381,7 +395,7 @@
             if(!valQty) return alert("Isi Jumlah!");
             const selNode = document.getElementById('note');
             let noteStr = (activeUser.type === 'admin' && currentMode !== 'Keluar') 
-                ? (currentMode === 'Proses Ungkep' ? "PROSES UNGKEP" : "TAMBAH STOK " + currentTabItem.toUpperCase()) 
+                ? ("TAMBAH STOK " + currentTabItem.toUpperCase()) 
                 : selNode.value;
             if(!noteStr && currentMode === 'Keluar') return alert("Pilih Tujuan!");
             const freeItems = ['nasi goreng', 'suir', 'karyawan', 'rusak'];
@@ -390,17 +404,13 @@
             if (!isFreeItem) price = (noteStr.toLowerCase().includes('penj') || noteStr.toLowerCase().includes('grab') || noteStr.toLowerCase().includes('kasir') || noteStr.toLowerCase().includes('gerai')) ? PRICES[currentTabItem] : 0;
             let finalNote = noteStr;
             if(metode === 'QRIS' && price > 0) finalNote += " (QRIS)";
-            if(currentMode === 'Proses Ungkep') {
-                push(dbRef, { user: activeUser.name, type: 'Mentah', qty: valQty, status: 'Keluar', note: 'PROSES UNGKEP (KELUAR)', price: 0, time: serverTimestamp() });
-                push(dbRef, { user: activeUser.name, type: 'Ungkep', qty: valQty, status: 'Masuk', note: 'TAMBAH STOK UNGKEP (HASIL)', price: 0, time: serverTimestamp() }).then(() => closeInput());
-            } else {
-                push(dbRef, { user: activeUser.name, type: currentTabItem, qty: valQty, status: currentMode, note: finalNote, price: price, time: serverTimestamp() }).then(() => closeInput());
-            }
+            
+            push(dbRef, { user: activeUser.name, type: currentTabItem, qty: valQty, status: currentMode === 'Keluar' ? 'Keluar' : 'Masuk', note: finalNote, price: price, time: serverTimestamp() }).then(() => closeInput());
         };
 
         function render() {
-            let sM = 0, sU = 0, sI = 0, sIL = 0; 
-            let omzHarianTunai = 0, aQtyTunai = 0, iQtyTunai = 0, aOmzTunai = 0, iOmzTunai = 0;
+            let sM = 0, sU = 0, sC = 0, sI = 0, sIL = 0; 
+            let omzHarianTunai = 0, aQtyTunai = 0, iQtyTunai = 0, ilQtyTunai = 0, aOmzTunai = 0, iOmzTunai = 0, ilOmzTunai = 0;
             let rekapHarian = {}; let rekapBulanan = {}; let rGrandQ = 0; let rGrandT = 0;
             const startToday = new Date().setHours(0,0,0,0);
             const filterTgl = document.getElementById('filter-tanggal').value;
@@ -411,6 +421,7 @@
                 const add = (i.status === 'Masuk') ? i.qty : -i.qty;
                 if(i.type === 'Mentah') sM += add;
                 else if(i.type === 'Ungkep') sU += add;
+                else if(i.type === 'Crispy') sC += add;
                 else if(i.type === 'Ikan') sI += add;
                 else if(i.type === 'IkanLaut') sIL += add;
 
@@ -423,8 +434,9 @@
                 if(i.time >= startToday && isSale && !isQRIS) {
                     const lineTotal = i.qty * i.price;
                     omzHarianTunai += lineTotal;
-                    if(i.type === 'Ungkep') { aQtyTunai += i.qty; aOmzTunai += lineTotal; } 
-                    else if(i.type === 'Ikan' || i.type === 'IkanLaut') { iQtyTunai += i.qty; iOmzTunai += lineTotal; }
+                    if(i.type === 'Ungkep' || i.type === 'Crispy') { aQtyTunai += i.qty; aOmzTunai += lineTotal; } 
+                    else if(i.type === 'Ikan') { iQtyTunai += i.qty; iOmzTunai += lineTotal; }
+                    else if(i.type === 'IkanLaut') { ilQtyTunai += i.qty; ilOmzTunai += lineTotal; }
                 }
 
                 if(itemTgl === filterTgl && (isSale || i.status === 'Keluar')) {
@@ -443,7 +455,7 @@
                 if(i.time >= startToday) {
                     const tm = `${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
                     const icon = i.status === 'Masuk' ? 'fa-arrow-down text-macca-green' : (isSale ? (isQRIS ? 'fa-qrcode text-macca-purple' : 'fa-tag text-macca-yellow') : 'fa-arrow-up text-macca-red');
-                    let labelTipe = (i.type === 'Ungkep') ? 'AYAM' : (i.type === 'IkanLaut' ? 'I.LAUT' : (i.type === 'Ikan' ? 'I.TAWAR' : i.type.toUpperCase()));
+                    let labelTipe = (i.type === 'Ungkep') ? 'AYAM' : (i.type === 'Crispy' ? 'CRISPY' : (i.type === 'IkanLaut' ? 'I.LAUT' : (i.type === 'Ikan' ? 'I.BANDENG' : i.type.toUpperCase())));
                     hl.innerHTML = `
                     <div class="bg-macca-card p-4 rounded-3xl border border-white/5 flex items-center justify-between">
                         <div class="flex items-center gap-3">
@@ -463,13 +475,16 @@
 
             document.getElementById('stat-mentah-main').innerText = sM;
             document.getElementById('stat-ungkep-main').innerText = sU;
+            document.getElementById('stat-crispy-main').innerText = sC;
             document.getElementById('stat-ikan-main').innerText = sI;
             document.getElementById('stat-ikanlaut-main').innerText = sIL;
             document.getElementById('total-omzet').innerText = "Rp " + omzHarianTunai.toLocaleString();
             document.getElementById('count-ayam-sales').innerText = aQtyTunai;
             document.getElementById('count-ikan-sales').innerText = iQtyTunai;
+            document.getElementById('count-ikanlaut-sales').innerText = ilQtyTunai;
             document.getElementById('omzet-ayam').innerText = "Rp " + aOmzTunai.toLocaleString();
             document.getElementById('omzet-ikan').innerText = "Rp " + iOmzTunai.toLocaleString();
+            document.getElementById('omzet-ikanlaut').innerText = "Rp " + ilOmzTunai.toLocaleString();
 
             const rh = document.getElementById('rekap-harian-body'); rh.innerHTML = '';
             const harianKeys = Object.keys(rekapHarian).sort();
