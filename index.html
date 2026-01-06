@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Macca Stock v19.11.1</title>
+    <title>Macca Stock v19.11.3</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -109,8 +109,11 @@
                 </div>
             </div>
 
-            <div id="tab-history" class="tab-content space-y-3">
-                <h3 class="text-xs font-black text-white uppercase italic tracking-widest px-2"><i class="fas fa-history mr-2 text-macca-yellow"></i>Riwayat Hari Ini</h3>
+            <div id="tab-history" class="tab-content space-y-4">
+                <div class="flex items-center justify-between px-2">
+                    <h3 class="text-xs font-black text-white uppercase italic tracking-widest"><i class="fas fa-history mr-2 text-macca-yellow"></i>Riwayat</h3>
+                    <input type="date" id="filter-history-tgl" class="glass rounded-xl text-[10px] p-2 outline-none text-macca-yellow border-macca-yellow/20">
+                </div>
                 <div id="history-list" class="space-y-3"></div>
             </div>
 
@@ -226,9 +229,13 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 3000);
 
-                const todayStr = new Date().toISOString().split('T')[0];
-                const monthStr = new Date().toISOString().slice(0, 7);
+                // --- SET DEFAULT TANGGAL HARI INI ---
+                const today = new Date();
+                const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+                const monthStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+
                 document.getElementById('filter-tanggal').value = todayStr;
+                document.getElementById('filter-history-tgl').value = todayStr;
                 document.getElementById('filter-bulan').value = monthStr;
 
                 if(activeUser.type === "admin") {
@@ -253,10 +260,8 @@
 
         window.updateNoteOptions = () => {
             const sel = document.getElementById('note');
-            sel.innerHTML = ``; // Clear options
+            sel.innerHTML = ``;
             let options = [];
-
-            // Logika baru untuk Rezky (5) dan Sendy (6)
             if (["5","6"].includes(activeUser.id)) {
                 options = ["Penj. Gerai Depan"];
             } else if (["3","4"].includes(activeUser.id)) {
@@ -266,10 +271,8 @@
                     options = ["Penj. Kasir", "Penj. Grab", "Karyawan", "Rusak"];
                 }
             } else {
-                // Admin mode atau User lain jika ada
                 options = ["Penj. Kasir", "Penj. Grab", "Penj. Gerai Depan"];
             }
-
             options.forEach(n => { sel.innerHTML += `<option value="${n}">${n}</option>`; });
             if (options.length > 0) sel.value = options[0];
         };
@@ -329,23 +332,18 @@
             if(!valQty) return alert("Isi Jumlah!");
             const selNode = document.getElementById('note');
             let noteStr = (activeUser.type === 'admin' && currentMode !== 'Keluar') ? ("TAMBAH STOK " + (currentTabItem === 'Ungkep' ? 'UNGKEP' : currentTabItem.toUpperCase())) : selNode.value;
-            
             if(!noteStr && currentMode === 'Keluar') return alert("Pilih Tujuan!");
-            
             let price = 0;
             const noteLower = noteStr.toLowerCase();
             const freeKeywords = ['nasi goreng', 'suir', 'karyawan', 'rusak'];
             const isFree = freeKeywords.some(k => noteLower.includes(k));
-            
             if (!isFree) {
                 if (noteLower.includes('penj') || noteLower.includes('kasir') || noteLower.includes('grab') || noteLower.includes('gerai')) {
                     price = PRICES[currentTabItem];
                 }
             }
-            
             let finalNote = noteStr;
             if(metode === 'QRIS' && price > 0) finalNote += " (QRIS)";
-            
             if (activeUser.type === 'admin' && currentTabItem === 'Ungkep' && currentMode === 'Tambah Ungkep') {
                 push(dbRef, { user: activeUser.name, type: 'Ungkep', qty: valQty, status: 'Masuk', note: finalNote, price: 0, time: serverTimestamp() });
                 push(dbRef, { user: activeUser.name, type: 'Mentah', qty: valQty, status: 'Keluar', note: 'PROSES UNGKEP (AUTO)', price: 0, time: serverTimestamp() });
@@ -357,15 +355,19 @@
 
         document.getElementById('filter-tanggal').addEventListener('change', () => render());
         document.getElementById('filter-bulan').addEventListener('change', () => render());
+        document.getElementById('filter-history-tgl').addEventListener('change', () => render());
 
         function render() {
             let sM = 0, sU = 0, sC = 0, sI = 0, sIL = 0; 
             let omzHarianTunai = 0, aQtyTunai = 0, iQtyTunai = 0, ilQtyTunai = 0, aOmzTunai = 0, iOmzTunai = 0, ilOmzTunai = 0;
             let rekapHarian = {}; let rekapBulanan = {}; let rGrandQ = 0; let rGrandT = 0;
             
-            const startToday = new Date().setHours(0,0,0,0);
+            const now = new Date();
+            const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            
             const filterTgl = document.getElementById('filter-tanggal').value;
             const filterBln = document.getElementById('filter-bulan').value;
+            const filterHist = document.getElementById('filter-history-tgl').value;
             const hl = document.getElementById('history-list'); hl.innerHTML = '';
 
             const sortedData = [...dataRaw].sort((a, b) => (a.time || 0) - (b.time || 0));
@@ -381,9 +383,10 @@
                 const dt = new Date(i.time);
                 const isSale = i.price > 0;
                 const isQRIS = i.note.includes("(QRIS)");
-                const itemTgl = dt.toISOString().split('T')[0];
-                const itemBulan = dt.toISOString().slice(0,7);
+                const itemTgl = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+                const itemBulan = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0');
 
+                // Omzet Tunai Hari Ini (Dashboard)
                 if(i.time >= startToday && isSale && !isQRIS) {
                     const lineTotal = i.qty * i.price;
                     omzHarianTunai += lineTotal;
@@ -396,12 +399,14 @@
                 if (i.type === 'Ungkep') displayType = (i.status === 'Keluar') ? 'AYAM' : 'UNGKEP';
                 const key = `${displayType} - ${i.note}`;
 
+                // Rekap Harian Filter
                 if(itemTgl === filterTgl && (isSale || i.status === 'Keluar' || i.status === 'Masuk')) {
                     if(!rekapHarian[key]) rekapHarian[key] = { qty: 0, total: 0 };
                     rekapHarian[key].qty += i.qty;
                     rekapHarian[key].total += (i.qty * i.price);
                 }
 
+                // Rekap Bulanan Filter
                 if(itemBulan === filterBln && (isSale || i.status === 'Keluar')) {
                     if(!rekapBulanan[key]) rekapBulanan[key] = { qty: 0, total: 0 };
                     rekapBulanan[key].qty += i.qty;
@@ -409,8 +414,9 @@
                     rGrandQ += i.qty; rGrandT += (i.qty * i.price);
                 }
 
-                if(i.time >= startToday) {
-                    const tm = `${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
+                // History Filter
+                if(itemTgl === filterHist) {
+                    const tm = String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
                     const icon = i.status === 'Masuk' ? 'fa-arrow-down text-macca-green' : (isSale ? (isQRIS ? 'fa-qrcode text-macca-purple' : 'fa-tag text-macca-yellow') : 'fa-arrow-up text-macca-red');
                     hl.innerHTML = `
                     <div class="glass p-4 rounded-3xl border border-white/5 flex items-center justify-between">
