@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Macca Stock v19.10.0</title>
+    <title>Macca Stock v19.11.1</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -44,8 +44,6 @@
         #qty { font-size: 80px !important; color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.2); }
         #welcome-toast.show { display: flex; animation: slideDown 0.5s forwards; }
         @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
-        
-        /* Style untuk tombol aktif di selector */
         .btn-sel-active { border-color: #fbbf24 !important; color: #fbbf24 !important; transform: scale(1.05); }
         .btn-sel-inactive { border-color: rgba(255,255,255,0.05) !important; color: #64748b !important; }
     </style>
@@ -228,6 +226,11 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 3000);
 
+                const todayStr = new Date().toISOString().split('T')[0];
+                const monthStr = new Date().toISOString().slice(0, 7);
+                document.getElementById('filter-tanggal').value = todayStr;
+                document.getElementById('filter-bulan').value = monthStr;
+
                 if(activeUser.type === "admin") {
                     document.getElementById('main-fab-btn').classList.remove('hidden');
                     document.getElementById('quick-fab-btn').classList.add('hidden');
@@ -250,28 +253,31 @@
 
         window.updateNoteOptions = () => {
             const sel = document.getElementById('note');
-            sel.innerHTML = `<option value="" disabled selected>-- PILIH TUJUAN --</option>`;
+            sel.innerHTML = ``; // Clear options
             let options = [];
-            
-            if (["3","4","5","6"].includes(activeUser.id)) {
+
+            // Logika baru untuk Rezky (5) dan Sendy (6)
+            if (["5","6"].includes(activeUser.id)) {
+                options = ["Penj. Gerai Depan"];
+            } else if (["3","4"].includes(activeUser.id)) {
                 if (currentTabItem === 'Ungkep' || currentTabItem === 'Crispy') {
                     options = ["Penj. Kasir", "Penj. Grab", "Ayam Nasi Goreng", "Ayam Suir", "Ayam Karyawan", "Ayam Rusak"];
                 } else {
                     options = ["Penj. Kasir", "Penj. Grab", "Karyawan", "Rusak"];
                 }
-                if (["5","6"].includes(activeUser.id)) options.unshift("Penj. Gerai Depan");
+            } else {
+                // Admin mode atau User lain jika ada
+                options = ["Penj. Kasir", "Penj. Grab", "Penj. Gerai Depan"];
             }
-            
+
             options.forEach(n => { sel.innerHTML += `<option value="${n}">${n}</option>`; });
-            if (options.length === 1) sel.value = options[0];
+            if (options.length > 0) sel.value = options[0];
         };
 
         window.selectItem = (t) => {
             currentTabItem = t;
             updateNoteOptions();
             updatePriceDisplay();
-            
-            // PERBAIKAN LOGIKA LINGKARAN KUNING:
             ['ungkep', 'crispy', 'ikan', 'ikanlaut'].forEach(id => {
                 const btn = document.getElementById('sel-' + id);
                 if (btn) {
@@ -321,25 +327,22 @@
         window.saveData = (metode = 'CASH') => {
             const valQty = parseInt(document.getElementById('qty').value);
             if(!valQty) return alert("Isi Jumlah!");
-            
             const selNode = document.getElementById('note');
-            let noteStr = (activeUser.type === 'admin' && currentMode !== 'Keluar') 
-                ? ("TAMBAH STOK " + (currentTabItem === 'Ungkep' ? 'UNGKEP' : currentTabItem.toUpperCase())) 
-                : selNode.value;
-
+            let noteStr = (activeUser.type === 'admin' && currentMode !== 'Keluar') ? ("TAMBAH STOK " + (currentTabItem === 'Ungkep' ? 'UNGKEP' : currentTabItem.toUpperCase())) : selNode.value;
+            
             if(!noteStr && currentMode === 'Keluar') return alert("Pilih Tujuan!");
             
             let price = 0;
             const noteLower = noteStr.toLowerCase();
             const freeKeywords = ['nasi goreng', 'suir', 'karyawan', 'rusak'];
             const isFree = freeKeywords.some(k => noteLower.includes(k));
-
+            
             if (!isFree) {
                 if (noteLower.includes('penj') || noteLower.includes('kasir') || noteLower.includes('grab') || noteLower.includes('gerai')) {
                     price = PRICES[currentTabItem];
                 }
             }
-
+            
             let finalNote = noteStr;
             if(metode === 'QRIS' && price > 0) finalNote += " (QRIS)";
             
@@ -349,9 +352,11 @@
             } else {
                 push(dbRef, { user: activeUser.name, type: currentTabItem, qty: valQty, status: currentMode === 'Keluar' ? 'Keluar' : 'Masuk', note: finalNote, price: price, time: serverTimestamp() });
             }
-            
             closeInput();
         };
+
+        document.getElementById('filter-tanggal').addEventListener('change', () => render());
+        document.getElementById('filter-bulan').addEventListener('change', () => render());
 
         function render() {
             let sM = 0, sU = 0, sC = 0, sI = 0, sIL = 0; 
@@ -359,11 +364,13 @@
             let rekapHarian = {}; let rekapBulanan = {}; let rGrandQ = 0; let rGrandT = 0;
             
             const startToday = new Date().setHours(0,0,0,0);
-            const filterTgl = document.getElementById('filter-tanggal').value || new Date().toISOString().split('T')[0];
-            const filterBln = document.getElementById('filter-bulan').value || new Date().toISOString().slice(0,7);
+            const filterTgl = document.getElementById('filter-tanggal').value;
+            const filterBln = document.getElementById('filter-bulan').value;
             const hl = document.getElementById('history-list'); hl.innerHTML = '';
 
-            dataRaw.forEach(i => {
+            const sortedData = [...dataRaw].sort((a, b) => (a.time || 0) - (b.time || 0));
+
+            sortedData.forEach(i => {
                 const add = (i.status === 'Masuk') ? i.qty : -i.qty;
                 if(i.type === 'Mentah') sM += add;
                 else if(i.type === 'Ungkep') sU += add;
@@ -386,13 +393,10 @@
                 }
 
                 let displayType = i.type.toUpperCase();
-                if (i.type === 'Ungkep') {
-                    displayType = (i.status === 'Keluar') ? 'AYAM' : 'UNGKEP';
-                }
-                
+                if (i.type === 'Ungkep') displayType = (i.status === 'Keluar') ? 'AYAM' : 'UNGKEP';
                 const key = `${displayType} - ${i.note}`;
 
-                if(itemTgl === filterTgl && (isSale || i.status === 'Keluar')) {
+                if(itemTgl === filterTgl && (isSale || i.status === 'Keluar' || i.status === 'Masuk')) {
                     if(!rekapHarian[key]) rekapHarian[key] = { qty: 0, total: 0 };
                     rekapHarian[key].qty += i.qty;
                     rekapHarian[key].total += (i.qty * i.price);
