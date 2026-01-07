@@ -41,7 +41,7 @@
         .fab-main { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24, #d4af37); color: #000; display: flex; align-items: center; justify-content: center; font-size: 28px; }
         .fab-quick { width: 70px; height: 70px; border-radius: 50%; background: #ef4444; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .fab-right.active .fab-sub { transform: scale(1); opacity: 1; pointer-events: auto; }
-        #qty { font-size: 80px !important; color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.2); }
+        #qty, #edit-qty-input { font-size: 80px !important; color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.2); }
         #welcome-toast.show { display: flex; animation: slideDown 0.5s forwards; }
         @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
         .btn-sel-active { border-color: #fbbf24 !important; color: #fbbf24 !important; transform: scale(1.05); }
@@ -123,9 +123,7 @@
                         <h3 class="text-xs font-black text-white uppercase italic tracking-widest">Rekap Harian</h3>
                         <input type="date" id="filter-tanggal" class="glass rounded-lg text-[10px] p-2 outline-none text-macca-yellow">
                     </div>
-                    <div class="glass rounded-3xl p-5 overflow-hidden">
-                        <table class="w-full text-[11px]"><tbody id="rekap-harian-body"></tbody></table>
-                    </div>
+                    <div class="glass rounded-3xl p-5 overflow-hidden"><table class="w-full text-[11px]"><tbody id="rekap-harian-body"></tbody></table></div>
                 </section>
                 <section class="space-y-3">
                     <div class="flex items-center justify-between px-2">
@@ -184,9 +182,23 @@
         </div>
     </div>
 
+    <div id="modal-edit" class="fixed inset-0 z-[90] bg-black/95 hidden flex items-end justify-center">
+        <div class="glass w-full max-w-md rounded-t-[3.5rem] p-7 pb-10 shadow-2xl transition-all">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-black uppercase italic text-macca-blue">EDIT QTY</h2>
+                <p id="edit-item-name" class="text-xs font-bold text-slate-500 uppercase"></p>
+            </div>
+            <input type="number" id="edit-qty-input" placeholder="0" class="w-full text-center font-black bg-transparent outline-none mb-8 text-macca-blue">
+            <div class="flex gap-3">
+                <button onclick="closeEditModal()" class="flex-1 py-6 rounded-3xl font-black text-slate-500 uppercase transition-all">Batal</button>
+                <button id="btn-update-data" class="flex-[2] bg-gradient-to-r from-macca-blue to-blue-700 text-white font-black py-6 rounded-3xl uppercase shadow-lg shadow-blue-500/20 transition-all active:scale-95"><i class="fas fa-check mr-2"></i> UPDATE</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, serverTimestamp, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCCmKgOnBFpluEKuycYjrBRm4zbxrHI1P8",
@@ -212,7 +224,7 @@
             "6": { name: "Sendy", type: "staff", id: "6" }
         };
 
-        let activeUser = null, dataRaw = [], currentTabItem = 'Ungkep', currentMode = '';
+        let activeUser = null, dataRaw = {}, currentTabItem = 'Ungkep', currentMode = '';
 
         window.handleLogin = () => {
             const val = document.getElementById('login-code').value;
@@ -229,7 +241,6 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 3000);
 
-                // --- SET DEFAULT TANGGAL HARI INI ---
                 const today = new Date();
                 const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
                 const monthStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
@@ -245,7 +256,7 @@
                     document.getElementById('main-fab-btn').classList.add('hidden');
                     document.getElementById('quick-fab-btn').classList.remove('hidden');
                 }
-                onValue(dbRef, (snap) => { dataRaw = snap.val() ? Object.values(snap.val()) : []; render(); });
+                onValue(dbRef, (snap) => { dataRaw = snap.val() || {}; render(); });
             } else { alert("KODE SALAH!"); }
         };
 
@@ -257,6 +268,35 @@
         };
 
         window.toggleFab = () => document.getElementById('fab-container-right').classList.toggle('active');
+
+        // MODAL EDIT HANDLER
+        window.openEditModal = (key, currentQty, itemName) => {
+            if (activeUser?.id === "3") {
+                document.getElementById('modal-edit').classList.remove('hidden');
+                document.getElementById('edit-qty-input').value = currentQty;
+                document.getElementById('edit-item-name').innerText = itemName;
+                document.getElementById('btn-update-data').onclick = () => {
+                    const newQty = parseInt(document.getElementById('edit-qty-input').value);
+                    if (!isNaN(newQty)) {
+                        update(ref(db, `stok_macca_v14_flow/${key}`), { qty: newQty })
+                        .then(() => {
+                            closeEditModal();
+                            alert("Berhasil diperbarui!");
+                        }).catch(e => alert(e.message));
+                    }
+                };
+            }
+        };
+
+        window.closeEditModal = () => {
+            document.getElementById('modal-edit').classList.add('hidden');
+        };
+
+        window.deleteData = (key) => {
+            if (activeUser?.id === "3" && confirm("Hapus data ini?")) {
+                remove(ref(db, `stok_macca_v14_flow/${key}`)).catch(e => alert(e.message));
+            }
+        };
 
         window.updateNoteOptions = () => {
             const sel = document.getElementById('note');
@@ -370,9 +410,11 @@
             const filterHist = document.getElementById('filter-history-tgl').value;
             const hl = document.getElementById('history-list'); hl.innerHTML = '';
 
-            const sortedData = [...dataRaw].sort((a, b) => (a.time || 0) - (b.time || 0));
+            const keys = Object.keys(dataRaw);
+            const sortedKeys = keys.sort((a, b) => (dataRaw[a].time || 0) - (dataRaw[b].time || 0));
 
-            sortedData.forEach(i => {
+            sortedKeys.forEach(keyId => {
+                const i = dataRaw[keyId];
                 const add = (i.status === 'Masuk') ? i.qty : -i.qty;
                 if(i.type === 'Mentah') sM += add;
                 else if(i.type === 'Ungkep') sU += add;
@@ -386,7 +428,6 @@
                 const itemTgl = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
                 const itemBulan = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0');
 
-                // Omzet Tunai Hari Ini (Dashboard)
                 if(i.time >= startToday && isSale && !isQRIS) {
                     const lineTotal = i.qty * i.price;
                     omzHarianTunai += lineTotal;
@@ -397,27 +438,34 @@
 
                 let displayType = i.type.toUpperCase();
                 if (i.type === 'Ungkep') displayType = (i.status === 'Keluar') ? 'AYAM' : 'UNGKEP';
-                const key = `${displayType} - ${i.note}`;
+                const keyRekap = `${displayType} - ${i.note}`;
 
-                // Rekap Harian Filter
                 if(itemTgl === filterTgl && (isSale || i.status === 'Keluar' || i.status === 'Masuk')) {
-                    if(!rekapHarian[key]) rekapHarian[key] = { qty: 0, total: 0 };
-                    rekapHarian[key].qty += i.qty;
-                    rekapHarian[key].total += (i.qty * i.price);
+                    if(!rekapHarian[keyRekap]) rekapHarian[keyRekap] = { qty: 0, total: 0 };
+                    rekapHarian[keyRekap].qty += i.qty;
+                    rekapHarian[keyRekap].total += (i.qty * i.price);
                 }
 
-                // Rekap Bulanan Filter
                 if(itemBulan === filterBln && (isSale || i.status === 'Keluar')) {
-                    if(!rekapBulanan[key]) rekapBulanan[key] = { qty: 0, total: 0 };
-                    rekapBulanan[key].qty += i.qty;
-                    rekapBulanan[key].total += (i.qty * i.price);
+                    if(!rekapBulanan[keyRekap]) rekapBulanan[keyRekap] = { qty: 0, total: 0 };
+                    rekapBulanan[keyRekap].qty += i.qty;
+                    rekapBulanan[keyRekap].total += (i.qty * i.price);
                     rGrandQ += i.qty; rGrandT += (i.qty * i.price);
                 }
 
-                // History Filter
                 if(itemTgl === filterHist) {
                     const tm = String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
                     const icon = i.status === 'Masuk' ? 'fa-arrow-down text-macca-green' : (isSale ? (isQRIS ? 'fa-qrcode text-macca-purple' : 'fa-tag text-macca-yellow') : 'fa-arrow-up text-macca-red');
+                    
+                    let actionBtns = '';
+                    if (activeUser?.id === "3") {
+                        actionBtns = `
+                            <div class="flex items-center gap-1 ml-2">
+                                <button onclick="openEditModal('${keyId}', ${i.qty}, '${displayType}')" class="w-8 h-8 rounded-lg bg-macca-blue/20 text-macca-blue flex items-center justify-center active:scale-90 transition-all"><i class="fas fa-edit text-xs"></i></button>
+                                <button onclick="deleteData('${keyId}')" class="w-8 h-8 rounded-lg bg-macca-red/20 text-macca-red flex items-center justify-center active:scale-90 transition-all"><i class="fas fa-trash-alt text-xs"></i></button>
+                            </div>`;
+                    }
+
                     hl.innerHTML = `
                     <div class="glass p-4 rounded-3xl border border-white/5 flex items-center justify-between">
                         <div class="flex items-center gap-3">
@@ -427,9 +475,12 @@
                                 <p class="text-[9px] text-slate-500 font-bold uppercase">${i.user} • ${displayType}</p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <p class="text-lg font-black ${i.status === 'Masuk' ? 'text-macca-green' : 'text-white'}">${i.status === 'Masuk' ? '+' : '-'}${i.qty}</p>
-                            <p class="text-[9px] font-bold ${isQRIS ? 'text-macca-purple' : 'text-macca-green'}">${i.price > 0 ? 'Rp '+(i.qty*i.price).toLocaleString() : 'Rp 0'}</p>
+                        <div class="flex items-center">
+                            <div class="text-right">
+                                <p class="text-lg font-black ${i.status === 'Masuk' ? 'text-macca-green' : 'text-white'}">${i.status === 'Masuk' ? '+' : '-'}${i.qty}</p>
+                                <p class="text-[9px] font-bold ${isQRIS ? 'text-macca-purple' : 'text-macca-green'}">${i.price > 0 ? 'Rp '+(i.qty*i.price).toLocaleString() : 'Rp 0'}</p>
+                            </div>
+                            ${actionBtns}
                         </div>
                     </div>` + hl.innerHTML;
                 }
