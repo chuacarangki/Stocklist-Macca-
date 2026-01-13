@@ -215,13 +215,16 @@
         const dbRef = ref(db, 'stok_macca_v14_flow');
 
         const PRICES = { "Ungkep": 14000, "Crispy": 12000, "Ikan": 13000, "IkanLaut": 13000, "Mentah": 0 };
+        
+        // Penambahan User HASBI sebagai Admin
         const USERS = {
             "1": { name: "Ibu Ati", type: "admin" },
             "2": { name: "Nita (Asisten)", type: "admin" },
             "3": { name: "Ara", type: "staff", id: "3" },
             "4": { name: "Dilla", type: "staff", id: "4" },
             "5": { name: "Rezky", type: "staff", id: "5" },
-            "6": { name: "Sendy", type: "staff", id: "6" }
+            "6": { name: "Sendy", type: "staff", id: "6" },
+            "7": { name: "HASBI", type: "admin" } 
         };
 
         let activeUser = null, dataRaw = {}, currentTabItem = 'Ungkep', currentMode = '';
@@ -269,7 +272,6 @@
 
         window.toggleFab = () => document.getElementById('fab-container-right').classList.toggle('active');
 
-        // MODAL EDIT HANDLER
         window.openEditModal = (key, currentQty, itemName) => {
             if (activeUser?.id === "3") {
                 document.getElementById('modal-edit').classList.remove('hidden');
